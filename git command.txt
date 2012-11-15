@@ -1,0 +1,20 @@
+
+==================================================
+
+Fork A Repo
+
+https://help.github.com/articles/fork-a-repo
+
+==================================================
+
+git clone https://github.com/shines77/Dolphin.git
+
+or 
+
+git clone ssh://git@github.com:shines77/Dolphin.git
+
+cd Dolphin
+
+git remote add upstream https://github.com/shines77/Dolphin.git
+
+git fetch upstream
