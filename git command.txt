@@ -34,3 +34,9 @@ EDIT : You need to pull before push, to make your local repository up-to-date be
 git pull origin master
 
 ==================================================
+
+Managing deploy keys
+
+https://help.github.com/articles/managing-deploy-keys
+
+Run the "ssh-keygen" to product the deploy key
