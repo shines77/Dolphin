@@ -1,0 +1,36 @@
+
+==================================================
+
+Fork A Repo
+
+https://help.github.com/articles/fork-a-repo
+
+==================================================
+
+git clone https://github.com/shines77/Dolphin.git
+
+or 
+
+git clone ssh://git@github.com:shines77/Dolphin.git
+
+cd Dolphin
+
+git remote add upstream https://github.com/shines77/Dolphin.git
+
+git fetch upstream
+
+==================================================
+
+http://stackoverflow.com/questions/10298291/cannot-pushto-github-keeping-saying-need-merge
+
+Have you updated your code before pushing ?
+
+use "git pull origin master" before you push anything.
+
+I assume that you are using origin as a name for your remote.
+
+EDIT : You need to pull before push, to make your local repository up-to-date before you push something(just in case someone else has already updated code on github.com). This helps in resolving conflicts locally. Hope I am clear enough
+
+git pull
+
+==================================================
