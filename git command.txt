@@ -31,6 +31,6 @@ I assume that you are using origin as a name for your remote.
 
 EDIT : You need to pull before push, to make your local repository up-to-date before you push something(just in case someone else has already updated code on github.com). This helps in resolving conflicts locally. Hope I am clear enough
 
-git pull
+git pull origin master
 
 ==================================================
