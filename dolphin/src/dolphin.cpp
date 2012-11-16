@@ -205,7 +205,7 @@ int _tmain(int argc, _TCHAR* argv[])
     printf("my_rand[-1000, 1000]   = %d\n", my_random::rand(-1000, 1000));
     printf("\r\n");
 
-    chess_hash_table hash_table;
+    hash_table_t hash_table;
     hash_table.setup_hash(22);
     void *pHashTable = (void *)hash_table.hash_table();
     
