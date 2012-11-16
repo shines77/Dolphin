@@ -34,8 +34,8 @@
 //#include "scheduler.h"
 //#include "itt_notify.h"
 
-#include "../../gmtl/include/cache_aligned_t.h"
-#include "../../gmtl/include/task_scheduler_t.h"
+#include "../../include/gmtl/cache_aligned.h"
+#include "../../include/gmtl/task_scheduler.h"
 
 #include <string.h>
 

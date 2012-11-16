@@ -4,8 +4,8 @@
 #include <tchar.h>
 #include <iostream>
 #include <objbase.h>
-#include "../../gmtl/include/gmtl.h"
-#include "../../dolphin/include/dolphin.h"
+#include "../../include/gmtl/gmtl.h"
+#include "../../include/dolphin/dolphin.h"
 #include <mmsystem.h>
 
 #define ReadTSC( x )            \

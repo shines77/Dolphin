@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="Dolphin"
+	Name="dolphin"
 	ProjectGUID="{5C797559-24F2-4DC6-A320-5FDE9C47C0F2}"
-	RootNamespace="Dolphin"
+	RootNamespace="dolphin"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="196613"
 	>
@@ -332,183 +332,75 @@
 			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
-			<Filter
-				Name="dolphin"
+			<File
+				RelativePath="..\..\..\..\src\dolphin\bitboard.cpp"
 				>
-				<File
-					RelativePath="..\..\..\dolphin\src\bitboard.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\dolphin\src\dolphin.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\dolphin\src\hash_table.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\dolphin\src\my_random.cpp"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="gmtl"
+			</File>
+			<File
+				RelativePath="..\..\..\..\src\dolphin\dolphin.cpp"
 				>
-				<File
-					RelativePath="..\..\..\gmtl\src\cache_aligned_t.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\gmtl\src\task_scheduler_t.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\gmtl\src\task_t.cpp"
-					>
-				</File>
-			</Filter>
+			</File>
+			<File
+				RelativePath="..\..\..\..\src\dolphin\hash_table.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\src\dolphin\my_random.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="include"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath="..\..\..\..\include\dolphin\bitboard.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\include\dolphin\board.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\include\dolphin\colour.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\include\dolphin\dol_stddef.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\include\dolphin\dolphin.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\include\dolphin\hash_table.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\include\dolphin\my_random.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\res\dolphin\vc2008\resource.h"
+				>
+			</File>
 			<Filter
-				Name="dolphin"
+				Name="machine"
 				>
 				<File
-					RelativePath="..\..\..\dolphin\include\bitboard.h"
+					RelativePath="..\..\..\..\include\dolphin\machine\windows_api.h"
 					>
 				</File>
-				<File
-					RelativePath="..\..\..\dolphin\include\board.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\dolphin\include\colour.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\dolphin\include\dol_stddef.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\dolphin\include\dolphin.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\dolphin\include\hash_table.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\dolphin\include\my_random.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\dolphin\res\vc2008\resource.h"
-					>
-				</File>
-				<Filter
-					Name="machine"
-					>
-					<File
-						RelativePath="..\..\..\dolphin\include\machine\windows_api.h"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="vs"
-					>
-					<File
-						RelativePath="..\..\..\dolphin\include\vs\stdint.h"
-						>
-					</File>
-				</Filter>
 			</Filter>
 			<Filter
-				Name="gmtl"
+				Name="vs"
 				>
 				<File
-					RelativePath="..\..\..\gmtl\include\aligned_space_t.h"
+					RelativePath="..\..\..\..\include\dolphin\vs\stdint.h"
 					>
 				</File>
-				<File
-					RelativePath="..\..\..\gmtl\include\cache_aligned_t.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\gmtl\include\gmtl.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\gmtl\include\gmtl_config.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\gmtl\include\gmtl_machine.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\gmtl\include\gmtl_stddef.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\gmtl\include\itimer_t.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\gmtl\include\scheduler_t.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\gmtl\include\task_scheduler_t.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\gmtl\include\task_t.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\gmtl\include\tickcount_t.h"
-					>
-				</File>
-				<Filter
-					Name="vs"
-					>
-					<File
-						RelativePath="..\..\..\gmtl\include\vs\stdint.h"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="machine"
-					>
-					<File
-						RelativePath="..\..\..\gmtl\include\machine\linux_ia32.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\..\gmtl\include\machine\windows_api.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\..\gmtl\include\machine\windows_ia32.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\..\gmtl\include\machine\windows_intel64.h"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="internal"
-					>
-					<File
-						RelativePath="..\..\..\gmtl\include\internal\_gmtl_windef.h"
-						>
-					</File>
-				</Filter>
 			</Filter>
 		</Filter>
 		<Filter
@@ -517,10 +409,14 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 			<File
-				RelativePath="..\..\..\dolphin\res\vc2008\dolphin.rc"
+				RelativePath="..\..\..\..\res\dolphin\vc2008\dolphin.rc"
 				>
 			</File>
 		</Filter>
+		<File
+			RelativePath=".\ReadMe.txt"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

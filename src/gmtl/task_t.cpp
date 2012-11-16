@@ -26,67 +26,95 @@
     the GNU General Public License.
 */
 
-#ifndef _TASK_SCHEDULER_T_H_
-#define _TASK_SCHEDULER_T_H_
+#include <new>
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
-#endif
+// Do not include task.h directly. Use scheduler_common.h instead
+//#include "scheduler_common.h"
+//#include "governor.h"
+//#include "scheduler.h"
+//#include "itt_notify.h"
 
-#include "gmtl_stddef.h"
-//#include "gmtl_machine.h"
-#include "task_t.h"
-#include "scheduler_t.h"
+#include "../../include/gmtl/cache_aligned.h"
+#include "../../include/gmtl/task.h"
 
 namespace gmtl {
 
-class task_t;
-class task_list_t;
-class scheduler_t;
+using namespace std;
 
-typedef std::size_t stack_size_type;
+namespace internal {
+    class no_name {
+        int i;
+    };
+}
 
-class task_scheduler_t : internal::no_copy
+///////////////////////////////////////////////////////////////
+// task_base_t
+///////////////////////////////////////////////////////////////
+
+void task_base_t::spawn( task_t& t )
 {
-    scheduler_t *my_scheduler;
 
-public:
-    static const int MTL_AUTOMATIC = -1;
-    static const int MTL_DELAY_ACTIVATION = -2;
+}
 
-    task_scheduler_t( int number_of_threads = MTL_AUTOMATIC, stack_size_type thread_stack_size = 0 );
-    virtual ~task_scheduler_t( void );
-
-    void initialize( int number_of_threads = MTL_AUTOMATIC );
-    void initialize( int number_of_threads, stack_size_type thread_stack_size );
-    void terminate( void );
-
-    int get_num_threads( void ) const { return m_num_threads; }
-    static int default_num_threads( void );
-
-    bool is_active() const { return my_scheduler != NULL; }
-
-private:
-    int m_num_threads;
-};
-
-class GxString
+void task_base_t::spawn( task_list_t& list )
 {
-private:
-    char* buffer;
-    unsigned int length;
-public:
-    GxString(void);
-    virtual ~GxString(void);
 
-    void Free(void);
-    char* SetLength(int len, char ch = 0);
+}
 
-    GxString& operator =(GxString& str);
-    int Length(void);
-    const char* _Char(void);
-};
+void task_base_t::spawn_root_and_wait( task_t& t )
+{
+
+}
+
+void task_base_t::spawn_root_and_wait( task_list_t& t )
+{
+
+}
+
+void task_base_t::spawn_and_wait_for( task_t& t )
+{
+
+}
+
+void task_base_t::spawn_and_wait_for( task_list_t& list )
+{
+
+}
+
+void task_base_t::wait_for_all( task_t& t )
+{
+
+}
+
+///////////////////////////////////////////////////////////////
+// task_t
+///////////////////////////////////////////////////////////////
+
+void task_t::spawn( void )
+{
+    int i = 0;
+}
+
+void task_t::spawn_root_and_wait( void )
+{
+    //
+}
+
+void task_t::spawn_and_wait_for( void )
+{
+    //
+}
+
+void task_t::wait_for_all( void )
+{
+    //
+}
+
+task_t* task_t::execute( void )
+{
+    return NULL;
+}
+
+///////////////////////////////////////////////////////////////
 
 }  // namespace imtl
-
-#endif /* _TASK_SCHEDULER_T_H_ */

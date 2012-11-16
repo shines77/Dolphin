@@ -26,8 +26,8 @@
     the GNU General Public License.
 */
 
-#include "../../dolphin/include/hash_table.h"
-#include "../../dolphin/include/my_random.h"
+#include "../../include/dolphin/hash_table.h"
+#include "../../include/dolphin/my_random.h"
 
 // use srand() or my_srandom()
 #define _USE_C_SRAND     0

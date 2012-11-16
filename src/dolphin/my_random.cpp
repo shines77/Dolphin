@@ -63,7 +63,7 @@
  * predicted by this formula.
  */
 
-#include "../../dolphin/include/my_random.h"
+#include "../../include/dolphin/my_random.h"
 
 #include <stdlib.h>
 #ifndef _WIN32_WCE

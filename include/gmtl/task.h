@@ -35,8 +35,8 @@
 
 #include "gmtl_stddef.h"
 //#include "gmtl_machine.h"
-#include "task_scheduler_t.h"
-#include "scheduler_t.h"
+#include "task_scheduler.h"
+#include "scheduler.h"
 #include <climits>
 
 namespace gmtl {

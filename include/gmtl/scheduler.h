@@ -26,95 +26,32 @@
     the GNU General Public License.
 */
 
-#include <new>
+#ifndef _SCHEDULER_T_H_
+#define _SCHEDULER_T_H_
 
-// Do not include task.h directly. Use scheduler_common.h instead
-//#include "scheduler_common.h"
-//#include "governor.h"
-//#include "scheduler.h"
-//#include "itt_notify.h"
+#if defined(_MSC_VER) && (_MSC_VER >= 1020)
+# pragma once
+#endif
 
-#include "../../gmtl/include/cache_aligned_t.h"
-#include "../../gmtl/include/task_t.h"
+#include "gmtl_stddef.h"
+//#include "gmtl_machine.h"
+#include "task_scheduler.h"
+#include "task.h"
+#include <climits>
 
 namespace gmtl {
 
-using namespace std;
+class task_t;
+class task_list_t;
+class scheduler_t;
 
-namespace internal {
-    class no_name {
-        int i;
-    };
-}
+class task_scheduler_t;
 
-///////////////////////////////////////////////////////////////
-// task_base_t
-///////////////////////////////////////////////////////////////
-
-void task_base_t::spawn( task_t& t )
-{
-
-}
-
-void task_base_t::spawn( task_list_t& list )
-{
-
-}
-
-void task_base_t::spawn_root_and_wait( task_t& t )
-{
-
-}
-
-void task_base_t::spawn_root_and_wait( task_list_t& t )
-{
-
-}
-
-void task_base_t::spawn_and_wait_for( task_t& t )
-{
-
-}
-
-void task_base_t::spawn_and_wait_for( task_list_t& list )
-{
-
-}
-
-void task_base_t::wait_for_all( task_t& t )
-{
-
-}
-
-///////////////////////////////////////////////////////////////
-// task_t
-///////////////////////////////////////////////////////////////
-
-void task_t::spawn( void )
-{
-    int i = 0;
-}
-
-void task_t::spawn_root_and_wait( void )
-{
-    //
-}
-
-void task_t::spawn_and_wait_for( void )
-{
-    //
-}
-
-void task_t::wait_for_all( void )
-{
-    //
-}
-
-task_t* task_t::execute( void )
-{
-    return NULL;
-}
-
-///////////////////////////////////////////////////////////////
+class scheduler_t {
+private:
+    int i;
+};
 
 }  // namespace imtl
+
+#endif /* _SCHEDULER_T_H_ */

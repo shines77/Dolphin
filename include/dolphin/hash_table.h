@@ -34,8 +34,8 @@
 #endif
 
 #include "dol_stddef.h"
-#include "../../gmtl/include/cache_aligned_t.h"
-#include "../../dolphin/include/bitboard.h"
+#include "../../include/gmtl/cache_aligned.h"
+#include "../../include/dolphin/bitboard.h"
 #include "colour.h"
 #include "board.h"
 #include <cstddef>

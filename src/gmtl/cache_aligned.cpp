@@ -3,7 +3,7 @@
 #include <memory.h>
 #include <string.h>
 #include <crtdbg.h>
-#include "../../gmtl/include/cache_aligned_t.h"
+#include "../../include/gmtl/cache_aligned.h"
 
 namespace gmtl {
 

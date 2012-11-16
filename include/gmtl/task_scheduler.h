@@ -26,77 +26,67 @@
     the GNU General Public License.
 */
 
-#include "../../dolphin/include/bitboard.h"
+#ifndef _TASK_SCHEDULER_T_H_
+#define _TASK_SCHEDULER_T_H_
 
-namespace dolphin {
+#if defined(_MSC_VER) && (_MSC_VER >= 1020)
+# pragma once
+#endif
 
-namespace internal {
-    class no_name3 {
-        int i;
-    };
-}
+#include "gmtl_stddef.h"
+//#include "gmtl_machine.h"
+#include "task.h"
+#include "scheduler.h"
 
-BitBoard bitboard::square_mask[64];
+namespace gmtl {
 
-///////////////////////////////////////////////////////////////
-// bitbaord_t
-///////////////////////////////////////////////////////////////
+class task_t;
+class task_list_t;
+class scheduler_t;
 
-bitboard::bitboard( void )
+typedef std::size_t stack_size_type;
+
+class task_scheduler_t : internal::no_copy
 {
-    initialize(0, 0);
-}
+    scheduler_t *my_scheduler;
 
-bitboard::bitboard( uint32 _low, uint32 _high )
+public:
+    static const int MTL_AUTOMATIC = -1;
+    static const int MTL_DELAY_ACTIVATION = -2;
+
+    task_scheduler_t( int number_of_threads = MTL_AUTOMATIC, stack_size_type thread_stack_size = 0 );
+    virtual ~task_scheduler_t( void );
+
+    void initialize( int number_of_threads = MTL_AUTOMATIC );
+    void initialize( int number_of_threads, stack_size_type thread_stack_size );
+    void terminate( void );
+
+    int get_num_threads( void ) const { return m_num_threads; }
+    static int default_num_threads( void );
+
+    bool is_active() const { return my_scheduler != NULL; }
+
+private:
+    int m_num_threads;
+};
+
+class GxString
 {
-    initialize(_low, _high);
-}
+private:
+    char* buffer;
+    unsigned int length;
+public:
+    GxString(void);
+    virtual ~GxString(void);
 
-bitboard::bitboard( BitBoard& b )
-{
-    initialize(b.low, b.high);
-}
+    void Free(void);
+    char* SetLength(int len, char ch = 0);
 
-bitboard::bitboard( uint64 u64 )
-{
-    initialize(u64);
-}
+    GxString& operator =(GxString& str);
+    int Length(void);
+    const char* _Char(void);
+};
 
-bitboard& bitboard::operator =( const bitboard& src )
-{
-    initialize(src.low, src.high);
-    return *this;
-}
+}  // namespace imtl
 
-bitboard::~bitboard( void )
-{
-}
-
-inline void bitboard::initialize( uint32 _low, uint32 _high )
-{
-    low = _low; high = _high;
-}
-
-inline void bitboard::initialize( uint64 u64 )
-{
-    initialize((uint32)(u64 & 0xFFFFFFFFULL), (uint32)(u64 >> 32));
-}
-
-void bitboard::init( uint32 _low, uint32 _high )
-{
-    initialize(_low, _high);
-}
-
-void bitboard::init( uint64 u64 )
-{
-    initialize(u64);
-}
-
-void bitboard::init( BitBoard& b )
-{
-    initialize(b.low, b.high);
-}
-
-///////////////////////////////////////////////////////////////
-
-}  // namespace dolphin
+#endif /* _TASK_SCHEDULER_T_H_ */

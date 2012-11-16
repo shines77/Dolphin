@@ -26,32 +26,77 @@
     the GNU General Public License.
 */
 
-#ifndef _SCHEDULER_T_H_
-#define _SCHEDULER_T_H_
+#include "../../include/dolphin/bitboard.h"
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
-#endif
+namespace dolphin {
 
-#include "gmtl_stddef.h"
-//#include "gmtl_machine.h"
-#include "task_scheduler_t.h"
-#include "task_t.h"
-#include <climits>
+namespace internal {
+    class no_name3 {
+        int i;
+    };
+}
 
-namespace gmtl {
+BitBoard bitboard::square_mask[64];
 
-class task_t;
-class task_list_t;
-class scheduler_t;
+///////////////////////////////////////////////////////////////
+// bitbaord_t
+///////////////////////////////////////////////////////////////
 
-class task_scheduler_t;
+bitboard::bitboard( void )
+{
+    initialize(0, 0);
+}
 
-class scheduler_t {
-private:
-    int i;
-};
+bitboard::bitboard( uint32 _low, uint32 _high )
+{
+    initialize(_low, _high);
+}
 
-}  // namespace imtl
+bitboard::bitboard( BitBoard& b )
+{
+    initialize(b.low, b.high);
+}
 
-#endif /* _SCHEDULER_T_H_ */
+bitboard::bitboard( uint64 u64 )
+{
+    initialize(u64);
+}
+
+bitboard& bitboard::operator =( const bitboard& src )
+{
+    initialize(src.low, src.high);
+    return *this;
+}
+
+bitboard::~bitboard( void )
+{
+}
+
+inline void bitboard::initialize( uint32 _low, uint32 _high )
+{
+    low = _low; high = _high;
+}
+
+inline void bitboard::initialize( uint64 u64 )
+{
+    initialize((uint32)(u64 & 0xFFFFFFFFULL), (uint32)(u64 >> 32));
+}
+
+void bitboard::init( uint32 _low, uint32 _high )
+{
+    initialize(_low, _high);
+}
+
+void bitboard::init( uint64 u64 )
+{
+    initialize(u64);
+}
+
+void bitboard::init( BitBoard& b )
+{
+    initialize(b.low, b.high);
+}
+
+///////////////////////////////////////////////////////////////
+
+}  // namespace dolphin
