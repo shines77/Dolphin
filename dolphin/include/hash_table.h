@@ -26,8 +26,8 @@
     the GNU General Public License.
 */
 
-#ifndef _CHESS_HASH_H_
-#define _CHESS_HASH_H_
+#ifndef _HASH_TABLE_H_
+#define _HASH_TABLE_H_
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
 # pragma once
@@ -112,7 +112,7 @@ namespace internal {
 
 using internal::hash_mask_t;
 
-class chess_hash_table : internal::no_copy
+class hash_table_t : internal::no_copy
 {
 public:
     typedef long value_type;
@@ -145,14 +145,14 @@ public:
     static internal::hash_mask_t g_hash_row_value[BOARD_ROW][BOARD_ROW_MASKS];
     static internal::hash_mask_t g_hash_put_value[CHESS_MAX_COLOR+1][BOARD_MAX_DISC];
 
-    inline static unsigned int chess_hash_table::popcount32( unsigned int bits );
+    inline static unsigned int hash_table_t::popcount32( unsigned int bits );
     inline static unsigned int get_bits_closeness( unsigned int a0, unsigned int a1,
               unsigned int b0, unsigned int b1 );
 
 public:
-    chess_hash_table( void );
-    explicit chess_hash_table( bits_type hash_bits );
-    virtual ~chess_hash_table( void );
+    hash_table_t( void );
+    explicit hash_table_t( bits_type hash_bits );
+    virtual ~hash_table_t( void );
 
     inline entry_type hash_entries( void ) const { return m_hash_entries; };
     inline entry_type hash_sizes( void ) const { return m_hash_sizes; };
@@ -198,7 +198,7 @@ protected:
 */
 inline
 unsigned int
-chess_hash_table::popcount32( unsigned int bits ) {
+hash_table_t::popcount32( unsigned int bits ) {
 	unsigned int n;
 	for ( n = 0; bits != 0; n++, bits &= (bits - 1) )
         ;
@@ -212,11 +212,11 @@ chess_hash_table::popcount32( unsigned int bits ) {
 */
 inline
 unsigned int
-chess_hash_table::get_bits_closeness( unsigned int a0, unsigned int a1,
+hash_table_t::get_bits_closeness( unsigned int a0, unsigned int a1,
               unsigned int b0, unsigned int b1 ) {
     return (unsigned int)::abs((int)(popcount32(a0 ^ b0) + popcount32(a1 ^ b1) - 32));
 }
 
 }  // namespace dolphin
 
-#endif  /* _CHESS_HASH_H_ */
+#endif  /* _HASH_TABLE_H_ */

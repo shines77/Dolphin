@@ -34,15 +34,15 @@
 
 namespace dolphin {
 
-bool chess_hash_table::g_mask_initialized = false;
-internal::hash_mask_t chess_hash_table::g_hash_disc_mask[CHESS_MAX_COLOR+1][BOARD_MAX_DISC];
-internal::hash_mask_t chess_hash_table::g_hash_flip_value[BOARD_MAX_DISC];
-internal::hash_mask_t chess_hash_table::g_hash_color_mask[CHESS_MAX_COLOR];
-internal::hash_mask_t chess_hash_table::g_hash_switch_side;
-internal::hash_mask_t chess_hash_table::g_hash_row_value[BOARD_ROW][BOARD_ROW_MASKS];
-internal::hash_mask_t chess_hash_table::g_hash_put_value[CHESS_MAX_COLOR+1][BOARD_MAX_DISC];
+bool hash_table_t::g_mask_initialized = false;
+internal::hash_mask_t hash_table_t::g_hash_disc_mask[CHESS_MAX_COLOR+1][BOARD_MAX_DISC];
+internal::hash_mask_t hash_table_t::g_hash_flip_value[BOARD_MAX_DISC];
+internal::hash_mask_t hash_table_t::g_hash_color_mask[CHESS_MAX_COLOR];
+internal::hash_mask_t hash_table_t::g_hash_switch_side;
+internal::hash_mask_t hash_table_t::g_hash_row_value[BOARD_ROW][BOARD_ROW_MASKS];
+internal::hash_mask_t hash_table_t::g_hash_put_value[CHESS_MAX_COLOR+1][BOARD_MAX_DISC];
 
-chess_hash_table::chess_hash_table( void ) :
+hash_table_t::hash_table_t( void ) :
     m_hash_table(NULL),
     m_hash_bits(0),
     m_hash_entries(0),
@@ -53,7 +53,7 @@ chess_hash_table::chess_hash_table( void ) :
     //init_hash(DEFAULT_HASH_BITS);
 }
 
- chess_hash_table::chess_hash_table( bits_type hash_bits ) :
+ hash_table_t::hash_table_t( bits_type hash_bits ) :
     m_hash_table(NULL),
     m_hash_bits(hash_bits),
     m_hash_entries(1 << hash_bits),
@@ -65,12 +65,12 @@ chess_hash_table::chess_hash_table( void ) :
     init_hash_mask();
 }
 
-chess_hash_table::~chess_hash_table( void )
+hash_table_t::~hash_table_t( void )
 {
     free_hash();
 }
    
-void chess_hash_table::free_hash( void )
+void hash_table_t::free_hash( void )
 {
     if (is_initialized()) {
         __MY_ASSERT((m_hash_table == NULL),
@@ -89,7 +89,7 @@ void chess_hash_table::free_hash( void )
     }
 }
 
-void chess_hash_table::setup_hash( bits_type hash_bits /*= DEFAULT_HASH_BITS*/,
+void hash_table_t::setup_hash( bits_type hash_bits /*= DEFAULT_HASH_BITS*/,
                                   bool bClear /*= true*/,
                                   bool bSrand /*= true */ )
 {
@@ -99,7 +99,7 @@ void chess_hash_table::setup_hash( bits_type hash_bits /*= DEFAULT_HASH_BITS*/,
     init_hash_mask(bClear, bSrand);
 }
 
-int chess_hash_table::resize_hash( bits_type new_hash_bits )
+int hash_table_t::resize_hash( bits_type new_hash_bits )
 {
     int old_hash_bits = m_hash_bits;
     free_hash();
@@ -110,13 +110,13 @@ int chess_hash_table::resize_hash( bits_type new_hash_bits )
     return old_hash_bits;
 }
 
-void chess_hash_table::clear_drafts( void )
+void hash_table_t::clear_drafts( void )
 {
     for (int i=0; i<(int)m_hash_entries; ++i)
         m_hash_table[i].key1_flags_draft &= ~DRAFT_MASK;
 }
 
-chess_hash_table::pointer chess_hash_table::init_hash_entries( entry_type hash_entries )
+hash_table_t::pointer hash_table_t::init_hash_entries( entry_type hash_entries )
 {
     // free hash first
     free_hash();
@@ -130,7 +130,7 @@ chess_hash_table::pointer chess_hash_table::init_hash_entries( entry_type hash_e
     m_hash_mask = (mask_type)m_hash_entries - 1;
 
     size_type nAllocSize = m_hash_entries * sizeof(internal::hash_entry_t);
-    m_hash_table = (chess_hash_table::pointer)
+    m_hash_table = (hash_table_t::pointer)
         m_hash_memory.Malloc(nAllocSize, cache_aligned_t::USE_CURRENT_ALIGN_SIZE);
     __MY_ASSERT((m_hash_table != NULL), "m_hash_table is NULL, hash table malloc failure.");
     if (m_hash_table == NULL) {
@@ -144,7 +144,7 @@ chess_hash_table::pointer chess_hash_table::init_hash_entries( entry_type hash_e
     return m_hash_table;
 }
 
-chess_hash_table::pointer chess_hash_table::init_hash( bits_type hash_bits /* =DEFAULT_HASH_BITS */)
+hash_table_t::pointer hash_table_t::init_hash( bits_type hash_bits /* =DEFAULT_HASH_BITS */)
 {
     entry_type hash_entries;
     if (hash_bits <= 0)
@@ -154,7 +154,7 @@ chess_hash_table::pointer chess_hash_table::init_hash( bits_type hash_bits /* =D
     return init_hash_entries(hash_entries);
 }
 
-void chess_hash_table::init_hash_mask( bool bClear, /* =true */
+void hash_table_t::init_hash_mask( bool bClear, /* =true */
                                       bool bSrand /* =true */ )
 {
     int i;
@@ -295,7 +295,7 @@ TRY_AGAIN2:
     g_mask_initialized = true;
 }
 
-void chess_hash_table::determine_board_hash( const BitBoard my_bits,
+void hash_table_t::determine_board_hash( const BitBoard my_bits,
                                             const BitBoard opp_bits,
                                             int color,
                                             internal::hash_mask_t& board_hash )
