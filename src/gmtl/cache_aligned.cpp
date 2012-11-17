@@ -462,4 +462,4 @@ int cache_aligned_t::MemICmp_l( const void *buf, size_t count, _locale_t locale 
     return NULL;
 }
 
-}  // namespace imtl
+}  // namespace gmtl

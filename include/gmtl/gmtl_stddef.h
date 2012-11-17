@@ -173,7 +173,7 @@ public:
 
 }  // namespace ::internal
 
-}  // namespace imtl
+}  // namespace gmtl
 
 #endif  // RC_INVOKED
 

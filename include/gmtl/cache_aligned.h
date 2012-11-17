@@ -140,6 +140,6 @@ private:
     static void *_FreeBlockHeader(ALIGN_BLOCK_HEADER *pBlockHdr, bool bFreeMemBlock = false);	
 };
 
-}  // namespace imtl
+}  // namespace gmtl
 
 #endif  // _CACHE_ALIGNED_T_H_

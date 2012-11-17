@@ -117,4 +117,4 @@ task_t* task_t::execute( void )
 
 ///////////////////////////////////////////////////////////////
 
-}  // namespace imtl
+}  // namespace gmtl

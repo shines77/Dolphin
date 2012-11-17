@@ -204,6 +204,6 @@ inline tickcount_t& tickcount_t::operator=( const tickcount_t& t ) {
     return *this;
 }
 
-}  // namespace imtl
+}  // namespace gmtl
 
 #endif /* _TICKCOUNT_T_H_ */

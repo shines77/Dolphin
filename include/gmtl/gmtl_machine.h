@@ -734,7 +734,7 @@ const T reverse<T>::byte_table[256] = {
 
 } // namespace internal
 
-}  // namespace imtl
+}  // namespace gmtl
 
 // Preserving access to legacy APIs
 using gmtl::internal::__GMTL_load_with_acquire;

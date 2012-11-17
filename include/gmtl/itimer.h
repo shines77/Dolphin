@@ -212,6 +212,6 @@ inline itimer_t& itimer_t::operator=( const itimer_t& t ) {
     return *this;
 }
 
-}  // namespace imtl
+}  // namespace gmtl
 
 #endif /* _ITIMER_T_H_ */

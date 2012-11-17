@@ -52,6 +52,6 @@ private:
     int i;
 };
 
-}  // namespace imtl
+}  // namespace gmtl
 
 #endif /* _SCHEDULER_T_H_ */

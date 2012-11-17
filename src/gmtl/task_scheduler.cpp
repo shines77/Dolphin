@@ -158,4 +158,4 @@ char* GxString::SetLength( int len, char ch /* = 0 */ )
 
 ///////////////////////////////////////////////////////////////
 
-}  // namespace imtl
+}  // namespace gmtl

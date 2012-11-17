@@ -87,6 +87,6 @@ public:
     const char* _Char(void);
 };
 
-}  // namespace imtl
+}  // namespace gmtl
 
 #endif /* _TASK_SCHEDULER_T_H_ */

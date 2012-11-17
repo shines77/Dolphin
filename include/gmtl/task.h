@@ -209,6 +209,6 @@ public:
     }
 };
 
-}  // namespace imtl
+}  // namespace gmtl
 
 #endif /* _TASK_T_H_ */

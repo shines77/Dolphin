@@ -60,6 +60,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)\..\..\..\..\lib\$(ProjectName)_debug.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -122,6 +123,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)\..\..\..\..\lib\$(ProjectName).lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -153,11 +155,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\gmtl\task_scheduler.cpp"
+				RelativePath="..\..\..\..\src\gmtl\task.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\gmtl\task_t.cpp"
+				RelativePath="..\..\..\..\src\gmtl\task_scheduler.cpp"
 				>
 			</File>
 		</Filter>

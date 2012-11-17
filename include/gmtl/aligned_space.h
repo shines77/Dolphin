@@ -80,6 +80,6 @@ public:
     }
 };
 
-}  // namespace imtl
+}  // namespace gmtl
 
 #endif  // _ALIGNED_SPACE_T_H_
