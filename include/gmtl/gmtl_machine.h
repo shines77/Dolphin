@@ -108,7 +108,7 @@
         combination they may be a hardware fence, a compiler fence, both or nothing.
  **/
 
-#include "gmtl_stddef.h"
+#include <gmtl/gmtl_stddef.h>
 
 namespace gmtl {
 

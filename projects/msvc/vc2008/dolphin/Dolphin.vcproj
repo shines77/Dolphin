@@ -354,6 +354,10 @@
 				RelativePath="..\..\..\..\src\dolphin\my_random.cpp"
 				>
 			</File>
+			<File
+				RelativePath="..\..\..\..\src\dolphin\sys_random.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="include"
@@ -390,6 +394,10 @@
 			</File>
 			<File
 				RelativePath="..\..\..\..\res\dolphin\vc2008\resource.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\include\dolphin\sys_random.h"
 				>
 			</File>
 			<Filter

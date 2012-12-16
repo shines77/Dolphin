@@ -4,8 +4,8 @@
 #include <tchar.h>
 #include <iostream>
 #include <objbase.h>
-#include "../../include/gmtl/gmtl.h"
-#include "../../include/dolphin/dolphin.h"
+#include <gmtl/gmtl.h>
+#include <dolphin/dolphin.h>
 #include <mmsystem.h>
 
 #define ReadTSC( x )            \
@@ -184,7 +184,7 @@ int _tmain(int argc, _TCHAR* argv[])
     //*/
 
     printf("\r\n");
-    printf("elapsed time = %0.6f\r\n", itimval.seconds());
+    printf("elapsed time (ReadTSC) = %0.6f\r\n", itimval.seconds());
     printf("\r\n");
 
     aligned_space_t<itimer_t, 20> asp;
@@ -196,13 +196,16 @@ int _tmain(int argc, _TCHAR* argv[])
     int i223 = (int)asp.size();
 
     my_random::srand();
+    sys_random::srand();
 
-    my_random random;
-    random.random();
-    printf("my_random[0, 100]      = %d\n", my_random::random(0, 100));
-    printf("my_random[-1000, 1000] = %d\n", my_random::random(-1000, 1000));
-    printf("my_rand[0, 100]        = %d\n", my_random::rand(0, 100));
-    printf("my_rand[-1000, 1000]   = %d\n", my_random::rand(-1000, 1000));
+    my_random _my_random;
+    sys_random _sys_random;
+    _my_random.rand();
+    _sys_random.rand();
+    printf("my_random [0, 100]      = %d\n", _my_random.rand(0, 100));
+    printf("my_random [-1000, 1000] = %d\n", _my_random.rand(-1000, 1000));
+    printf("sys_random[0, 100]      = %d\n", _sys_random.rand(0, 100));
+    printf("sys_random[-1000, 1000] = %d\n", _sys_random.rand(-1000, 1000));
     printf("\r\n");
 
     hash_table_t hash_table;

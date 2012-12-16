@@ -33,10 +33,10 @@
 # pragma once
 #endif
 
-#include "gmtl_stddef.h"
-//#include "gmtl_machine.h"
-#include "task_scheduler.h"
-#include "scheduler.h"
+#include <gmtl/gmtl_stddef.h>
+//#include <gmtl/gmtl_machine.h>
+#include <gmtl/task_scheduler.h>
+#include <gmtl/scheduler.h>
 #include <climits>
 
 namespace gmtl {

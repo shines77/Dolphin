@@ -33,7 +33,7 @@
 # pragma once
 #endif
 
-#include "dol_stddef.h"
+#include <dolphin/dol_stddef.h>
 
 #define BITBOARD_CLEAR(a) { \
     a.low = 0; \

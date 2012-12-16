@@ -26,7 +26,7 @@
     the GNU General Public License.
 */
 
-#include "../../include/dolphin/bitboard.h"
+#include <dolphin/bitboard.h>
 
 namespace dolphin {
 

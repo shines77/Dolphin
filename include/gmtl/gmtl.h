@@ -6,14 +6,14 @@
 # pragma once
 #endif
 
-#include "gmtl_stddef.h"
-#include "tickcount.h"
-#include "itimer.h"
-#include "cache_aligned.h"
-#include "aligned_space.h"
+#include <gmtl/gmtl_stddef.h>
+#include <gmtl/tickcount.h>
+#include <gmtl/itimer.h>
+#include <gmtl/cache_aligned.h>
+#include <gmtl/aligned_space.h>
 
-#include "task_scheduler.h"
-#include "scheduler.h"
-#include "task.h"
+#include <gmtl/task_scheduler.h>
+#include <gmtl/scheduler.h>
+#include <gmtl/task.h>
 
 #endif // _GMTL_H_

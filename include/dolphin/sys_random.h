@@ -26,8 +26,8 @@
     the GNU General Public License.
 */
 
-#ifndef _MY_RANDOM_H_
-#define _MY_RANDOM_H_
+#ifndef _SYS_RANDOM_H_
+#define _SYS_RANDOM_H_
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
 # pragma once
@@ -37,23 +37,23 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define MY_RANDOM_SEED_DEFAULT  0
+#define SYS_RANDOM_SEED_DEFAULT  0
 
 namespace dolphin {
 
-class my_random : internal::no_copy
+class sys_random : internal::no_copy
 {
 private:
     typedef int value_type;
-    static const int timer_null_seed = MY_RANDOM_SEED_DEFAULT;
+    static const int timer_null_seed = SYS_RANDOM_SEED_DEFAULT;
 
 public:
-    my_random( void ) { _my_srand(); };
-    my_random( int32_t x ) { _my_srand((int)x); };
-    my_random( uint32_t x ) { _my_srand((int)x); };
+    sys_random( void ) { _sys_srand(); };
+    sys_random( int32_t x ) { _sys_srand((unsigned int)x); };
+    sys_random( uint32_t x ) { _sys_srand((unsigned int)x); };
 
-    inline static void srand( int seed = timer_null_seed ) {
-        _my_srand(seed);
+    inline static void srand( unsigned int seed = timer_null_seed ) {
+        _sys_srand(seed);
     };
 
     inline static value_type get_range_number(value_type x, value_type range_min, value_type range_max) {
@@ -71,23 +71,20 @@ public:
     }
 
     inline static value_type rand( void ) {
-        return _my_rand();
+        return _sys_rand();
     }
     inline static value_type rand( value_type range_min, value_type range_max ) {
-        value_type x = _my_rand();
-        //printf("value_type x = my_random::rand();\nx = %d.\n", x);
+        value_type x = _sys_rand();
+        //printf("value_type x = sys_random::rand();\nx = %d.\n", x);
         return get_range_number(x, range_min, range_max);
     }
 
 protected:
 
-    static void _my_srand( int seed = timer_null_seed );
-    static value_type _my_rand( void );
-
-    static char *_my_initstate( unsigned seed, char *arg_state, int n );
-    static char *_my_setstate( char *arg_state );
+    static void _sys_srand( unsigned int seed = timer_null_seed );
+    static value_type _sys_rand( void );
 };
 
 }  // namespace dolphin
 
-#endif  /* _MY_RANDOM_H_ */
+#endif  /* _SYS_RANDOM_H_ */

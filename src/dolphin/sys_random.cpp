@@ -26,32 +26,52 @@
     the GNU General Public License.
 */
 
-#ifndef _SCHEDULER_T_H_
-#define _SCHEDULER_T_H_
+#include <dolphin/sys_random.h>
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#include <stdlib.h>
+#ifndef _WIN32_WCE
+#include <time.h>
 #endif
 
-#include <gmtl/gmtl_stddef.h>
-//#include <gmtl/gmtl_machine.h>
-#include <gmtl/task_scheduler.h>
-#include <gmtl/task.h>
-#include <climits>
+namespace dolphin {
 
-namespace gmtl {
+/*
+  Init c runtime lib's random number seed
+*/
 
-class task_t;
-class task_list_t;
-class scheduler_t;
+void sys_random::_sys_srand( unsigned int seed /* =timer_null_seed(0) */ )
+{
+    if (seed == timer_null_seed)
+        ::srand((unsigned)time(NULL));
+    else
+        ::srand(seed);
+}
 
-class task_scheduler_t;
+/*
+  Generates a random number use c runtime lib'
+*/
 
-class scheduler_t {
-private:
-    int i;
-};
+sys_random::value_type sys_random::_sys_rand( void )
+{
+#if defined(RAND_MAX) && (RAND_MAX == 0x7FFF)
+    return (value_type)(
+          (((unsigned int)::rand() & RAND_MAX) << 30)
+        | (((unsigned int)::rand() & RAND_MAX) << 15)
+        |  ((unsigned int)::rand() & RAND_MAX)
+        );
+#elif defined(RAND_MAX) && (RAND_MAX >= 0xFFFF)
+    return (value_type)(
+          (((unsigned int)::rand() & RAND_MAX) << 16)
+        |  ((unsigned int)::rand() & RAND_MAX)
+        );
+#else
+    return (value_type)(
+          (((unsigned int)::rand() & 0x00FF) << 24)
+        | (((unsigned int)::rand() & 0x00FF) << 16)
+        | (((unsigned int)::rand() & 0x00FF) << 8)
+        |  ((unsigned int)::rand() & 0x00FF)
+        );
+#endif
+}
 
-}  // namespace gmtl
-
-#endif /* _SCHEDULER_T_H_ */
+}  // namespace dolphin

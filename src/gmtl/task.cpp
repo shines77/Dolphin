@@ -31,11 +31,11 @@
 // Do not include task.h directly. Use scheduler_common.h instead
 //#include "scheduler_common.h"
 //#include "governor.h"
-//#include "scheduler.h"
+//#include <gmtl/scheduler.h>
 //#include "itt_notify.h"
 
-#include "../../include/gmtl/cache_aligned.h"
-#include "../../include/gmtl/task.h"
+#include <gmtl/cache_aligned.h>
+#include <gmtl/task.h>
 
 namespace gmtl {
 

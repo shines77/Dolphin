@@ -40,14 +40,14 @@
 #endif
 
 #if defined( _MSC_VER )
-#  include "./vs/stdint.h"
+#  include <dolphin/vs/stdint.h>
 #  define snprintf _snprintf
 #else
 #  include <stdint.h>
 #endif
 
-#include "colour.h"
-#include "board.h"
+#include <dolphin/colour.h>
+#include <dolphin/board.h>
 
 #if defined(__GNUC__)
 #  define likely(x)     __builtin_expect((x),1)

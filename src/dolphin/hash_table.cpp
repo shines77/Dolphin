@@ -26,8 +26,8 @@
     the GNU General Public License.
 */
 
-#include "../../include/dolphin/hash_table.h"
-#include "../../include/dolphin/my_random.h"
+#include <dolphin/hash_table.h>
+#include <dolphin/my_random.h>
 
 // use srand() or my_srandom()
 #define _USE_C_SRAND     0
@@ -172,9 +172,9 @@ void hash_table_t::init_hash_mask( bool bClear, /* =true */
 
     if (bSrand) {
 #if defined(_USE_C_SRAND) && _USE_C_SRAND
-        my_random::srand();
+        sys_random::srand();
 #else
-        my_random::srandom();
+        my_random::srand();
 #endif
     }
 
@@ -193,11 +193,11 @@ void hash_table_t::init_hash_mask( bool bClear, /* =true */
     while (index < max_index) {     // max_index = 130
 TRY_AGAIN2:
 #if defined(_USE_C_SRAND) && _USE_C_SRAND
+        rand_pair[index][0] = ((unsigned int)sys_random::rand() << 3) + ((unsigned int)sys_random::rand() >> 2);
+        rand_pair[index][1] = ((unsigned int)sys_random::rand() << 3) + ((unsigned int)sys_random::rand() >> 2);
+#else
         rand_pair[index][0] = ((unsigned int)my_random::rand() << 3) + ((unsigned int)my_random::rand() >> 2);
         rand_pair[index][1] = ((unsigned int)my_random::rand() << 3) + ((unsigned int)my_random::rand() >> 2);
-#else
-        rand_pair[index][0] = ((unsigned int)my_random::random() << 3) + ((unsigned int)my_random::random() >> 2);
-        rand_pair[index][1] = ((unsigned int)my_random::random() << 3) + ((unsigned int)my_random::random() >> 2);
 #endif
 
 #if 0

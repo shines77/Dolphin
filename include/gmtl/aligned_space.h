@@ -33,8 +33,8 @@
 # pragma once
 #endif
 
-#include "gmtl_stddef.h"
-#include "gmtl_machine.h"
+#include <gmtl/gmtl_stddef.h>
+#include <gmtl/gmtl_machine.h>
 
 //#define __GMTL_TypeWithAlignmentAtLeastAsStrict(T) T
 

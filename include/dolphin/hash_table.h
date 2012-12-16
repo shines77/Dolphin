@@ -33,11 +33,11 @@
 # pragma once
 #endif
 
-#include "dol_stddef.h"
-#include "../../include/gmtl/cache_aligned.h"
-#include "../../include/dolphin/bitboard.h"
-#include "colour.h"
-#include "board.h"
+#include <gmtl/cache_aligned.h>
+#include <dolphin/dol_stddef.h>
+#include <dolphin/colour.h>
+#include <dolphin/board.h>
+#include <dolphin/bitboard.h>
 #include <cstddef>
 #include <stdlib.h>
 #include <math.h>

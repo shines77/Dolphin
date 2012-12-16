@@ -64,7 +64,7 @@
 #endif
 
 // mtl_config.h should be included the first since it contains macro definitions used in other headers
-#include "gmtl_config.h"
+#include <gmtl/gmtl_config.h>
 
 #if _MSC_VER >=1400
     #define __GMTL_EXPORTED_FUNC   __cdecl
@@ -75,7 +75,7 @@
 #endif
 
 #if defined( _MSC_VER )
-#   include "./vs/stdint.h"
+#   include <gmtl/vs/stdint.h>
 #   define snprintf _snprintf
 #else
 #   include <stdint.h>
@@ -83,7 +83,7 @@
 
 #if _MSC_VER
     #define _GMTL_imtl_windef_H_
-    #include "internal/_gmtl_windef.h"
+    #include <gmtl/internal/_gmtl_windef.h>
     #undef  _GMTL_imtl_windef_H_
 #endif
 
