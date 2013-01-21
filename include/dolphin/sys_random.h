@@ -51,6 +51,7 @@ public:
     sys_random( void ) { _sys_srand(); };
     sys_random( int32_t x ) { _sys_srand((unsigned int)x); };
     sys_random( uint32_t x ) { _sys_srand((unsigned int)x); };
+    virtual ~sys_random( void ) { };
 
     inline static void srand( unsigned int seed = timer_null_seed ) {
         _sys_srand(seed);

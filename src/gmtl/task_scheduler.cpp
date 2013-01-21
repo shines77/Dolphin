@@ -62,7 +62,7 @@ task_scheduler_t::task_scheduler_t( int number_of_threads /*= MTL_AUTOMATIC */,
 
 task_scheduler_t::~task_scheduler_t( void )
 {
-    if( my_scheduler ) 
+    if( my_scheduler )
         terminate();
 }
 

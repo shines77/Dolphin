@@ -71,7 +71,7 @@
 // We do not need defines below for resource processing on windows
 #ifndef RC_INVOKED
 
-#define __MY_ASSERT( x, ... )
+#define _DOL_ASSERT( x, ... )
 
 //! The namespace dolphin contains all components of the library.
 

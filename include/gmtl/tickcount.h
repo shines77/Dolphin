@@ -96,12 +96,12 @@ public:
     //! Construct an absolute timestamp initialized to zero.
     tickcount_t() : my_count(0) {};
 
-    void                    reset(void);
-    tickcount_t             begin(void);
-    tickcount_t::interval_t end(void);
+    void                    reset( void );
+    tickcount_t             begin( void );
+    tickcount_t::interval_t end( void );
 
     //! Return current time.
-    static tickcount_t      now(void);
+    static tickcount_t      now( void );
     
     //! Subtract two timestamps to get the time interval between
     friend interval_t operator-( const tickcount_t& t1, const tickcount_t& t0 );
@@ -109,28 +109,28 @@ public:
     tickcount_t& operator=( const tickcount_t& t );
 };
 
-inline void tickcount_t::reset(void) {
+inline void tickcount_t::reset( void ) {
     tickcount_t result;
     result = tickcount_t::now();
     my_count = result.my_count;
     return;
 }
 
-inline tickcount_t tickcount_t::begin(void) {
+inline tickcount_t tickcount_t::begin( void ) {
     tickcount_t result;
     result = tickcount_t::now();
     my_count = result.my_count;
     return result;
 }
 
-inline tickcount_t::interval_t tickcount_t::end(void) {
+inline tickcount_t::interval_t tickcount_t::end( void ) {
     interval_t result;
     tickcount_t nowtime = tickcount_t::now();
     result = tickcount_t::interval_t(nowtime - (const tickcount_t)*this);
     return result;
 }
 
-inline tickcount_t tickcount_t::now(void) {
+inline tickcount_t tickcount_t::now( void ) {
     tickcount_t result;
 #if _WIN32||_WIN64
     result.my_count = GetTickCount();
@@ -140,7 +140,7 @@ inline tickcount_t tickcount_t::now(void) {
     int status = 
 #endif /* TBB_USE_ASSERT */
         clock_gettime( CLOCK_REALTIME, &ts );
-    __MY_ASSERT( status==0, "CLOCK_REALTIME not supported" );
+    _DOL_ASSERT( status==0, "CLOCK_REALTIME not supported" );
     result.my_count = static_cast<int64_t>(1000000000UL)*static_cast<int64_t>(ts.tv_sec) + static_cast<int64_t>(ts.tv_nsec);
 #else /* generic Unix */
     struct timeval tv;
@@ -148,7 +148,7 @@ inline tickcount_t tickcount_t::now(void) {
     int status = 
 #endif /* TBB_USE_ASSERT */
         gettimeofday(&tv, NULL);
-    __MY_ASSERT( status==0, "gettimeofday failed" );
+    _DOL_ASSERT( status==0, "gettimeofday failed" );
     result.my_count = static_cast<int64_t>(1000000)*static_cast<int64_t>(tv.tv_sec) + static_cast<int64_t>(tv.tv_usec);
 #endif /*(choice of OS) */
     return result;
@@ -169,7 +169,7 @@ inline tickcount_t::interval_t operator-( const tickcount_t& t1, const tickcount
     return tickcount_t::interval_t( t1.my_count - t0.my_count );
 }
 
-inline double tickcount_t::interval_t::seconds(void) const {
+inline double tickcount_t::interval_t::seconds( void ) const {
 #if _WIN32||_WIN64
     return ((double)my_value / (double)CLK_TCK);
 #elif __linux__
@@ -179,7 +179,7 @@ inline double tickcount_t::interval_t::seconds(void) const {
 #endif /* (choice of OS) */
 }
 
-inline double tickcount_t::interval_t::m_secs(void) const {
+inline double tickcount_t::interval_t::m_secs( void ) const {
 #if _WIN32||_WIN64
     return ((double)my_value / (double)CLK_TCK) * 1E3;
 #elif __linux__
@@ -189,7 +189,7 @@ inline double tickcount_t::interval_t::m_secs(void) const {
 #endif /* (choice of OS) */
 }
 
-inline double tickcount_t::interval_t::u_secs(void) const {
+inline double tickcount_t::interval_t::u_secs( void ) const {
 #if _WIN32||_WIN64
     return ((double)my_value / (double)CLK_TCK) * 1E6;
 #elif __linux__

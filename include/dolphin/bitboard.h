@@ -104,28 +104,28 @@ typedef struct tagBitBoard {
 class bitboard : public BitBoard
 {
 public:
-    bitboard(void);
-    bitboard(unsigned int _low, unsigned int _high);
-    bitboard(uint64_t u64);
-    bitboard(BitBoard& b);
-    virtual ~bitboard(void);
+    bitboard( void );
+    bitboard( unsigned int _low, unsigned int _high );
+    bitboard( uint64_t u64 );
+    bitboard( BitBoard & b );
+    virtual ~bitboard( void );
 
-    bitboard& operator =(const bitboard& src);
+    bitboard& operator =( const bitboard & src );
 
-    void init(uint32 _low, uint32 _high);
-    void init(uint64 u64);
-    void init(BitBoard& b);
+    void init( uint32 _low, uint32 _high );
+    void init( uint64 u64 );
+    void init( BitBoard & b );
 
 protected:
-    inline void initialize(uint32 _low, uint32 _high);
-    inline void initialize(uint64 u64);
+    inline void initialize( uint32 _low, uint32 _high );
+    inline void initialize( uint64 u64 );
 
 public:
     static BitBoard square_mask[64];
 
-    static inline void bitboard_set_bit(BitBoard *b, unsigned int pos);
-    static inline void bitboard_and_bit(BitBoard *b, unsigned int pos);
-    static inline void bitboard_or_bit(BitBoard *b, unsigned int pos);
+    static inline void bitboard_set_bit( BitBoard * b, unsigned int pos );
+    static inline void bitboard_and_bit( BitBoard * b, unsigned int pos );
+    static inline void bitboard_or_bit ( BitBoard * b, unsigned int pos );
 
     static inline unsigned int bit_reverse_32( unsigned int val );
 
@@ -135,10 +135,10 @@ public:
 
     static inline void init_square_mask( void );
 
-    static inline void set_bitboards( int *_board, int color,
-        BitBoard *my_out, BitBoard *opp_out );
+    static inline void set_bitboards( int * _board, int color,
+        BitBoard * my_out, BitBoard * opp_out );
 
-    static inline void set_boards( int *_board, int color,
+    static inline void set_boards( int * _board, int color,
         BitBoard my_bits, BitBoard opp_bits );
 };
 
@@ -146,7 +146,7 @@ public:
 // static inline routines
 /////////////////////////////////////////////////////////
 
-inline void bitboard::bitboard_set_bit( BitBoard *b, unsigned int pos )
+inline void bitboard::bitboard_set_bit( BitBoard * b, unsigned int pos )
 {
     if (pos < 32) {
         b->low  = (1 << pos);
@@ -158,7 +158,7 @@ inline void bitboard::bitboard_set_bit( BitBoard *b, unsigned int pos )
     }
 }
 
-inline void bitboard::bitboard_and_bit( BitBoard *b, unsigned int pos )
+inline void bitboard::bitboard_and_bit( BitBoard * b, unsigned int pos )
 {
     if (pos < 32) {
         b->low  = b->low & (1 << pos);
@@ -170,7 +170,7 @@ inline void bitboard::bitboard_and_bit( BitBoard *b, unsigned int pos )
     }
 }
 
-inline void bitboard::bitboard_or_bit( BitBoard *b, unsigned int pos )
+inline void bitboard::bitboard_or_bit( BitBoard * b, unsigned int pos )
 {
     if (pos < 32) {
         b->low  |= (1 << pos);
@@ -265,7 +265,7 @@ inline unsigned int bitboard::iterative_popcount( BitBoard b )
   Converts the vector board representation to the bitboard representation.
 */
 
-inline void bitboard::set_bitboards( int *_board, int color, BitBoard *my_out, BitBoard *opp_out )
+inline void bitboard::set_bitboards( int * _board, int color, BitBoard * my_out, BitBoard * opp_out )
 {
     int i, j;
     int pos;
@@ -282,10 +282,12 @@ inline void bitboard::set_bitboards( int *_board, int color, BitBoard *my_out, B
     for ( i = 0; i < 4; i++ ) {
         for ( j = 0; j < 8; j++, mask <<= 1 ) {
             pos = 8 * i + j;
-            if ( _board[pos] == color )
+            if ( _board[pos] == color ) {
                 my_bits.low |= mask;
-            else if ( _board[pos] == opp_color )
+            }
+            else if ( _board[pos] == opp_color ) {
                 opp_bits.low |= mask;
+            }
         }
     }
 
@@ -293,10 +295,12 @@ inline void bitboard::set_bitboards( int *_board, int color, BitBoard *my_out, B
     for ( i = 4; i < 8; i++ ) {
         for ( j = 0; j < 8; j++, mask <<= 1 ) {
             pos = 8 * i + j;
-            if ( _board[pos] == color )
+            if ( _board[pos] == color ) {
                 my_bits.high |= mask;
-            else if ( _board[pos] == opp_color )
+            }
+            else if ( _board[pos] == opp_color ) {
                 opp_bits.high |= mask;
+            }
         }
     }
 
@@ -309,7 +313,7 @@ inline void bitboard::set_bitboards( int *_board, int color, BitBoard *my_out, B
   Converts the bitboard representation to the board representation.
 */
 
-inline void bitboard::set_boards( int *_board, int color, BitBoard my_bits, BitBoard opp_bits )
+inline void bitboard::set_boards( int * _board, int color, BitBoard my_bits, BitBoard opp_bits )
 {
     int i, j;
     int pos;
@@ -326,8 +330,9 @@ inline void bitboard::set_boards( int *_board, int color, BitBoard my_bits, BitB
                 | (square_mask[pos].high & opp_bits.high) ) {
                     _board[pos] = opp_color;
             }
-            else
+            else {
                 _board[pos] = CHESS_EMPTY;
+            }
         }
     }
 }

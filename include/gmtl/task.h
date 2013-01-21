@@ -195,7 +195,7 @@ public:
 
     //! Pop the front task from the list.
     task_t& pop_front() {
-        __MY_ASSERT( !empty(), "attempt to pop item from empty task_list" );
+        _DOL_ASSERT( !empty(), "attempt to pop item from empty task_list" );
         task_t* result = first;
         first = result->next;
         if ( first != NULL ) nextptr = &first;

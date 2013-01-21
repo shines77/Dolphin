@@ -140,7 +140,7 @@ inline itimer_t itimer_t::now() {
     int status = 
 #endif /* TBB_USE_ASSERT */
         clock_gettime( CLOCK_REALTIME, &ts );
-    __MY_ASSERT( status==0, "CLOCK_REALTIME not supported" );
+    _DOL_ASSERT( status==0, "CLOCK_REALTIME not supported" );
     result.my_count = static_cast<int64_t>(1000000000UL)*static_cast<int64_t>(ts.tv_sec) + static_cast<int64_t>(ts.tv_nsec);
 #else /* generic Unix */
     struct timeval tv;
@@ -148,7 +148,7 @@ inline itimer_t itimer_t::now() {
     int status = 
 #endif /* TBB_USE_ASSERT */
         gettimeofday(&tv, NULL);
-    __MY_ASSERT( status==0, "gettimeofday failed" );
+    _DOL_ASSERT( status==0, "gettimeofday failed" );
     result.my_count = static_cast<int64_t>(1000000)*static_cast<int64_t>(tv.tv_sec) + static_cast<int64_t>(tv.tv_usec);
 #endif /*(choice of OS) */
     return result;

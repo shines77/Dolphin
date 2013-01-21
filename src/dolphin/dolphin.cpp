@@ -208,25 +208,25 @@ int _tmain(int argc, _TCHAR* argv[])
     printf("sys_random[-1000, 1000] = %d\n", _sys_random.rand(-1000, 1000));
     printf("\r\n");
 
-    hash_table_t hash_table;
-    hash_table.setup_hash(22);
-    void *pHashTable = (void *)hash_table.hash_table();
+    hash_table _hash_table;
+    _hash_table.setup_hash(22);
+    void *pHashTable = (void *)_hash_table.hash_table_ptr();
     
     printf("pHashTable(ptr)\t = 0x%08X\n", pHashTable);
     printf("hash_bits\t = %d,\nhash_entries\t = 0x%08X (%d),\nhash_sizes\t = 0x%08X (%d)\n",
-        hash_table.hash_bits(),
-        hash_table.hash_entries(),
-        hash_table.hash_entries(),
-        hash_table.hash_sizes(),
-        hash_table.hash_sizes()
+        _hash_table.get_hash_bits(),
+        _hash_table.get_hash_entries(),
+        _hash_table.get_hash_entries(),
+        _hash_table.get_hash_sizes(),
+        _hash_table.get_hash_sizes()
         );
     printf("\n");
     printf("alloc_ptr\t = 0x%08X,\ndata_ptr\t = 0x%08X\n",
-        (void *)hash_table.alloc_ptr(),
-        (void *)hash_table.data_ptr()
+        (void *)_hash_table.get_alloc_ptr(),
+        (void *)_hash_table.get_data_ptr()
         );
     printf("\r\n");
-    hash_table.free_hash();
+    _hash_table.free_hash();
 
     /*
     mresult = timeEndPeriod(1);

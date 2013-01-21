@@ -52,7 +52,7 @@ bitboard::bitboard( uint32 _low, uint32 _high )
     initialize(_low, _high);
 }
 
-bitboard::bitboard( BitBoard& b )
+bitboard::bitboard( BitBoard & b )
 {
     initialize(b.low, b.high);
 }
@@ -62,7 +62,7 @@ bitboard::bitboard( uint64 u64 )
     initialize(u64);
 }
 
-bitboard& bitboard::operator =( const bitboard& src )
+bitboard& bitboard::operator =( const bitboard & src )
 {
     initialize(src.low, src.high);
     return *this;
@@ -92,7 +92,7 @@ void bitboard::init( uint64 u64 )
     initialize(u64);
 }
 
-void bitboard::init( BitBoard& b )
+void bitboard::init( BitBoard & b )
 {
     initialize(b.low, b.high);
 }
