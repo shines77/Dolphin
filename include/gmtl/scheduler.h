@@ -41,13 +41,13 @@
 
 namespace gmtl {
 
-class task_t;
-class task_list_t;
-class scheduler_t;
+class task;
+class task_list;
+class scheduler;
 
-class task_scheduler_t;
+class task_scheduler;
 
-class scheduler_t {
+class scheduler {
 private:
     int i;
 };

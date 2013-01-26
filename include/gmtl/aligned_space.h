@@ -44,7 +44,7 @@ namespace gmtl {
 /** The elements are not constructed or destroyed by this class.
     @ingroup memory_allocation */
 template<typename T, size_t N>
-class aligned_space_t : internal::no_copy {
+class aligned_space : internal::no_copy {
 private:
     typedef __GMTL_TypeWithAlignmentAtLeastAsStrict(T) element_type;
     typedef std::size_t size_type;
@@ -52,8 +52,8 @@ private:
     size_type m_size;
 
 public:
-    aligned_space_t( void ) : m_size(N) {};
-    virtual ~aligned_space_t( void ) {};
+    aligned_space( void ) : m_size(N) {};
+    virtual ~aligned_space( void ) {};
 
 public:
     // Get the array size

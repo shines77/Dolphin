@@ -48,13 +48,13 @@
 
 namespace gmtl {
 
-typedef struct _align_block_header
+typedef struct align_block_header_t
 {
     void *          pvAlloc;
     unsigned char   Sign[ALIGN_SIGN_SIZE];
 } ALIGN_BLOCK_HEADER, * PALIGN_BLOCK_HEADER;
 
-class cache_aligned_t
+class cache_aligned
 {
 private:
 	void *  m_pvData;
@@ -68,13 +68,13 @@ private:
     bool    m_bInited;
 
 public:
-	cache_aligned_t(void);
-    explicit cache_aligned_t(size_t nSize);
-	cache_aligned_t(size_t nSize, int nAlignSize, bool bAutoDelete = true);
-    explicit cache_aligned_t(const cache_aligned_t & src, bool bCopyData = true);
-    virtual ~cache_aligned_t(void);
+	cache_aligned(void);
+    explicit cache_aligned(size_t nSize);
+	cache_aligned(size_t nSize, int nAlignSize, bool bAutoDelete = true);
+    explicit cache_aligned(const cache_aligned & src, bool bCopyData = true);
+    virtual ~cache_aligned(void);
 
-    cache_aligned_t & operator =(const cache_aligned_t & src);
+    cache_aligned & operator =(const cache_aligned & src);
 
 public:
     static const int USE_CURRENT_ALIGN_SIZE = -1;
@@ -111,9 +111,9 @@ public:
 
     void *          Malloc   (size_t nSize, int nAlignSize = USE_CURRENT_ALIGN_SIZE, bool bForceRealloc = false);
     void *          Realloc  (size_t nSize, int nAlignSize = USE_CURRENT_ALIGN_SIZE);
-    bool            Copy     (const cache_aligned_t & src, bool bIsInit = false); // full copy, include struct and data
-    void            Clone    (const cache_aligned_t & src, bool bIsInit = false); // only copy struct, not copy data
-    void *          CopyData (const cache_aligned_t & src);                       // only copy data
+    bool            Copy     (const cache_aligned & src, bool bIsInit = false); // full copy, include struct and data
+    void            Clone    (const cache_aligned & src, bool bIsInit = false); // only copy struct, not copy data
+    void *          CopyData (const cache_aligned & src);                       // only copy data
     void            Free     (bool bForceDelete = false);
 
     void *          MemSet   (int nValue);

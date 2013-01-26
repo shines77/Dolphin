@@ -51,37 +51,37 @@ namespace internal {
 // task_base_t
 ///////////////////////////////////////////////////////////////
 
-void task_base_t::spawn( task_t& t )
+void task_base::spawn( task& t )
 {
 
 }
 
-void task_base_t::spawn( task_list_t& list )
+void task_base::spawn( task_list& list )
 {
 
 }
 
-void task_base_t::spawn_root_and_wait( task_t& t )
+void task_base::spawn_root_and_wait( task& t )
 {
 
 }
 
-void task_base_t::spawn_root_and_wait( task_list_t& t )
+void task_base::spawn_root_and_wait( task_list& t )
 {
 
 }
 
-void task_base_t::spawn_and_wait_for( task_t& t )
+void task_base::spawn_and_wait_for( task& t )
 {
 
 }
 
-void task_base_t::spawn_and_wait_for( task_list_t& list )
+void task_base::spawn_and_wait_for( task_list& list )
 {
 
 }
 
-void task_base_t::wait_for_all( task_t& t )
+void task_base::wait_for_all( task& t )
 {
 
 }
@@ -90,27 +90,27 @@ void task_base_t::wait_for_all( task_t& t )
 // task_t
 ///////////////////////////////////////////////////////////////
 
-void task_t::spawn( void )
+void task::spawn( void )
 {
     int i = 0;
 }
 
-void task_t::spawn_root_and_wait( void )
+void task::spawn_root_and_wait( void )
 {
     //
 }
 
-void task_t::spawn_and_wait_for( void )
+void task::spawn_and_wait_for( void )
 {
     //
 }
 
-void task_t::wait_for_all( void )
+void task::wait_for_all( void )
 {
     //
 }
 
-task_t* task_t::execute( void )
+task* task::execute( void )
 {
     return NULL;
 }

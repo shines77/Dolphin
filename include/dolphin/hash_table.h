@@ -127,7 +127,7 @@ public:
 
 private:
     pointer         m_hash_table;
-    cache_aligned_t m_hash_memory;
+    cache_aligned m_hash_memory;
     bits_type       m_hash_bits;
     entry_type      m_hash_entries;
     size_type       m_hash_sizes;
@@ -158,7 +158,7 @@ public:
     inline entry_type   get_hash_sizes( void ) const    { return m_hash_sizes; };
     inline bits_type    get_hash_bits( void ) const     { return m_hash_bits; };
     inline mask_type    get_hash_mask( void ) const     { return m_hash_mask; };
-    inline pointer      hash_table_ptr( void ) const    { return m_hash_table; };
+    inline pointer      get_hash_table_ptr( void ) const    { return m_hash_table; };
     inline pointer      get_data_ptr( void ) const      { return (pointer)m_hash_memory.GetDataPtr(); };
     inline pointer      get_alloc_ptr( void ) const     { return (pointer)m_hash_memory.GetAllocPtr(); };
 
@@ -176,12 +176,12 @@ public:
     inline bool is_mask_initialized( void ) const { return g_mask_initialized; };
 
     void setup_hash( bits_type hash_bits = DEFAULT_HASH_BITS,
-        bool bClear = true, bool bSrand = true );
+        bool b_clear = true, bool b_srand = true );
 
     pointer init_hash( bits_type hash_bits = DEFAULT_HASH_BITS );
     void free_hash( void );
 
-    void init_hash_mask( bool bClear = true, bool bSrand = true );
+    void init_hash_mask( bool b_clear = true, bool b_srand = true );
 
     int resize_hash( bits_type new_hash_bits ); 
     void clear_drafts( void );

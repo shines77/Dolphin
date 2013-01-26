@@ -117,17 +117,17 @@ int _tmain(int argc, _TCHAR* argv[])
     }
     //*/
 
-    tickcount_t t1, t2, tnow;
-    itimer_t it1, it2;
-    tickcount_t::interval_t interval1, interval2;
-    itimer_t::interval_t interval3, interval4;
+    tickcount t1, t2, tnow;
+    itimer it1, it2;
+    tickcount::interval interval1, interval2;
+    itimer::interval interval3, interval4;
     t1.begin();
     it1.begin();
     Sleep(500);
     t2.begin();
     it2.begin();
     interval1 = t2 - t1;
-    tnow = tickcount_t::now();
+    tnow = tickcount::now();
     interval1 = tnow - t1;
     interval1 = t1.end();
     interval3 = it1.end();
@@ -142,19 +142,19 @@ int _tmain(int argc, _TCHAR* argv[])
     str1.SetLength(13, 'A');
     str2 = str1;
 
-    cache_aligned_t cache_align, c1, c2;
+    cache_aligned cache_align, c1, c2;
     cache_align.SetAlignSize(32);
     cache_align.Malloc(31+24);
     c1 = c2 = cache_align;
     //c1 = c2 = 2;
 
-    task_t task;
+    task task;
     task.set_depth(0);
     task.spawn();
-    task_t::spawn(task);
+    task::spawn(task);
     //task_base_t::spawn(task);
 
-    task_scheduler_t task_scheduler(task_scheduler_t::MTL_AUTOMATIC);
+    task_scheduler task_scheduler(task_scheduler::MTL_AUTOMATIC);
     task_scheduler.initialize(4);
 
     bitboard::init_square_mask();
@@ -175,7 +175,7 @@ int _tmain(int argc, _TCHAR* argv[])
     //printf("\r\n");
 
     ///*
-    itimer_t::interval_t itimval;
+    itimer::interval itimval;
     it1.begin();
     for (int i=0; i<10; i++) {
         //asm_pause_test();
@@ -187,8 +187,8 @@ int _tmain(int argc, _TCHAR* argv[])
     printf("elapsed time (ReadTSC) = %0.6f\r\n", itimval.seconds());
     printf("\r\n");
 
-    aligned_space_t<itimer_t, 20> asp;
-    itimer_t* iii = asp[0];
+    aligned_space<itimer, 20> asp;
+    itimer *iii = asp[0];
     iii = asp.begin();
     iii = asp.end();
     iii = asp[0];
@@ -210,7 +210,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
     hash_table _hash_table;
     _hash_table.setup_hash(22);
-    void *pHashTable = (void *)_hash_table.hash_table_ptr();
+    void *pHashTable = (void *)_hash_table.get_hash_table_ptr();
     
     printf("pHashTable(ptr)\t = 0x%08X\n", pHashTable);
     printf("hash_bits\t = %d,\nhash_entries\t = 0x%08X (%d),\nhash_sizes\t = 0x%08X (%d)\n",

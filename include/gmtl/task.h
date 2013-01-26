@@ -41,29 +41,29 @@
 
 namespace gmtl {
 
-class task_t;
-class task_list_t;
-class scheduler_t;
+class task;
+class task_list;
+class scheduler;
 
-class task_scheduler_t;
+class task_scheduler;
 
-class task_base_t : internal::no_copy
+class task_base : internal::no_copy
 {
 public:
-    friend class gmtl::task_t;
-    friend class gmtl::task_list_t;
+    friend class gmtl::task;
+    friend class gmtl::task_list;
 
-    static void spawn( task_t& t );
-    static void spawn( task_list_t& list );
+    static void spawn( task& t );
+    static void spawn( task_list& list );
 
-    static void spawn_root_and_wait( task_t& t );
-    static void spawn_root_and_wait( task_list_t& t );
+    static void spawn_root_and_wait( task& t );
+    static void spawn_root_and_wait( task_list& t );
 
-    static void spawn_and_wait_for( task_t& t );
-    static void spawn_and_wait_for( task_list_t& list );
+    static void spawn_and_wait_for( task& t );
+    static void spawn_and_wait_for( task_list& list );
 
-    static void wait_for_all( task_t& t );
-    static void wait_for_all( task_list_t& list );
+    static void wait_for_all( task& t );
+    static void wait_for_all( task_list& list );
 
     virtual void spawn( void ) = 0;
     virtual void spawn_root_and_wait( void ) = 0;
@@ -71,23 +71,23 @@ public:
 
     virtual void wait_for_all( void ) = 0;
 
-    static void destroy( task_t& victim );
+    static void destroy( task& victim );
 
     //! Should be overridden by derived classes.
-    virtual task_t* execute() = 0;
+    virtual task* execute() = 0;
 
 private:
-    task_base_t* parent_base;
+    task_base* parent_base;
 };
 
-class task_t : public task_base_t
+class task : public task_base
 {
 public:
-    scheduler_t* m_origin;
-    scheduler_t* m_owner;
+    scheduler* m_origin;
+    scheduler* m_owner;
 
-    task_t* m_parent;
-    task_t* m_next;
+    task* m_parent;
+    task* m_next;
 
     int32_t m_depth;
     int32_t m_ref_count;
@@ -98,7 +98,7 @@ private:
 
 public:
     //! "next" field for list of task
-    task_t* next;
+    task* next;
 
 public:
     //! Enumeration of task states that the scheduler considers.
@@ -118,10 +118,10 @@ public:
     };
 
     //! Define recommended static forms via import from base class.
-    using task_base_t::spawn;
-    using task_base_t::spawn_root_and_wait;
-    using task_base_t::spawn_and_wait_for;
-    using task_base_t::wait_for_all;
+    using task_base::spawn;
+    using task_base::spawn_root_and_wait;
+    using task_base::spawn_and_wait_for;
+    using task_base::wait_for_all;
 
     virtual void spawn( void );
 
@@ -129,12 +129,12 @@ public:
     virtual void spawn_and_wait_for( void );
     virtual void wait_for_all( void );
 
-    virtual task_t* execute( void );
+    virtual task* execute( void );
 
     void recycle_as_continuation( void );
     void recycle_as_safe_continuation( void );
 
-    void recycle_as_child_of( task_t& new_parent );
+    void recycle_as_child_of( task& new_parent );
     void recycle_to_reexecute( void );
 
     int32_t depth() const { return m_depth; }
@@ -159,7 +159,7 @@ public:
         return m_ref_count;
     }
 
-    void set_parent(task_t* p) {
+    void set_parent(task* p) {
         m_parent = p;
     }
 
@@ -170,33 +170,33 @@ public:
     state_type state() const { return state_type(m_state); }
 };
 
-class task_list_t : internal::no_copy
+class task_list : internal::no_copy
 {
 private:
-    task_t*     first;
-    task_t**    nextptr;
-    friend class task_t;
+    friend class task;
+    task*     first;
+    task**    nextptr;
 
 public:
-    task_list_t() : first(NULL), nextptr(&first) {}
+    task_list() : first(NULL), nextptr(&first) {}
 
     //! Destroys the list, but does not destroy the task objects.
-    virtual ~task_list_t() {}
+    virtual ~task_list() {}
 
     //! True if list if empty; false otherwise.
     bool empty() const { return (first != NULL); }
 
     //! Push task onto back of list.
-    void push_back( task_t& task ) {
+    void push_back( task& task ) {
         task.next = NULL;
         *nextptr  = &task;
         nextptr   = &task.next;
     }
 
     //! Pop the front task from the list.
-    task_t& pop_front() {
+    task& pop_front() {
         _DOL_ASSERT( !empty(), "attempt to pop item from empty task_list" );
-        task_t* result = first;
+        task* result = first;
         first = result->next;
         if ( first != NULL ) nextptr = &first;
         return *result;

@@ -39,7 +39,7 @@ namespace internal {
 BitBoard bitboard::square_mask[64];
 
 ///////////////////////////////////////////////////////////////
-// bitbaord_t
+// bitbaord
 ///////////////////////////////////////////////////////////////
 
 bitboard::bitboard( void )
@@ -57,9 +57,9 @@ bitboard::bitboard( BitBoard & b )
     initialize(b.low, b.high);
 }
 
-bitboard::bitboard( uint64 u64 )
+bitboard::bitboard( uint64 _bits )
 {
-    initialize(u64);
+    initialize(_bits);
 }
 
 bitboard& bitboard::operator =( const bitboard & src )
@@ -77,9 +77,9 @@ inline void bitboard::initialize( uint32 _low, uint32 _high )
     low = _low; high = _high;
 }
 
-inline void bitboard::initialize( uint64 u64 )
+inline void bitboard::initialize( uint64 _bits )
 {
-    initialize((uint32)(u64 & 0xFFFFFFFFULL), (uint32)(u64 >> 32));
+    initialize((uint32)(_bits & 0xFFFFFFFFULL), (uint32)(_bits >> 32));
 }
 
 void bitboard::init( uint32 _low, uint32 _high )
@@ -87,9 +87,9 @@ void bitboard::init( uint32 _low, uint32 _high )
     initialize(_low, _high);
 }
 
-void bitboard::init( uint64 u64 )
+void bitboard::init( uint64 _bits )
 {
-    initialize(u64);
+    initialize(_bits);
 }
 
 void bitboard::init( BitBoard & b )

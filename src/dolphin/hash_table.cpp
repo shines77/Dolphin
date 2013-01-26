@@ -89,14 +89,14 @@ void hash_table::free_hash( void )
     }
 }
 
-void hash_table::setup_hash( bits_type hash_bits /*= DEFAULT_HASH_BITS*/,
-                                  bool bClear /*= true*/,
-                                  bool bSrand /*= true */ )
+void hash_table::setup_hash( bits_type hash_bits /* = DEFAULT_HASH_BITS */,
+                             bool b_clear   /* = true */,
+                             bool b_srand   /* = true */ )
 {
     free_hash();
 
     init_hash(hash_bits);
-    init_hash_mask(bClear, bSrand);
+    init_hash_mask(b_clear, b_srand);
 }
 
 int hash_table::resize_hash( bits_type new_hash_bits )
@@ -131,7 +131,7 @@ hash_table::pointer hash_table::init_hash_entries( entry_type hash_entries )
 
     size_type nAllocSize = m_hash_entries * sizeof(internal::hash_entry_t);
     m_hash_table = (hash_table::pointer)
-        m_hash_memory.Malloc(nAllocSize, cache_aligned_t::USE_CURRENT_ALIGN_SIZE);
+        m_hash_memory.Malloc(nAllocSize, cache_aligned::USE_CURRENT_ALIGN_SIZE);
     _DOL_ASSERT((m_hash_table != NULL), "m_hash_table is NULL, hash table malloc failure.");
     if (m_hash_table == NULL) {
         m_hash_bits = 0;
@@ -154,8 +154,8 @@ hash_table::pointer hash_table::init_hash( bits_type hash_bits /* =DEFAULT_HASH_
     return init_hash_entries(hash_entries);
 }
 
-void hash_table::init_hash_mask( bool bClear, /* =true */
-                                 bool bSrand  /* =true */ )
+void hash_table::init_hash_mask( bool b_clear, /* = true */
+                                 bool b_srand  /* = true */ )
 {
     int i, j;
     int index;
@@ -170,7 +170,7 @@ void hash_table::init_hash_mask( bool bClear, /* =true */
     unsigned int rand_pair[max_index][2];
     int count = 0;
 
-    if (bSrand) {
+    if (b_srand) {
 #if defined(_USE_C_SRAND) && _USE_C_SRAND
         sys_random::srand();
 #else
@@ -182,7 +182,7 @@ void hash_table::init_hash_mask( bool bClear, /* =true */
         init_hash(m_hash_bits);
     }
 
-    if (bClear) {
+    if (b_clear) {
         for (i = 0; i < (int)m_hash_entries; ++i) {
             m_hash_table[i].key2 = 0;
             m_hash_table[i].key1_flags_draft &= (~KEY1_MASK) & (~DRAFT_MASK);

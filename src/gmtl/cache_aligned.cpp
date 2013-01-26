@@ -11,7 +11,7 @@ static unsigned char _cAlignSignFill    = 0xE9;     /* fill no-man's sign for al
 static unsigned char _cClearSignFill    = 0x00;     /* fill no-man's sign for free routines */
 
 // MS1B: BitScanForward
-unsigned cache_aligned_t::_NearestPowerOf2( unsigned x )
+unsigned cache_aligned::_NearestPowerOf2( unsigned x )
 {
 #if 0
     unsigned MS1B = 1;
@@ -47,7 +47,7 @@ unsigned cache_aligned_t::_NearestPowerOf2( unsigned x )
 *       FALSE otherwise
 *
 *******************************************************************************/
-bool __cdecl cache_aligned_t::_CheckBytes(
+bool __cdecl cache_aligned::_CheckBytes(
         unsigned char *pb,
         unsigned char bCheck,
         size_t nSize
@@ -67,18 +67,18 @@ bool __cdecl cache_aligned_t::_CheckBytes(
         return bOkay;
 }
 
-cache_aligned_t::cache_aligned_t( void )
+cache_aligned::cache_aligned( void )
 {
 	Init(DEFAILT_CACHE_ALIGN_SIZE, true);
 }
 
-cache_aligned_t::cache_aligned_t( size_t nSize )
+cache_aligned::cache_aligned( size_t nSize )
 {
     Init(DEFAILT_CACHE_ALIGN_SIZE, true);
     Malloc(nSize);
 }
 
-cache_aligned_t::cache_aligned_t( size_t nSize,
+cache_aligned::cache_aligned( size_t nSize,
                                  int nAlignSize, /*= DEFAILT_CACHE_ALIGN_SIZE */
                                  bool bAutoDelete /*= false */)
 {
@@ -86,7 +86,7 @@ cache_aligned_t::cache_aligned_t( size_t nSize,
     Malloc(nSize);
 }
 
-cache_aligned_t::cache_aligned_t( const cache_aligned_t& src, bool bCopyData /*= true */ )
+cache_aligned::cache_aligned( const cache_aligned& src, bool bCopyData /*= true */ )
 {
     if (bCopyData)
         Copy(src, true);
@@ -94,19 +94,19 @@ cache_aligned_t::cache_aligned_t( const cache_aligned_t& src, bool bCopyData /*=
         Clone(src, true);
 }
 
-cache_aligned_t& cache_aligned_t::operator =( const cache_aligned_t& src )
+cache_aligned& cache_aligned::operator =( const cache_aligned& src )
 {
     Copy(src);
     return *this;
 }
 
-cache_aligned_t::~cache_aligned_t( void )
+cache_aligned::~cache_aligned( void )
 {
     if (m_bAutoDelete)
 	    Free(true);
 }
 
-void cache_aligned_t::Init( int nAlignSize /*= DEFAILT_CACHE_ALIGN_SIZE */,
+void cache_aligned::Init( int nAlignSize /*= DEFAILT_CACHE_ALIGN_SIZE */,
                            bool bAutoDelete /*= true */ )
 {
     m_pvData  = NULL;
@@ -121,7 +121,7 @@ void cache_aligned_t::Init( int nAlignSize /*= DEFAILT_CACHE_ALIGN_SIZE */,
     SetAlignSize(nAlignSize);
 }
 
-void cache_aligned_t::Free( bool bForceDelete /*= false */ )
+void cache_aligned::Free( bool bForceDelete /*= false */ )
 {
     if (m_bInited) {
         bool bNeedDelete = (bForceDelete || m_bAutoDelete);
@@ -153,7 +153,7 @@ void cache_aligned_t::Free( bool bForceDelete /*= false */ )
 }
 
 // full copy, include struct and data
-bool cache_aligned_t::Copy( const cache_aligned_t& src, bool bIsInit /*= false */ )
+bool cache_aligned::Copy( const cache_aligned& src, bool bIsInit /*= false */ )
 {
     if (!bIsInit)
         Free(true);
@@ -163,7 +163,7 @@ bool cache_aligned_t::Copy( const cache_aligned_t& src, bool bIsInit /*= false *
 }
 
 // only copy struct, not copy data
-void cache_aligned_t::Clone( const cache_aligned_t& src, bool bIsInit /*= false */ )
+void cache_aligned::Clone( const cache_aligned& src, bool bIsInit /*= false */ )
 {
     if (!bIsInit)
         Free(true);
@@ -172,12 +172,12 @@ void cache_aligned_t::Clone( const cache_aligned_t& src, bool bIsInit /*= false 
 }
 
 // only copy data
-void *cache_aligned_t::CopyData( const cache_aligned_t& src )
+void *cache_aligned::CopyData( const cache_aligned& src )
 {
     return MemCopy_s(src.GetPtr(), src.Size());
 }
 
-int cache_aligned_t::_StdAlignSize( int nAlignSize )
+int cache_aligned::_StdAlignSize( int nAlignSize )
 {
     if (nAlignSize < 0)
         nAlignSize = -nAlignSize;
@@ -198,7 +198,7 @@ int cache_aligned_t::_StdAlignSize( int nAlignSize )
     return nAlignSize;
 }
 
-int cache_aligned_t::SetAlignSize( int nAlignSize, bool bForceReset /*= false */ )
+int cache_aligned::SetAlignSize( int nAlignSize, bool bForceReset /*= false */ )
 {
     // whether need force realloc the memory use the new align size?
     if (bForceReset) {
@@ -219,7 +219,7 @@ int cache_aligned_t::SetAlignSize( int nAlignSize, bool bForceReset /*= false */
     return nAlignSize;
 }
 
-void *cache_aligned_t::Malloc( size_t nSize,
+void *cache_aligned::Malloc( size_t nSize,
                               int nAlignSize, /*= -1 */
                               bool bForceRealloc /*= false */ )
 {
@@ -229,7 +229,7 @@ void *cache_aligned_t::Malloc( size_t nSize,
         return NULL;
 }
 
-void *cache_aligned_t::Realloc( size_t nSize,
+void *cache_aligned::Realloc( size_t nSize,
                                int nAlignSize /*= -1 */ )
 {
     // Release previous alloc memory data first
@@ -298,7 +298,7 @@ void *cache_aligned_t::Realloc( size_t nSize,
     }
 }
 
-void *cache_aligned_t::_FreeBlockHeader( ALIGN_BLOCK_HEADER *pBlockHdr,
+void *cache_aligned::_FreeBlockHeader( ALIGN_BLOCK_HEADER *pBlockHdr,
                                         bool bFreeMemBlock /* = false*/)
 {
     void *pvAlloc = NULL;
@@ -337,7 +337,7 @@ void *cache_aligned_t::_FreeBlockHeader( ALIGN_BLOCK_HEADER *pBlockHdr,
     return pvAlloc;
 }
 
-void *cache_aligned_t::FreeBlock( const void *pvData )
+void *cache_aligned::FreeBlock( const void *pvData )
 {
     ALIGN_BLOCK_HEADER *pBlockHdr;
     void *pvAlloc = NULL;
@@ -353,7 +353,7 @@ void *cache_aligned_t::FreeBlock( const void *pvData )
     return pvAlloc;
 }
 
-void *cache_aligned_t::MemSet( int nValue )
+void *cache_aligned::MemSet( int nValue )
 {
     if (IsInited()) {
         if (m_pvAlloc != NULL && m_pvData != NULL && m_nSize > 0)
@@ -362,7 +362,7 @@ void *cache_aligned_t::MemSet( int nValue )
     return NULL;
 }
 
-void *cache_aligned_t::MemCopy( const void *src, size_t count )
+void *cache_aligned::MemCopy( const void *src, size_t count )
 {
     if (IsInited()) {
         if (m_pvAlloc != NULL && m_pvData != NULL && m_nSize > 0) {
@@ -373,7 +373,7 @@ void *cache_aligned_t::MemCopy( const void *src, size_t count )
     return NULL;
 }
 
-void *cache_aligned_t::MemCopy_s( const void *src, size_t count )
+void *cache_aligned::MemCopy_s( const void *src, size_t count )
 {
     if (IsInited()) {
         if (m_pvAlloc != NULL && m_pvData != NULL && m_nSize > 0) {
@@ -385,7 +385,7 @@ void *cache_aligned_t::MemCopy_s( const void *src, size_t count )
     return NULL;
 }
 
-void *cache_aligned_t::MemMove( const void *src, size_t count )
+void *cache_aligned::MemMove( const void *src, size_t count )
 {
     if (IsInited()) {
         if (m_pvAlloc != NULL && m_pvData != NULL && m_nSize > 0) {
@@ -396,7 +396,7 @@ void *cache_aligned_t::MemMove( const void *src, size_t count )
     return NULL;
 }
 
-void *cache_aligned_t::MemMove_s( const void *src, size_t count )
+void *cache_aligned::MemMove_s( const void *src, size_t count )
 {
     if (IsInited()) {
         if (m_pvAlloc != NULL && m_pvData != NULL && m_nSize > 0) {
@@ -408,7 +408,7 @@ void *cache_aligned_t::MemMove_s( const void *src, size_t count )
     return NULL;
 }
 
-void *cache_aligned_t::MemChr( int c )
+void *cache_aligned::MemChr( int c )
 {
     if (IsInited()) {
         if (m_pvAlloc != NULL && m_pvData != NULL && m_nSize > 0) {
@@ -418,7 +418,7 @@ void *cache_aligned_t::MemChr( int c )
     return NULL;
 }
 
-void *cache_aligned_t::MemChr( size_t offset, int c )
+void *cache_aligned::MemChr( size_t offset, int c )
 {
     if (IsInited()) {
         if (m_pvAlloc != NULL && m_pvData != NULL && m_nSize > 0) {
@@ -429,7 +429,7 @@ void *cache_aligned_t::MemChr( size_t offset, int c )
     return NULL;
 }
 
-int cache_aligned_t::MemCmp( const void *buf, size_t count )
+int cache_aligned::MemCmp( const void *buf, size_t count )
 {
     if (IsInited()) {
         if (m_pvAlloc != NULL && m_pvData != NULL && m_nSize > 0) {
@@ -440,7 +440,7 @@ int cache_aligned_t::MemCmp( const void *buf, size_t count )
     return NULL;
 }
 
-int cache_aligned_t::MemICmp( const void *buf, size_t count )
+int cache_aligned::MemICmp( const void *buf, size_t count )
 {
     if (IsInited()) {
         if (m_pvAlloc != NULL && m_pvData != NULL && m_nSize > 0) {
@@ -451,7 +451,7 @@ int cache_aligned_t::MemICmp( const void *buf, size_t count )
     return NULL;
 }
 
-int cache_aligned_t::MemICmp_l( const void *buf, size_t count, _locale_t locale )
+int cache_aligned::MemICmp_l( const void *buf, size_t count, _locale_t locale )
 {
         if (IsInited()) {
         if (m_pvAlloc != NULL && m_pvData != NULL && m_nSize > 0) {
