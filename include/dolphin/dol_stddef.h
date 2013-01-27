@@ -40,14 +40,14 @@
 #endif
 
 #if defined( _MSC_VER )
-#  include "./vs/stdint.h"
+#  include <dolphin/vs/stdint.h>
 #  define snprintf _snprintf
 #else
 #  include <stdint.h>
 #endif
 
-#include "colour.h"
-#include "board.h"
+#include <dolphin/colour.h>
+#include <dolphin/board.h>
 
 #if defined(__GNUC__)
 #  define likely(x)     __builtin_expect((x),1)
@@ -71,7 +71,7 @@
 // We do not need defines below for resource processing on windows
 #ifndef RC_INVOKED
 
-#define __MY_ASSERT( x, ... )
+#define _DOL_ASSERT( x, ... )
 
 //! The namespace dolphin contains all components of the library.
 

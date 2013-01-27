@@ -63,7 +63,7 @@
  * predicted by this formula.
  */
 
-#include "../../include/dolphin/my_random.h"
+#include <dolphin/my_random.h>
 
 #include <stdlib.h>
 #ifndef _WIN32_WCE
@@ -184,7 +184,7 @@ static  long    *my_end_ptr     = (long *) &my_randtbl[DEG_3 + 1];
  * values produced by this routine.
  */
 
-void my_random::_my_srandom( int seed /* =timer_null_seed(0) */ )
+void my_random::_my_srand( int seed /* =timer_null_seed(0) */ )
 {
     int i;
 
@@ -205,7 +205,7 @@ void my_random::_my_srandom( int seed /* =timer_null_seed(0) */ )
         my_fptr = &my_state[my_rand_sep];
         my_rptr = &my_state[0];
         for (i=0; i<my_rand_deg*10; i++)
-            _my_random();
+            _my_rand();
     }
 }
 
@@ -224,7 +224,7 @@ void my_random::_my_srandom( int seed /* =timer_null_seed(0) */ )
  * Returns a 31-bit random number.
  */
 
-my_random::value_type my_random::_my_random( void )
+my_random::value_type my_random::_my_rand( void )
 {
     value_type i;
 
@@ -305,7 +305,7 @@ char * my_random::_my_initstate( unsigned seed, char *arg_state, int n )
     }
     my_state = &(((long *)arg_state)[1]);	/* first location */
     my_end_ptr = &my_state[my_rand_deg];	/* must set end_ptr before srandom */
-    _my_srandom(seed);
+    _my_srand(seed);
     if (my_rand_type == TYPE_0)
         my_state[-1] = my_rand_type;
     else
@@ -354,18 +354,6 @@ char * my_random::_my_setstate( char *arg_state )
     }
     my_end_ptr = &my_state[my_rand_deg]; /* set end_ptr too */
     return ostate;
-}
-
-/*
-  Init c runtime lib's random number seed
-*/
-
-void my_random::_my_srand(unsigned int seed /* =timer_null_seed(0) */)
-{
-    if (seed == timer_null_seed)
-        ::srand((unsigned)time(NULL));
-    else
-        ::srand(seed);
 }
 
 }  // namespace dolphin

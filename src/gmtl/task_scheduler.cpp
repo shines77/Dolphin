@@ -31,11 +31,11 @@
 // Do not include task.h directly. Use scheduler_common.h instead
 //#include "scheduler_common.h"
 //#include "governor.h"
-//#include "scheduler.h"
+//#include <gmtl/scheduler.h>
 //#include "itt_notify.h"
 
-#include "../../include/gmtl/cache_aligned.h"
-#include "../../include/gmtl/task_scheduler.h"
+#include <gmtl/cache_aligned.h>
+#include <gmtl/task_scheduler.h>
 
 #include <string.h>
 
@@ -53,25 +53,25 @@ namespace internal {
 // task_scheduler_t
 ///////////////////////////////////////////////////////////////
 
-task_scheduler_t::task_scheduler_t( int number_of_threads /*= MTL_AUTOMATIC */,
+task_scheduler::task_scheduler( int number_of_threads /*= MTL_AUTOMATIC */,
                                    stack_size_type thread_stack_size /*= 0 */ )
     : my_scheduler(NULL)
 {
     initialize( number_of_threads, thread_stack_size );
 }
 
-task_scheduler_t::~task_scheduler_t( void )
+task_scheduler::~task_scheduler( void )
 {
-    if( my_scheduler ) 
+    if( my_scheduler )
         terminate();
 }
 
-void task_scheduler_t::initialize( int number_of_threads /*= MTL_AUTOMATIC */ )
+void task_scheduler::initialize( int number_of_threads /*= MTL_AUTOMATIC */ )
 {
     initialize( number_of_threads, 0 );
 }
 
-void task_scheduler_t::initialize( int number_of_threads, stack_size_type thread_stack_size )
+void task_scheduler::initialize( int number_of_threads, stack_size_type thread_stack_size )
 {
     if (number_of_threads == MTL_AUTOMATIC) {
         m_num_threads = 1;  // get the default number of processor
@@ -84,12 +84,12 @@ void task_scheduler_t::initialize( int number_of_threads, stack_size_type thread
     }
 }
 
-void task_scheduler_t::terminate( void )
+void task_scheduler::terminate( void )
 {
 
 }
 
-int task_scheduler_t::default_num_threads( void )
+int task_scheduler::default_num_threads( void )
 {
     return 0;
 }
@@ -158,4 +158,4 @@ char* GxString::SetLength( int len, char ch /* = 0 */ )
 
 ///////////////////////////////////////////////////////////////
 
-}  // namespace imtl
+}  // namespace gmtl

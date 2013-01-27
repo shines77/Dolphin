@@ -33,11 +33,11 @@
 # pragma once
 #endif
 
-#include "dol_stddef.h"
-#include "../../include/gmtl/cache_aligned.h"
-#include "../../include/dolphin/bitboard.h"
-#include "colour.h"
-#include "board.h"
+#include <gmtl/cache_aligned.h>
+#include <dolphin/dol_stddef.h>
+#include <dolphin/colour.h>
+#include <dolphin/board.h>
+#include <dolphin/bitboard.h>
 #include <cstddef>
 #include <stdlib.h>
 #include <math.h>
@@ -106,13 +106,13 @@ namespace internal {
         unsigned int high;
     };
 #pragma pack(pop)
-#endif
+#endif  /*  !__GNUC__ */
 
 };
 
 using internal::hash_mask_t;
 
-class hash_table_t : internal::no_copy
+class hash_table : internal::no_copy
 {
 public:
     typedef long value_type;
@@ -120,20 +120,20 @@ public:
     typedef unsigned int bits_type;
     typedef std::size_t entry_type;
     typedef unsigned int mask_type;
-    typedef internal::hash_entry_t* pointer;
-    typedef const internal::hash_entry_t* const_pointer;
-    typedef internal::hash_entry_t& reference;
-    typedef const internal::hash_entry_t& const_reference;
+    typedef internal::hash_entry_t * pointer;
+    typedef const internal::hash_entry_t * const_pointer;
+    typedef internal::hash_entry_t & reference;
+    typedef const internal::hash_entry_t & const_reference;
 
 private:
-    pointer     m_hash_table;
-    cache_aligned_t m_hash_memory;
-    bits_type   m_hash_bits;
-    entry_type  m_hash_entries;
-    size_type   m_hash_sizes;
-    mask_type   m_hash_mask;
-    bool        m_initialized;
-    static bool g_mask_initialized;
+    pointer         m_hash_table;
+    cache_aligned m_hash_memory;
+    bits_type       m_hash_bits;
+    entry_type      m_hash_entries;
+    size_type       m_hash_sizes;
+    mask_type       m_hash_mask;
+    bool            m_initialized;
+    static bool     g_mask_initialized;
 
 public:
     /* The 64-bit hash masks for a piece of a certain color in a
@@ -145,42 +145,43 @@ public:
     static internal::hash_mask_t g_hash_row_value[BOARD_ROW][BOARD_ROW_MASKS];
     static internal::hash_mask_t g_hash_put_value[CHESS_MAX_COLOR+1][BOARD_MAX_DISC];
 
-    inline static unsigned int hash_table_t::popcount32( unsigned int bits );
+    inline static unsigned int hash_table::popcount32( unsigned int bits );
     inline static unsigned int get_bits_closeness( unsigned int a0, unsigned int a1,
               unsigned int b0, unsigned int b1 );
 
 public:
-    hash_table_t( void );
-    explicit hash_table_t( bits_type hash_bits );
-    virtual ~hash_table_t( void );
+    hash_table( void );
+    explicit hash_table( bits_type hash_bits );
+    virtual ~hash_table( void );
 
-    inline entry_type hash_entries( void ) const { return m_hash_entries; };
-    inline entry_type hash_sizes( void ) const { return m_hash_sizes; };
-    inline bits_type  hash_bits( void ) const { return m_hash_bits; };
-    inline mask_type  hash_mask( void ) const { return m_hash_mask; };
-    inline pointer hash_table( void ) const { return m_hash_table; };
-    inline pointer data_ptr( void ) const { return (pointer)m_hash_memory.DataPtr(); };
-    inline pointer alloc_ptr( void ) const { return (pointer)m_hash_memory.AllocPtr(); };
+    inline entry_type   get_hash_entries( void ) const  { return m_hash_entries; };
+    inline entry_type   get_hash_sizes( void ) const    { return m_hash_sizes; };
+    inline bits_type    get_hash_bits( void ) const     { return m_hash_bits; };
+    inline mask_type    get_hash_mask( void ) const     { return m_hash_mask; };
+    inline pointer      get_hash_table_ptr( void ) const    { return m_hash_table; };
+    inline pointer      get_data_ptr( void ) const      { return (pointer)m_hash_memory.GetDataPtr(); };
+    inline pointer      get_alloc_ptr( void ) const     { return (pointer)m_hash_memory.GetAllocPtr(); };
 
     inline bool is_valid( void ) const {
-        return ((m_hash_table != NULL) && (m_hash_memory.DataPtr() != NULL));
+        return ((m_hash_table != NULL) && (m_hash_memory.GetDataPtr() != NULL));
     };
     inline bool is_data_valid( void ) const {
-        return (m_hash_memory.DataPtr() != NULL);
+        return (m_hash_memory.GetDataPtr() != NULL);
     };
     inline bool is_alloc_valid( void ) const {
-        return (m_hash_memory.AllocPtr() != NULL);
+        return (m_hash_memory.GetAllocPtr() != NULL);
     };
+
     inline bool is_initialized( void ) const { return m_initialized; };
     inline bool is_mask_initialized( void ) const { return g_mask_initialized; };
 
     void setup_hash( bits_type hash_bits = DEFAULT_HASH_BITS,
-        bool bClear = true, bool bSrand = true );
+        bool b_clear = true, bool b_srand = true );
 
     pointer init_hash( bits_type hash_bits = DEFAULT_HASH_BITS );
     void free_hash( void );
 
-    void init_hash_mask( bool bClear = true, bool bSrand = true );
+    void init_hash_mask( bool b_clear = true, bool b_srand = true );
 
     int resize_hash( bits_type new_hash_bits ); 
     void clear_drafts( void );
@@ -198,7 +199,7 @@ protected:
 */
 inline
 unsigned int
-hash_table_t::popcount32( unsigned int bits ) {
+hash_table::popcount32( unsigned int bits ) {
 	unsigned int n;
 	for ( n = 0; bits != 0; n++, bits &= (bits - 1) )
         ;
@@ -212,7 +213,7 @@ hash_table_t::popcount32( unsigned int bits ) {
 */
 inline
 unsigned int
-hash_table_t::get_bits_closeness( unsigned int a0, unsigned int a1,
+hash_table::get_bits_closeness( unsigned int a0, unsigned int a1,
               unsigned int b0, unsigned int b1 ) {
     return (unsigned int)::abs((int)(popcount32(a0 ^ b0) + popcount32(a1 ^ b1) - 32));
 }

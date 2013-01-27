@@ -44,6 +44,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)src&quot;;..\..\..\..\include;..\..\..\..\src;&quot;..\..\..\..\external-deps&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -63,10 +64,12 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="winmm.lib"
+				AdditionalDependencies="winmm.lib gmtl_debug.lib"
 				OutputFile="$(OutDir)\..\..\..\..\bin\ia32\vc2008\debug\$(ProjectName).exe"
 				LinkIncremental="2"
+				AdditionalLibraryDirectories="..\..\..\..\lib;..\..\..\..\external-deps;"
 				UACExecutionLevel="1"
+				ModuleDefinitionFile=""
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				TargetMachine="1"
@@ -195,6 +198,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)src&quot;;..\..\..\..\include;..\..\..\..\src;&quot;..\..\..\..\external-deps&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -213,10 +217,12 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="winmm.lib"
+				AdditionalDependencies="winmm.lib gmtl.lib"
 				OutputFile="$(OutDir)\..\..\..\..\bin\ia32\vc2008\release\$(ProjectName).exe"
 				LinkIncremental="1"
+				AdditionalLibraryDirectories="..\..\..\..\lib;..\..\..\..\external-deps;"
 				UACExecutionLevel="1"
+				ModuleDefinitionFile=""
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				OptimizeReferences="2"
@@ -348,6 +354,10 @@
 				RelativePath="..\..\..\..\src\dolphin\my_random.cpp"
 				>
 			</File>
+			<File
+				RelativePath="..\..\..\..\src\dolphin\sys_random.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="include"
@@ -384,6 +394,10 @@
 			</File>
 			<File
 				RelativePath="..\..\..\..\res\dolphin\vc2008\resource.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\include\dolphin\sys_random.h"
 				>
 			</File>
 			<Filter

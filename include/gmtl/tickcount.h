@@ -33,11 +33,11 @@
 # pragma once
 #endif
 
-#include "gmtl_stddef.h"
+#include <gmtl/gmtl_stddef.h>
 #include <windows.h>
 
 #if _WIN32||_WIN64
-#include ".\machine\windows_api.h"
+#include <gmtl/machine/windows_api.h>
 #include <time.h>
 #elif __linux__
 #include <ctime>
@@ -49,89 +49,89 @@ namespace gmtl {
 
 //! Absolute timestamp
 /** @ingroup timing */
-class tickcount_t
+class tickcount
 {
 private:
     int64_t my_count;
 
 public:
     //! Relative time interval.
-    class interval_t {
+    class interval {
         int64_t my_value;
-        explicit interval_t( int64_t _value ) : my_value(_value) {}
+        explicit interval( int64_t _value ) : my_value(_value) {}
     public:
         //! Construct a time interval representing zero time duration
-        interval_t() : my_value(0) {};
+        interval() : my_value(0) {};
 
-        //! Construct a time interval representing sec seconds time  duration
-        explicit interval_t( double sec );
+        //! Construct a time interval representing sec seconds time duration
+        explicit interval( double sec );
 
         //! Return the length of a time interval in seconds
         double seconds() const;
-        double m_secs() const;
-        double u_secs() const;
+        double m_secs()  const;
+        double u_secs()  const;
 
-        friend class gmtl::tickcount_t;
+        friend class gmtl::tickcount;
 
         //! Extract the intervals from the tickcount_ts and subtract them.
-        friend interval_t operator-( const tickcount_t& t1, const tickcount_t& t0 );
+        friend interval operator-( const tickcount& t1, const tickcount& t0 );
 
         //! Add two intervals.
-        friend interval_t operator+( const interval_t& i, const interval_t& j ) {
-            return interval_t(i.my_value + j.my_value);
+        friend interval operator+( const interval& i, const interval& j ) {
+            return interval(i.my_value + j.my_value);
         }
 
         //! Subtract two intervals.
-        friend interval_t operator-( const interval_t& i, const interval_t& j ) {
-            return interval_t(i.my_value - j.my_value);
+        friend interval operator-( const interval& i, const interval& j ) {
+            return interval(i.my_value - j.my_value);
         }
 
         //! Accumulation operator
-        interval_t& operator+=( const interval_t& i ) { my_value += i.my_value; return *this; }
+        interval& operator+=( const interval& i ) { my_value += i.my_value; return *this; }
 
         //! Subtraction operator
-        interval_t& operator-=( const interval_t& i ) { my_value -= i.my_value; return *this; }
+        interval& operator-=( const interval& i ) { my_value -= i.my_value; return *this; }
     };
     
     //! Construct an absolute timestamp initialized to zero.
-    tickcount_t() : my_count(0) {};
+    tickcount() : my_count(0) {};
 
-    void                    reset(void);
-    tickcount_t             begin(void);
-    tickcount_t::interval_t end(void);
+    void                    reset( void );
+    tickcount             begin( void );
+    tickcount::interval end( void );
 
     //! Return current time.
-    static tickcount_t      now(void);
+    static tickcount      now( void );
     
     //! Subtract two timestamps to get the time interval between
-    friend interval_t operator-( const tickcount_t& t1, const tickcount_t& t0 );
+    friend interval operator-( const tickcount& t1, const tickcount& t0 );
 
-    tickcount_t& operator=( const tickcount_t& t );
+    tickcount& operator=( const tickcount& t );
 };
 
-inline void tickcount_t::reset(void) {
-    tickcount_t result;
-    result = tickcount_t::now();
+inline void tickcount::reset( void ) {
+    tickcount result;
+    result = tickcount::now();
     my_count = result.my_count;
     return;
 }
 
-inline tickcount_t tickcount_t::begin(void) {
-    tickcount_t result;
-    result = tickcount_t::now();
+inline tickcount tickcount::begin( void ) {
+    tickcount result;
+    result = tickcount::now();
     my_count = result.my_count;
     return result;
 }
 
-inline tickcount_t::interval_t tickcount_t::end(void) {
-    interval_t result;
-    tickcount_t nowtime = tickcount_t::now();
-    result = tickcount_t::interval_t(nowtime - (const tickcount_t)*this);
+inline tickcount::interval tickcount::end( void ) {
+    interval result;
+    tickcount nowtime = tickcount::now();
+    result = tickcount::interval(nowtime - (const tickcount)*this);
     return result;
 }
 
-inline tickcount_t tickcount_t::now(void) {
-    tickcount_t result;
+inline tickcount tickcount::now( void ) {
+    tickcount result;
 #if _WIN32||_WIN64
     result.my_count = GetTickCount();
 #elif __linux__
@@ -140,7 +140,7 @@ inline tickcount_t tickcount_t::now(void) {
     int status = 
 #endif /* TBB_USE_ASSERT */
         clock_gettime( CLOCK_REALTIME, &ts );
-    __MY_ASSERT( status==0, "CLOCK_REALTIME not supported" );
+    _DOL_ASSERT( status==0, "CLOCK_REALTIME not supported" );
     result.my_count = static_cast<int64_t>(1000000000UL)*static_cast<int64_t>(ts.tv_sec) + static_cast<int64_t>(ts.tv_nsec);
 #else /* generic Unix */
     struct timeval tv;
@@ -148,13 +148,13 @@ inline tickcount_t tickcount_t::now(void) {
     int status = 
 #endif /* TBB_USE_ASSERT */
         gettimeofday(&tv, NULL);
-    __MY_ASSERT( status==0, "gettimeofday failed" );
+    _DOL_ASSERT( status==0, "gettimeofday failed" );
     result.my_count = static_cast<int64_t>(1000000)*static_cast<int64_t>(tv.tv_sec) + static_cast<int64_t>(tv.tv_usec);
 #endif /*(choice of OS) */
     return result;
 }
 
-inline tickcount_t::interval_t::interval_t( double sec )
+inline tickcount::interval::interval( double sec )
 {
 #if _WIN32||_WIN64
     my_value = GetTickCount();
@@ -165,11 +165,11 @@ inline tickcount_t::interval_t::interval_t( double sec )
 #endif /* (choice of OS) */
 }
 
-inline tickcount_t::interval_t operator-( const tickcount_t& t1, const tickcount_t& t0 ) {
-    return tickcount_t::interval_t( t1.my_count - t0.my_count );
+inline tickcount::interval operator-( const tickcount& t1, const tickcount& t0 ) {
+    return tickcount::interval( t1.my_count - t0.my_count );
 }
 
-inline double tickcount_t::interval_t::seconds(void) const {
+inline double tickcount::interval::seconds( void ) const {
 #if _WIN32||_WIN64
     return ((double)my_value / (double)CLK_TCK);
 #elif __linux__
@@ -179,7 +179,7 @@ inline double tickcount_t::interval_t::seconds(void) const {
 #endif /* (choice of OS) */
 }
 
-inline double tickcount_t::interval_t::m_secs(void) const {
+inline double tickcount::interval::m_secs( void ) const {
 #if _WIN32||_WIN64
     return ((double)my_value / (double)CLK_TCK) * 1E3;
 #elif __linux__
@@ -189,7 +189,7 @@ inline double tickcount_t::interval_t::m_secs(void) const {
 #endif /* (choice of OS) */
 }
 
-inline double tickcount_t::interval_t::u_secs(void) const {
+inline double tickcount::interval::u_secs( void ) const {
 #if _WIN32||_WIN64
     return ((double)my_value / (double)CLK_TCK) * 1E6;
 #elif __linux__
@@ -199,11 +199,11 @@ inline double tickcount_t::interval_t::u_secs(void) const {
 #endif /* (choice of OS) */
 }
 
-inline tickcount_t& tickcount_t::operator=( const tickcount_t& t ) {
+inline tickcount& tickcount::operator=( const tickcount& t ) {
     my_count = t.my_count;
     return *this;
 }
 
-}  // namespace imtl
+}  // namespace gmtl
 
 #endif /* _TICKCOUNT_T_H_ */

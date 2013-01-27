@@ -6,11 +6,12 @@
 # pragma once
 #endif
 
-#include "dol_stddef.h"
-#include "colour.h"
-#include "board.h"
-#include "bitboard.h"
-#include "my_random.h"
-#include "hash_table.h"
+#include <dolphin/dol_stddef.h>
+#include <dolphin/colour.h>
+#include <dolphin/board.h>
+#include <dolphin/bitboard.h>
+#include <dolphin/my_random.h>
+#include <dolphin/sys_random.h>
+#include <dolphin/hash_table.h>
 
 #endif // _DOLPHIN_H_

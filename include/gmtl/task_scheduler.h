@@ -33,29 +33,29 @@
 # pragma once
 #endif
 
-#include "gmtl_stddef.h"
-//#include "gmtl_machine.h"
-#include "task.h"
-#include "scheduler.h"
+#include <gmtl/gmtl_stddef.h>
+//#include <gmtl/gmtl_machine.h>
+#include <gmtl/task.h>
+#include <gmtl/scheduler.h>
 
 namespace gmtl {
 
-class task_t;
-class task_list_t;
-class scheduler_t;
+class task;
+class task_list;
+class scheduler;
 
 typedef std::size_t stack_size_type;
 
-class task_scheduler_t : internal::no_copy
+class task_scheduler : internal::no_copy
 {
-    scheduler_t *my_scheduler;
+    scheduler *my_scheduler;
 
 public:
     static const int MTL_AUTOMATIC = -1;
     static const int MTL_DELAY_ACTIVATION = -2;
 
-    task_scheduler_t( int number_of_threads = MTL_AUTOMATIC, stack_size_type thread_stack_size = 0 );
-    virtual ~task_scheduler_t( void );
+    task_scheduler( int number_of_threads = MTL_AUTOMATIC, stack_size_type thread_stack_size = 0 );
+    virtual ~task_scheduler( void );
 
     void initialize( int number_of_threads = MTL_AUTOMATIC );
     void initialize( int number_of_threads, stack_size_type thread_stack_size );
@@ -87,6 +87,6 @@ public:
     const char* _Char(void);
 };
 
-}  // namespace imtl
+}  // namespace gmtl
 
 #endif /* _TASK_SCHEDULER_T_H_ */

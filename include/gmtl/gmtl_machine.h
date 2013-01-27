@@ -108,7 +108,7 @@
         combination they may be a hardware fence, a compiler fence, both or nothing.
  **/
 
-#include "gmtl_stddef.h"
+#include <gmtl/gmtl_stddef.h>
 
 namespace gmtl {
 
@@ -734,7 +734,7 @@ const T reverse<T>::byte_table[256] = {
 
 } // namespace internal
 
-}  // namespace imtl
+}  // namespace gmtl
 
 // Preserving access to legacy APIs
 using gmtl::internal::__GMTL_load_with_acquire;

@@ -26,23 +26,23 @@
     the GNU General Public License.
 */
 
-#include "../../include/dolphin/hash_table.h"
-#include "../../include/dolphin/my_random.h"
+#include <dolphin/hash_table.h>
+#include <dolphin/my_random.h>
 
 // use srand() or my_srandom()
 #define _USE_C_SRAND     0
 
 namespace dolphin {
 
-bool hash_table_t::g_mask_initialized = false;
-internal::hash_mask_t hash_table_t::g_hash_disc_mask[CHESS_MAX_COLOR+1][BOARD_MAX_DISC];
-internal::hash_mask_t hash_table_t::g_hash_flip_value[BOARD_MAX_DISC];
-internal::hash_mask_t hash_table_t::g_hash_color_mask[CHESS_MAX_COLOR];
-internal::hash_mask_t hash_table_t::g_hash_switch_side;
-internal::hash_mask_t hash_table_t::g_hash_row_value[BOARD_ROW][BOARD_ROW_MASKS];
-internal::hash_mask_t hash_table_t::g_hash_put_value[CHESS_MAX_COLOR+1][BOARD_MAX_DISC];
+bool hash_table::g_mask_initialized = false;
+internal::hash_mask_t hash_table::g_hash_disc_mask[CHESS_MAX_COLOR + 1][BOARD_MAX_DISC];
+internal::hash_mask_t hash_table::g_hash_flip_value[BOARD_MAX_DISC];
+internal::hash_mask_t hash_table::g_hash_color_mask[CHESS_MAX_COLOR];
+internal::hash_mask_t hash_table::g_hash_switch_side;
+internal::hash_mask_t hash_table::g_hash_row_value[BOARD_ROW][BOARD_ROW_MASKS];
+internal::hash_mask_t hash_table::g_hash_put_value[CHESS_MAX_COLOR + 1][BOARD_MAX_DISC];
 
-hash_table_t::hash_table_t( void ) :
+hash_table::hash_table( void ) :
     m_hash_table(NULL),
     m_hash_bits(0),
     m_hash_entries(0),
@@ -53,7 +53,7 @@ hash_table_t::hash_table_t( void ) :
     //init_hash(DEFAULT_HASH_BITS);
 }
 
- hash_table_t::hash_table_t( bits_type hash_bits ) :
+ hash_table::hash_table( bits_type hash_bits ) :
     m_hash_table(NULL),
     m_hash_bits(hash_bits),
     m_hash_entries(1 << hash_bits),
@@ -65,22 +65,22 @@ hash_table_t::hash_table_t( void ) :
     init_hash_mask();
 }
 
-hash_table_t::~hash_table_t( void )
+hash_table::~hash_table( void )
 {
     free_hash();
 }
    
-void hash_table_t::free_hash( void )
+void hash_table::free_hash( void )
 {
     if (is_initialized()) {
-        __MY_ASSERT((m_hash_table == NULL),
+        _DOL_ASSERT((m_hash_table == NULL),
             "@ chess_hash_table::free_hash(): m_hash_table == NULL.");
         if (is_valid())
             m_hash_memory.Free(true);
 
         m_hash_table = NULL;
 
-        //m_hash_bits = 0;
+        m_hash_bits = 0;
         m_hash_entries = 0;
         m_hash_sizes = 0;
         m_hash_mask = 0;
@@ -89,17 +89,17 @@ void hash_table_t::free_hash( void )
     }
 }
 
-void hash_table_t::setup_hash( bits_type hash_bits /*= DEFAULT_HASH_BITS*/,
-                                  bool bClear /*= true*/,
-                                  bool bSrand /*= true */ )
+void hash_table::setup_hash( bits_type hash_bits /* = DEFAULT_HASH_BITS */,
+                             bool b_clear   /* = true */,
+                             bool b_srand   /* = true */ )
 {
     free_hash();
 
     init_hash(hash_bits);
-    init_hash_mask(bClear, bSrand);
+    init_hash_mask(b_clear, b_srand);
 }
 
-int hash_table_t::resize_hash( bits_type new_hash_bits )
+int hash_table::resize_hash( bits_type new_hash_bits )
 {
     int old_hash_bits = m_hash_bits;
     free_hash();
@@ -110,18 +110,18 @@ int hash_table_t::resize_hash( bits_type new_hash_bits )
     return old_hash_bits;
 }
 
-void hash_table_t::clear_drafts( void )
+void hash_table::clear_drafts( void )
 {
-    for (int i=0; i<(int)m_hash_entries; ++i)
+    for (int i = 0; i < (int)m_hash_entries; ++i)
         m_hash_table[i].key1_flags_draft &= ~DRAFT_MASK;
 }
 
-hash_table_t::pointer hash_table_t::init_hash_entries( entry_type hash_entries )
+hash_table::pointer hash_table::init_hash_entries( entry_type hash_entries )
 {
     // free hash first
     free_hash();
 
-    if ( hash_entries <= 0 ) {
+    if (hash_entries <= 0) {
         m_hash_bits = DEFAULT_HASH_BITS;
         hash_entries = 1 << m_hash_bits;
     }
@@ -130,9 +130,9 @@ hash_table_t::pointer hash_table_t::init_hash_entries( entry_type hash_entries )
     m_hash_mask = (mask_type)m_hash_entries - 1;
 
     size_type nAllocSize = m_hash_entries * sizeof(internal::hash_entry_t);
-    m_hash_table = (hash_table_t::pointer)
-        m_hash_memory.Malloc(nAllocSize, cache_aligned_t::USE_CURRENT_ALIGN_SIZE);
-    __MY_ASSERT((m_hash_table != NULL), "m_hash_table is NULL, hash table malloc failure.");
+    m_hash_table = (hash_table::pointer)
+        m_hash_memory.Malloc(nAllocSize, cache_aligned::USE_CURRENT_ALIGN_SIZE);
+    _DOL_ASSERT((m_hash_table != NULL), "m_hash_table is NULL, hash table malloc failure.");
     if (m_hash_table == NULL) {
         m_hash_bits = 0;
         m_hash_entries = 0;
@@ -144,7 +144,7 @@ hash_table_t::pointer hash_table_t::init_hash_entries( entry_type hash_entries )
     return m_hash_table;
 }
 
-hash_table_t::pointer hash_table_t::init_hash( bits_type hash_bits /* =DEFAULT_HASH_BITS */)
+hash_table::pointer hash_table::init_hash( bits_type hash_bits /* =DEFAULT_HASH_BITS */)
 {
     entry_type hash_entries;
     if (hash_bits <= 0)
@@ -154,12 +154,12 @@ hash_table_t::pointer hash_table_t::init_hash( bits_type hash_bits /* =DEFAULT_H
     return init_hash_entries(hash_entries);
 }
 
-void hash_table_t::init_hash_mask( bool bClear, /* =true */
-                                      bool bSrand /* =true */ )
+void hash_table::init_hash_mask( bool b_clear, /* = true */
+                                 bool b_srand  /* = true */ )
 {
-    int i;
+    int i, j;
     int index;
-    int j, pos, mask;
+    int pos, mask;
     bool is_first_bit;
     unsigned int scan_bit;
     unsigned int hash_tmp_low, hash_tmp_high;
@@ -170,11 +170,11 @@ void hash_table_t::init_hash_mask( bool bClear, /* =true */
     unsigned int rand_pair[max_index][2];
     int count = 0;
 
-    if (bSrand) {
+    if (b_srand) {
 #if defined(_USE_C_SRAND) && _USE_C_SRAND
-        my_random::srand();
+        sys_random::srand();
 #else
-        my_random::srandom();
+        my_random::srand();
 #endif
     }
 
@@ -182,8 +182,8 @@ void hash_table_t::init_hash_mask( bool bClear, /* =true */
         init_hash(m_hash_bits);
     }
 
-    if (bClear) {
-        for (i=0; i<(int)m_hash_entries; ++i) {
+    if (b_clear) {
+        for (i = 0; i < (int)m_hash_entries; ++i) {
             m_hash_table[i].key2 = 0;
             m_hash_table[i].key1_flags_draft &= (~KEY1_MASK) & (~DRAFT_MASK);
         }
@@ -193,11 +193,11 @@ void hash_table_t::init_hash_mask( bool bClear, /* =true */
     while (index < max_index) {     // max_index = 130
 TRY_AGAIN2:
 #if defined(_USE_C_SRAND) && _USE_C_SRAND
+        rand_pair[index][0] = ((unsigned int)sys_random::rand() << 3) + ((unsigned int)sys_random::rand() >> 2);
+        rand_pair[index][1] = ((unsigned int)sys_random::rand() << 3) + ((unsigned int)sys_random::rand() >> 2);
+#else
         rand_pair[index][0] = ((unsigned int)my_random::rand() << 3) + ((unsigned int)my_random::rand() >> 2);
         rand_pair[index][1] = ((unsigned int)my_random::rand() << 3) + ((unsigned int)my_random::rand() >> 2);
-#else
-        rand_pair[index][0] = ((unsigned int)my_random::random() << 3) + ((unsigned int)my_random::random() >> 2);
-        rand_pair[index][1] = ((unsigned int)my_random::random() << 3) + ((unsigned int)my_random::random() >> 2);
 #endif
 
 #if 0
@@ -211,7 +211,7 @@ TRY_AGAIN2:
             get_bits_closeness( rand_pair[index][0], rand_pair[index][1], 0, 0 );
         if (closeness > max_zero_closeness)
             goto TRY_AGAIN2;
-        for (i=0; i<index; i++) {
+        for (i = 0; i < index; i++) {
             closeness =
                 get_bits_closeness( rand_pair[index][0], rand_pair[index][1],
                     rand_pair[i][0], rand_pair[i][1] );
@@ -227,13 +227,13 @@ TRY_AGAIN2:
     }
 
 	index = 0;
-	for (i=0; i<BOARD_MAX_DISC; ++i) {
+	for (i = 0; i < BOARD_MAX_DISC; ++i) {
 		g_hash_disc_mask[CHESS_BLACK][i].low  = 0;
 		g_hash_disc_mask[CHESS_BLACK][i].high = 0;
 		g_hash_disc_mask[CHESS_WHITE][i].low  = 0;
 		g_hash_disc_mask[CHESS_WHITE][i].high = 0;
 	}
-	for (i=0; i<BOARD_MAX_DISC; ++i) {
+	for (i = 0; i < BOARD_MAX_DISC; ++i) {
 		g_hash_disc_mask[CHESS_BLACK][i].low  = rand_pair[index][0];
 		g_hash_disc_mask[CHESS_BLACK][i].high = rand_pair[index][1];
 		index++;
@@ -242,7 +242,7 @@ TRY_AGAIN2:
 		index++;
 	}
 
-    for (i=0; i<BOARD_MAX_DISC; ++i) {
+    for (i = 0; i < BOARD_MAX_DISC; ++i) {
         g_hash_flip_value[i].low  = g_hash_disc_mask[CHESS_BLACK][i].low  ^ g_hash_disc_mask[CHESS_WHITE][i].low;
         g_hash_flip_value[i].high = g_hash_disc_mask[CHESS_BLACK][i].high ^ g_hash_disc_mask[CHESS_WHITE][i].high;
     }
@@ -258,7 +258,7 @@ TRY_AGAIN2:
 	g_hash_switch_side.high = g_hash_color_mask[CHESS_BLACK].high ^ g_hash_color_mask[CHESS_WHITE].high;
 
     // put the disc hash values
-	for (i=0; i<BOARD_MAX_DISC; ++i) {
+	for (i = 0; i < BOARD_MAX_DISC; ++i) {
 		g_hash_put_value[CHESS_BLACK][i].low  = g_hash_disc_mask[CHESS_BLACK][i].low  ^ g_hash_switch_side.low;
 		g_hash_put_value[CHESS_BLACK][i].high = g_hash_disc_mask[CHESS_BLACK][i].high ^ g_hash_switch_side.high;
 		g_hash_put_value[CHESS_WHITE][i].low  = g_hash_disc_mask[CHESS_WHITE][i].low  ^ g_hash_switch_side.low;
@@ -266,14 +266,14 @@ TRY_AGAIN2:
 	}
 
     // disc row hash values
-    for (i=0; i<BOARD_ROW; ++i) {
-        for (mask=0; mask<BOARD_ROW_MASKS; ++mask) {
+    for (i = 0; i < BOARD_ROW; ++i) {
+        for (mask = 0; mask < BOARD_ROW_MASKS; ++mask) {
             hash_tmp_low  = 0;
             hash_tmp_high = 0;
             pos = i * BOARD_ROW;
             is_first_bit = true;
             scan_bit = 1;
-            for (j=0; j<BOARD_COL; ++j) {
+            for (j = 0; j < BOARD_COL; ++j) {
                 if ((mask & scan_bit) == scan_bit) {
                     if (is_first_bit) {
                         hash_tmp_low  = g_hash_flip_value[pos].low;
@@ -292,19 +292,21 @@ TRY_AGAIN2:
             g_hash_row_value[i][mask].high = hash_tmp_high;
         }
     }
+
+    // global mask initialized status
     g_mask_initialized = true;
 }
 
-void hash_table_t::determine_board_hash( const BitBoard my_bits,
-                                            const BitBoard opp_bits,
-                                            int color,
-                                            internal::hash_mask_t& board_hash )
+void hash_table::determine_board_hash( const BitBoard my_bits,
+                                       const BitBoard opp_bits,
+                                       int color,
+                                       internal::hash_mask_t& board_hash )
 {
     int opp_color = OPP_COLOR( color );
 
     board_hash.low  = 0;
     board_hash.high = 0;
-    for (int pos=0; pos<BOARD_MAX_DISC; ++pos) {
+    for (int pos = 0; pos < BOARD_MAX_DISC; ++pos) {
         if ( ((my_bits.low & bitboard::square_mask[pos].low) != 0)
             || ((my_bits.high & bitboard::square_mask[pos].high) != 0) ) {
                 board_hash.low  ^= g_hash_disc_mask[color][pos].low;
