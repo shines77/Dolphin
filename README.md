@@ -1,2 +1,4 @@
-Dolphin, a othello program written by c++.
+Dolphin
 =======
+
+a othello program written by c++.
