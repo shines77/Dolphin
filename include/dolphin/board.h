@@ -1,6 +1,6 @@
 
-#ifndef _BOARD_H_
-#define _BOARD_H_
+#ifndef _DOL_BOARD_H_
+#define _DOL_BOARD_H_
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
 # pragma once
@@ -12,16 +12,18 @@ extern "C" {
 
 /* Symbolic values for the possible contents of a square */
 #define BOARD_SIDE                  8
-#define BOARD_ROW                   BOARD_SIDE      // row      行
-#define BOARD_COL                   BOARD_SIDE      // column   列
-#define BOARD_MAX_DISC              (BOARD_ROW * BOARD_COL)
+#define BOARD_ROWS                  BOARD_SIDE      // row      行
+#define BOARD_COLS                  BOARD_SIDE      // column   列
+#define BOARD_MAX_DISC              (BOARD_ROWS * BOARD_COLS)
 
 #define EX_BOARD_SIDE               10
-#define EX_BOARD_ROW                EX_BOARD_SIDE   // row      行
-#define EX_BOARD_COL                EX_BOARD_SIDE   // column   列
-#define EX_BOARD_MAX_DISC           (EX_BOARD_ROW * EX_BOARD_COL)
+#define EX_BOARD_ROWS               EX_BOARD_SIDE   // row      行
+#define EX_BOARD_COLS               EX_BOARD_SIDE   // column   列
+#define EX_BOARD_MAX_DISC           (EX_BOARD_ROWS * EX_BOARD_COLS)
 
-#define BOARD_ROW_MASKS             (1 << BOARD_COL)
+#define BOARD_ROW_MASKS             (1 << BOARD_COLS)
+
+namespace dolphin {
 
 /* Coordinates in 8x8 Field */
 
@@ -39,8 +41,10 @@ enum Coord_8x8 {
 
 #define _NULL_MOVE  MAX_COORD
 
+}  // namespace dolphin
+
 #ifdef __cplusplus
 }
 #endif
 
-#endif // _BOARD_H_
+#endif // _DOL_BOARD_H_

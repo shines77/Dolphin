@@ -1,6 +1,6 @@
 
-#ifndef _ATOMIC_G_H_
-#define _ATOMIC_G_H_
+#ifndef _GMTL_ATOMIC_G_H_
+#define _GMTL_ATOMIC_G_H_
 
 #pragma once
 
@@ -371,4 +371,4 @@ INT atomic_clear_mask(atomic_t *v, INT mask)
 
 #endif
 
-#endif  // _ATOMIC_G_H_
+#endif  // _GMTL_ATOMIC_G_H_

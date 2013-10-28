@@ -1,6 +1,6 @@
 
-#ifndef _COLOUR_H_
-#define _COLOUR_H_
+#ifndef _DOL_COLOUR_H_
+#define _DOL_COLOUR_H_
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
 # pragma once
@@ -19,4 +19,4 @@
 
 #define OPP_COLOR( color )          ((CHESS_BLACK + CHESS_WHITE) - (color))
 
-#endif // _COLOUR_H_
+#endif // _DOL_COLOUR_H_

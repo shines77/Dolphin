@@ -26,8 +26,8 @@
     the GNU General Public License.
 */
 
-#ifndef _BITBOARD_H_
-#define _BITBOARD_H_
+#ifndef _DOL_BITBOARD_H_
+#define _DOL_BITBOARD_H_
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
 # pragma once
@@ -92,7 +92,7 @@
 
 namespace dolphin {
 
-typedef struct tagBitBoard {
+typedef struct bitboard_t {
 	unsigned int low;
 	unsigned int high;
 } BitBoard, *PBitBoard;
@@ -454,4 +454,4 @@ inline void bitboard::init_square_mask( void )
 
 }  // namespace dolphin
 
-#endif  /* _BITBOARD_H_ */
+#endif  /* _DOL_BITBOARD_H_ */

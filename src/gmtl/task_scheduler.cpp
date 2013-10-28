@@ -100,10 +100,10 @@ GxString::GxString(void) : buffer(NULL), length(0)
 
 GxString::~GxString(void)
 {
-    Free();
+    free();
 }
 
-void GxString::Free( void )
+void GxString::free( void )
 {
     if (buffer) {
         delete[] buffer;
@@ -112,12 +112,12 @@ void GxString::Free( void )
     length = 0;
 }
 
-int GxString::Length(void)
+int GxString::get_length(void)
 {
     return (buffer != NULL) ? (int)strlen(buffer) : -1;
 }
 
-const char* GxString::_Char(void)
+const char* GxString::_char(void)
 {
     return buffer;
 }
@@ -127,13 +127,13 @@ GxString& GxString::operator =(GxString& str)
     if (this == &str)
         return *this;
 
-    Free();
+    this->free();
 
-    size_t len = strlen(str._Char());
+    size_t len = strlen(str._char());
     buffer = new char[len + 1];
     if (buffer) {
         memset(buffer, 0, len + 1);
-        memcpy(buffer, str._Char(), len);
+        memcpy(buffer, str._char(), len);
         length = (unsigned int)len;
     }
     else
@@ -141,9 +141,9 @@ GxString& GxString::operator =(GxString& str)
     return *this;
 }
 
-char* GxString::SetLength( int len, char ch /* = 0 */ )
+char* GxString::set_length( int len, char ch /* = 0 */ )
 {
-    Free();
+    this->free();
 
     if (len >= 0) {
         buffer = new char[len + 1];

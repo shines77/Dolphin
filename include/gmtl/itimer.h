@@ -26,8 +26,8 @@
     the GNU General Public License.
 */
 
-#ifndef _ITIMER_T_H_
-#define _ITIMER_T_H_
+#ifndef _GMTL_ITIMER_H_
+#define _GMTL_ITIMER_H_
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
 # pragma once
@@ -214,4 +214,4 @@ inline itimer& itimer::operator=( const itimer& t ) {
 
 }  // namespace gmtl
 
-#endif /* _ITIMER_T_H_ */
+#endif /* _GMTL_ITIMER_H_ */

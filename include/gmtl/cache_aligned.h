@@ -26,8 +26,8 @@
     the GNU General Public License.
 */
 
-#ifndef _CACHE_ALIGNED_T_H_
-#define _CACHE_ALIGNED_T_H_
+#ifndef _GMTL_CACHE_ALIGNED_H_
+#define _GMTL_CACHE_ALIGNED_H_
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
 # pragma once
@@ -60,85 +60,85 @@ private:
 	void *  m_pvData;
     void *  m_pvAlloc;
 
-    int     m_nAlignSize;
-    size_t  m_nSize;
-    size_t  m_nAllocSize;
+    int     m_align_size;
+    size_t  m_size;
+    size_t  m_alloc_size;
 
-    bool    m_bAutoDelete;
-    bool    m_bInited;
+    bool    m_auto_delete;
+    bool    m_inited;
 
 public:
 	cache_aligned(void);
-    explicit cache_aligned(size_t nSize);
-	cache_aligned(size_t nSize, int nAlignSize, bool bAutoDelete = true);
-    explicit cache_aligned(const cache_aligned & src, bool bCopyData = true);
+    explicit cache_aligned(size_t n_size);
+	cache_aligned(size_t n_size, int n_align_size, bool b_auto_delete = true);
+    explicit cache_aligned(const cache_aligned &src, bool b_copy_data = true);
     virtual ~cache_aligned(void);
 
-    cache_aligned & operator =(const cache_aligned & src);
+    cache_aligned & operator =(const cache_aligned &src);
 
 public:
     static const int USE_CURRENT_ALIGN_SIZE = -1;
     static const int USE_DEFAULT_ALIGN_SIZE = -2;
 
-    static void *       FreeBlock(const void * pvData);
-    static unsigned     _NearestPowerOf2(unsigned x);
-    static bool __cdecl _CheckBytes(unsigned char *, unsigned char, size_t);
+    static void *       free_block(const void *pvData);
+    static unsigned     _get_nearest_power_of_2(unsigned x);
+    static bool __cdecl _check_bytes(unsigned char *, unsigned char, size_t);
 
-    inline int     AlignSize(void) const    { return m_nAlignSize; };
-    inline size_t  Size(void) const         { return m_nSize; };
-    inline size_t  AllocSize(void) const    { return m_nAllocSize; };
+    void            free_cache(bool bForceDelete = false);
 
-    int     SetAlignSize(int nAlignSize, bool bForceReset = false);
+    inline int      get_align_size(void) const   { return m_align_size; };
+    inline size_t   get_size(void) const         { return m_size;      };
+    inline size_t   get_alloc_size(void) const   { return m_alloc_size; };
 
-    bool    GetAutoDelete(void) const { return m_bAutoDelete; };
-    bool    SetAutoDelete(bool bAutoDelete) {
-        bool bOldValue = m_bAutoDelete;
-        m_bAutoDelete = bAutoDelete;
-        return bOldValue;
+    int             set_align_size(int n_align_size, bool b_force_reset = false);
+
+    bool    get_auto_delete(void) const { return m_auto_delete; };
+    bool    set_auto_delete(bool b_auto_delete) {
+        bool b_old_value = m_auto_delete;
+        m_auto_delete = m_auto_delete;
+        return b_old_value;
     };
 
-    int     FrontPaddedSize(void) const {
+    int     get_front_padded_size(void) const {
         return (int)((unsigned char *)m_pvData - (unsigned char *)m_pvAlloc);
     };
-    int     LastPaddedSize (void) const {
-        return (int)(m_nAllocSize - m_nSize - FrontPaddedSize());
+    int     get_last_padded_size (void) const {
+        return (int)(m_alloc_size - m_size - get_front_padded_size());
     };
 
-    inline bool     IsInited(void)       { return m_bInited; };
-    inline void *   GetPtr(void) const   { return m_pvData;  };
-    inline void *   GetDataPtr(void) const  { return m_pvData;  };
-    inline void *   GetAllocPtr(void) const { return m_pvAlloc; };
+    inline bool     is_inited(void)           { return m_inited;  };
+    inline void *   get_ptr(void) const       { return m_pvData;  };
+    inline void *   get_data_ptr(void) const  { return m_pvData;  };
+    inline void *   get_alloc_ptr(void) const { return m_pvAlloc; };
 
-    void *          Malloc   (size_t nSize, int nAlignSize = USE_CURRENT_ALIGN_SIZE, bool bForceRealloc = false);
-    void *          Realloc  (size_t nSize, int nAlignSize = USE_CURRENT_ALIGN_SIZE);
-    bool            Copy     (const cache_aligned & src, bool bIsInit = false); // full copy, include struct and data
-    void            Clone    (const cache_aligned & src, bool bIsInit = false); // only copy struct, not copy data
-    void *          CopyData (const cache_aligned & src);                       // only copy data
-    void            Free     (bool bForceDelete = false);
+    void *          malloc_mem (size_t n_size, int n_align_size = USE_CURRENT_ALIGN_SIZE, bool b_force_realloc = false);
+    void *          realloc_mem(size_t n_size, int n_align_size = USE_CURRENT_ALIGN_SIZE);
+    bool            copy       (const cache_aligned &src, bool b_is_inited = false);     // full copy, include struct and data
+    void            clone      (const cache_aligned &src, bool b_is_inited = false);     // only copy struct, not copy data
+    void *          copy_data  (const cache_aligned &src);                               // only copy data
 
-    void *          MemSet   (int nValue);
-    void *          MemCopy  (const void * src, size_t count);
-    void *          MemMove  (const void * src, size_t count);
-    void *          MemCopy_s(const void * src, size_t count);
-    void *          MemMove_s(const void * src, size_t count);
+    void *          mem_set    (int n_value, size_t n_size = 0);
+    void *          mem_copy   (const void *src, size_t count);
+    void *          mem_move   (const void *src, size_t count);
+    void *          mem_copy_s (const void *src, size_t count);
+    void *          mem_move_s (const void *src, size_t count);
 
-    void *          MemChr   (int c);
-    void *          MemChr   (size_t offset, int c);
+    void *          mem_chr    (int c);
+    void *          mem_chr    (size_t offset, int c);
 
-    int             MemCmp   (const void * buf, size_t count);
-    int             MemICmp  (const void * buf, size_t count);
-    int             MemICmp_l(const void * buf, size_t count, _locale_t locale);
+    int             mem_cmp    (const void *buf, size_t count);
+    int             mem_icmp   (const void *buf, size_t count);
+    int             mem_icmp_l (const void *buf, size_t count, _locale_t locale);
 
 protected:
-    //
+    void            init_cache(int n_align_size = DEFAILT_CACHE_ALIGN_SIZE, bool b_auto_delete = true);
 
 private:
-    void            Init(int nAlignSize = DEFAILT_CACHE_ALIGN_SIZE, bool bAutoDelete = true);
-    int             _StdAlignSize(int nAlignSize);
+    int             _std_align_size(int n_align_size);
 
-    static void *   _FreeBlockHeader(ALIGN_BLOCK_HEADER * pBlockHdr, bool bFreeMemBlock = false);	
+    static void *   _free_block_header(ALIGN_BLOCK_HEADER * pBlockHdr, bool b_free_memblock = false);	
 };
 
 }  // namespace gmtl
 
-#endif  // _CACHE_ALIGNED_T_H_
+#endif  // _GMTL_CACHE_ALIGNED_H_

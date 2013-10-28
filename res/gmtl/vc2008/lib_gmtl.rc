@@ -70,13 +70,13 @@ BEGIN
         BLOCK "080404b0"
         BEGIN
             VALUE "CompanyName", "77Studio.Net"
-            VALUE "FileDescription", "Dolphin ºÚ°×Æå³ÌÐò"
+            VALUE "FileDescription", "Guozi Multi-threading Library"
             VALUE "FileVersion", "1, 0, 0, 1"
-            VALUE "InternalName", "Dolphin"
+            VALUE "InternalName", "lib_gmtl"
             VALUE "LegalCopyright", "Copyright (C) 2011-2012, 77Studio.Net"
             VALUE "LegalTrademarks", "77Studio.Net"
-            VALUE "OriginalFilename", "Dolphin.exe"
-            VALUE "ProductName", "Dolphin ºÚ°×Æå³ÌÐò"
+            VALUE "OriginalFilename", "lib_gmtl.dll"
+            VALUE "ProductName", "Guozi Multi-threading Library"
             VALUE "ProductVersion", "1, 0, 0, 1"
         END
     END

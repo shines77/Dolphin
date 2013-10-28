@@ -26,8 +26,8 @@
     the GNU General Public License.
 */
 
-#ifndef _ALIGNED_SPACE_T_H_
-#define _ALIGNED_SPACE_T_H_
+#ifndef _GMTL_ALIGNED_SPACE_H_
+#define _GMTL_ALIGNED_SPACE_H_
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
 # pragma once
@@ -82,4 +82,4 @@ public:
 
 }  // namespace gmtl
 
-#endif  // _ALIGNED_SPACE_T_H_
+#endif  // _GMTL_ALIGNED_SPACE_H_

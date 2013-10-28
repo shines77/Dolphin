@@ -39,7 +39,7 @@ internal::hash_mask_t hash_table::g_hash_disc_mask[CHESS_MAX_COLOR + 1][BOARD_MA
 internal::hash_mask_t hash_table::g_hash_flip_value[BOARD_MAX_DISC];
 internal::hash_mask_t hash_table::g_hash_color_mask[CHESS_MAX_COLOR];
 internal::hash_mask_t hash_table::g_hash_switch_side;
-internal::hash_mask_t hash_table::g_hash_row_value[BOARD_ROW][BOARD_ROW_MASKS];
+internal::hash_mask_t hash_table::g_hash_row_value[BOARD_ROWS][BOARD_ROW_MASKS];
 internal::hash_mask_t hash_table::g_hash_put_value[CHESS_MAX_COLOR + 1][BOARD_MAX_DISC];
 
 hash_table::hash_table( void ) :
@@ -76,7 +76,7 @@ void hash_table::free_hash( void )
         _DOL_ASSERT((m_hash_table == NULL),
             "@ chess_hash_table::free_hash(): m_hash_table == NULL.");
         if (is_valid())
-            m_hash_memory.Free(true);
+            m_hash_memory.free_cache(true);
 
         m_hash_table = NULL;
 
@@ -131,7 +131,7 @@ hash_table::pointer hash_table::init_hash_entries( entry_type hash_entries )
 
     size_type nAllocSize = m_hash_entries * sizeof(internal::hash_entry_t);
     m_hash_table = (hash_table::pointer)
-        m_hash_memory.Malloc(nAllocSize, cache_aligned::USE_CURRENT_ALIGN_SIZE);
+        m_hash_memory.malloc_mem(nAllocSize, cache_aligned::USE_CURRENT_ALIGN_SIZE);
     _DOL_ASSERT((m_hash_table != NULL), "m_hash_table is NULL, hash table malloc failure.");
     if (m_hash_table == NULL) {
         m_hash_bits = 0;
@@ -266,14 +266,14 @@ TRY_AGAIN2:
 	}
 
     // disc row hash values
-    for (i = 0; i < BOARD_ROW; ++i) {
+    for (i = 0; i < BOARD_ROWS; ++i) {
         for (mask = 0; mask < BOARD_ROW_MASKS; ++mask) {
             hash_tmp_low  = 0;
             hash_tmp_high = 0;
-            pos = i * BOARD_ROW;
+            pos = i * BOARD_ROWS;
             is_first_bit = true;
             scan_bit = 1;
-            for (j = 0; j < BOARD_COL; ++j) {
+            for (j = 0; j < BOARD_COLS; ++j) {
                 if ((mask & scan_bit) == scan_bit) {
                     if (is_first_bit) {
                         hash_tmp_low  = g_hash_flip_value[pos].low;

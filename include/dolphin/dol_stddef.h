@@ -11,11 +11,13 @@
 #if defined( _MSC_VER ) || defined( __MINGW__ ) || defined( _WINDOWS ) || defined( _WIN32 )
 #  define WIN32_LEAN_AND_MEAN
 #  define VC_EXTRALEAN
-#  define _CRT_SECURE_NO_WARNINGS
-#  define DIRECTORY_DELIMITER "\\"
+#  ifndef _CRT_SECURE_NO_WARNINGS
+#     define _CRT_SECURE_NO_WARNINGS
+#  endif
+#  define DIRECTORY_DELIMITER   "\\"
 #  define SIGACTION 0
 #else
-#  define DIRECTORY_DELIMITER "/"
+#  define DIRECTORY_DELIMITER   "/"
 #  define SIGACTION 1
 #endif
 
@@ -48,6 +50,14 @@
 
 #include <dolphin/colour.h>
 #include <dolphin/board.h>
+
+#ifndef MIN
+#define MIN(a, b)   (((a) < (b)) ? (a) : (b))
+#endif
+
+#ifndef MAX
+#define MAX(a, b)   (((a) > (b)) ? (a) : (b))
+#endif
 
 #if defined(__GNUC__)
 #  define likely(x)     __builtin_expect((x),1)

@@ -8,6 +8,19 @@
 #include <dolphin/dolphin.h>
 #include <mmsystem.h>
 
+#ifdef _DEBUG
+#define DEBUG_CLIENTBLOCK   new( _CLIENT_BLOCK, __FILE__, __LINE__)
+#else
+#define DEBUG_CLIENTBLOCK
+#endif
+
+#define _CRTDBG_MAP_ALLOC
+#include <crtdbg.h>
+
+#ifdef _DEBUG
+#define new DEBUG_CLIENTBLOCK
+#endif
+
 #define ReadTSC( x )            \
     __asm cpuid                 \
     __asm rdtsc                 \
@@ -39,7 +52,7 @@ void asm_pause_test(void)
     total = 0;
 #if !_WIN64
     ReadTSC(start);
-    for (int i=0; i<LOOP_COUNT; i++) {
+    for (int i = 0; i < LOOP_COUNT; i++) {
         REPEAT_1000(__asm { nop };)
         if ((i % 500) == 0) {
             //SwitchToThread();
@@ -49,11 +62,11 @@ void asm_pause_test(void)
     ReadTSC(end);
     total = end - start;
 
-    printf("nop:   clocks per instruction %4.2f\n", (double)total/(double)FACTOR);
+    printf("nop:   clocks per instruction %4.2f\n", (double)total / (double)FACTOR);
 
     ReadTSC(start);
     total = 0;;
-    for (int i=0; i<LOOP_COUNT; i++) {
+    for (int i = 0; i < LOOP_COUNT; i++) {
         REPEAT_1000(__asm { pause };)
         if ((i % 500) == 0) {
             //SwitchToThread();
@@ -67,17 +80,19 @@ void asm_pause_test(void)
 #endif /* !_WIN64 */
     total = end - start;
 
-    printf("pause: clocks per instruction %4.2f\n", (double)total/(double)FACTOR);
+    printf("pause: clocks per instruction %4.2f\n", (double)total / (double)FACTOR);
 }
 
-// 辗转相减法, 简单高效, 清晰快捷, 无除法运算   
+// 辗转相减法, 简单高效, 清晰快捷, 无除法运算
 int GetMaxCommonDivide(int n, int m)
-{  
+{
     while (n != m) {
-        if (n > m)
+        if (n > m) {
             n = n - m;
-        else
+        }
+        else {
             n = m - n;
+        }
     }
 
     return n;
@@ -87,25 +102,44 @@ int GetMaxCommonDivide(int n, int m)
 int GetMaxCommonDivide_new(int n, int m)
 {
     while (n != m) {
-        if (n > m)
+        if (n > m) {
             n = n - m;
-        else
+        }
+        else {
             m = m - n;
+        }
     }
 
     return n;
 }
 
 // _tmain() 必须包含 tchar.h, main()的Unicode版本
-int _tmain(int argc, _TCHAR* argv[])
+int _tmain(int argc, _TCHAR *argv[])
 {
-    for (int i=0; i<2; i++) {
+#if _DEBUG
+    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+#endif
+
+    my_random::srand();
+    sys_random::srand();
+
+    for (int i = 0; i < 2; i++) {
         //asm_pause_test();
     }
 
     int gcd;
     gcd = GetMaxCommonDivide_new(7, 5);
     printf("GCD(7, 5) = %d\n\n", gcd);
+
+    int m, n, p, p1, p2;
+    n = 20; p = 2;
+    p1 = 2; p2 = 4;
+    //m = GetMaxEntry(n, p);
+    //printf("GetMaxEntry(%d, %d) = %d\n\n", n, p, m);
+
+    m = HashMask_GetMaxLength(n, p1, p2, 5);
+    //m = HashMask_GetMaxLength(n, p, (1 << 11) - 1);
+    printf("HashMask_GetMaxLength(%d, %d, %d) = %d\n\n", n, p1, p2, m);
 
     //system("pause");
     //return 0;
@@ -134,17 +168,17 @@ int _tmain(int argc, _TCHAR* argv[])
 
     double f_interval = interval1.seconds();
 
-    void *pbuffer = _aligned_malloc(31+24, 32);
+    void *pbuffer = _aligned_malloc(31 + 24, 32);
     char *pchar = (char *)pbuffer;
     pchar[54] = 0;
 
     GxString str1, str2;
-    str1.SetLength(13, 'A');
+    str1.set_length(13, 'A');
     str2 = str1;
 
     cache_aligned cache_align, c1, c2;
-    cache_align.SetAlignSize(32);
-    cache_align.Malloc(31+24);
+    cache_align.set_align_size(32);
+    cache_align.malloc_mem(31 + 24);
     c1 = c2 = cache_align;
     //c1 = c2 = 2;
 
@@ -166,26 +200,26 @@ int _tmain(int argc, _TCHAR* argv[])
     bb = bb2;
     bb = 2;
 
-    printf("\r\n");
-    printf("elapsed time1 = %0.6f\r\n", interval1.seconds());
-    printf("elapsed time2 = %0.6f\r\n", interval3.seconds());
-    printf("\r\n");
+    printf("\n");
+    printf("elapsed time1 = %0.6f\n", interval1.seconds());
+    printf("elapsed time2 = %0.6f\n", interval3.seconds());
+    printf("\n");
 
     //system("pause");
-    //printf("\r\n");
+    //printf("\n");
 
     ///*
-    itimer::interval itimval;
+    itimer::interval itimval_;
     it1.begin();
-    for (int i=0; i<10; i++) {
+    for (int i = 0; i < 10; i++) {
         //asm_pause_test();
     }
-    itimval = it1.end();
+    itimval_ = it1.end();
     //*/
 
-    printf("\r\n");
-    printf("elapsed time (ReadTSC) = %0.6f\r\n", itimval.seconds());
-    printf("\r\n");
+    printf("\n");
+    printf("elapsed time (ReadTSC) = %0.6f\n", itimval_.seconds());
+    printf("\n");
 
     aligned_space<itimer, 20> asp;
     itimer *iii = asp[0];
@@ -198,35 +232,35 @@ int _tmain(int argc, _TCHAR* argv[])
     my_random::srand();
     sys_random::srand();
 
-    my_random _my_random;
-    sys_random _sys_random;
-    _my_random.rand();
-    _sys_random.rand();
-    printf("my_random [0, 100]      = %d\n", _my_random.rand(0, 100));
-    printf("my_random [-1000, 1000] = %d\n", _my_random.rand(-1000, 1000));
-    printf("sys_random[0, 100]      = %d\n", _sys_random.rand(0, 100));
-    printf("sys_random[-1000, 1000] = %d\n", _sys_random.rand(-1000, 1000));
-    printf("\r\n");
+    my_random  my_random_;
+    sys_random sys_random_;
+    my_random_.rand();
+    sys_random_.rand();
+    printf("my_random [0, 100]      = %d\n", my_random_.rand(0, 100));
+    printf("my_random [-1000, 1000] = %d\n", my_random_.rand(-1000, 1000));
+    printf("sys_random[0, 100]      = %d\n", sys_random_.rand(0, 100));
+    printf("sys_random[-1000, 1000] = %d\n", sys_random_.rand(-1000, 1000));
+    printf("\n");
 
-    hash_table _hash_table;
-    _hash_table.setup_hash(22);
-    void *pHashTable = (void *)_hash_table.get_hash_table_ptr();
-    
+    hash_table hash_table_;
+    hash_table_.setup_hash(22);
+    void *pHashTable = (void *)hash_table_.get_hash_table_ptr();
+
     printf("pHashTable(ptr)\t = 0x%08X\n", pHashTable);
     printf("hash_bits\t = %d,\nhash_entries\t = 0x%08X (%d),\nhash_sizes\t = 0x%08X (%d)\n",
-        _hash_table.get_hash_bits(),
-        _hash_table.get_hash_entries(),
-        _hash_table.get_hash_entries(),
-        _hash_table.get_hash_sizes(),
-        _hash_table.get_hash_sizes()
-        );
+           hash_table_.get_hash_bits(),
+           hash_table_.get_hash_entries(),
+           hash_table_.get_hash_entries(),
+           hash_table_.get_hash_sizes(),
+           hash_table_.get_hash_sizes()
+          );
     printf("\n");
     printf("alloc_ptr\t = 0x%08X,\ndata_ptr\t = 0x%08X\n",
-        (void *)_hash_table.get_alloc_ptr(),
-        (void *)_hash_table.get_data_ptr()
-        );
-    printf("\r\n");
-    _hash_table.free_hash();
+           (void *)hash_table_.get_alloc_ptr(),
+           (void *)hash_table_.get_data_ptr()
+          );
+    printf("\n");
+    hash_table_.free_hash();
 
     /*
     mresult = timeEndPeriod(1);
@@ -234,6 +268,10 @@ int _tmain(int argc, _TCHAR* argv[])
         printf("timeBeginPeriod: TIMERR_NOERROR.\n");
     }
     //*/
+
+    if (pbuffer) {
+        _aligned_free(pbuffer);
+    }
 
     system("pause");
     return 0;

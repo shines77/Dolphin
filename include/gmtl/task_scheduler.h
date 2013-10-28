@@ -26,8 +26,8 @@
     the GNU General Public License.
 */
 
-#ifndef _TASK_SCHEDULER_T_H_
-#define _TASK_SCHEDULER_T_H_
+#ifndef _GMTL_TASK_SCHEDULER_H_
+#define _GMTL_TASK_SCHEDULER_H_
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
 # pragma once
@@ -79,14 +79,14 @@ public:
     GxString(void);
     virtual ~GxString(void);
 
-    void Free(void);
-    char* SetLength(int len, char ch = 0);
+    void free(void);
+    char* set_length(int len, char ch = 0);
 
     GxString& operator =(GxString& str);
-    int Length(void);
-    const char* _Char(void);
+    int get_length(void);
+    const char* _char(void);
 };
 
 }  // namespace gmtl
 
-#endif /* _TASK_SCHEDULER_T_H_ */
+#endif /* _GMTL_TASK_SCHEDULER_H_ */

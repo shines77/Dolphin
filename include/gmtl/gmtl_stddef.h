@@ -11,7 +11,9 @@
 #if defined( _MSC_VER ) || defined( __MINGW__ ) || defined( _WINDOWS ) || defined( WIN32 )
 #  define WIN32_LEAN_AND_MEAN
 #  define VC_EXTRALEAN
-#  define _CRT_SECURE_NO_WARNINGS
+#  ifndef _CRT_SECURE_NO_WARNINGS
+#     define _CRT_SECURE_NO_WARNINGS
+#  endif
 #  define DIRECTORY_DELIMITER "\\"
 #  define SIGACTION 0
 #else
