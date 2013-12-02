@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="dolphin_console"
+	Name="dolphin"
 	ProjectGUID="{06D5ACD8-038A-40F9-BEF3-39BF106BB5DF}"
 	RootNamespace="dolphin_console"
 	Keyword="Win32Proj"

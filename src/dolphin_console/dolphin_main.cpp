@@ -273,6 +273,9 @@ int _tmain(int argc, _TCHAR *argv[])
         _aligned_free(pbuffer);
     }
 
+    DWORD dwRet = 0;
+    SendMessageTimeout(HWND_BROADCAST, WM_SETTINGCHANGE, NULL, (LPARAM)"Environment", SMTO_NOTIMEOUTIFNOTHUNG, INFINITE, &dwRet);
+
     system("pause");
     return 0;
 }
