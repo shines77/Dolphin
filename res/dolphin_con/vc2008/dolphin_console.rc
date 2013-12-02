@@ -70,13 +70,13 @@ BEGIN
         BLOCK "080404b0"
         BEGIN
             VALUE "CompanyName", "77Studio.Net"
-            VALUE "FileDescription", "Guozi Multi-threading Library"
+            VALUE "FileDescription", "Dolphin Console Othello Program"
             VALUE "FileVersion", "1, 0, 0, 1"
-            VALUE "InternalName", "gmtl Library"
+            VALUE "InternalName", "Dolphin"
             VALUE "LegalCopyright", "Copyright (C) 2011-2012, 77Studio.Net"
             VALUE "LegalTrademarks", "77Studio.Net"
-            VALUE "OriginalFilename", "gmtl.dll"
-            VALUE "ProductName", "Guozi Multi-threading Library"
+            VALUE "OriginalFilename", "dolphin_console.exe"
+            VALUE "ProductName", "Dolphin Console"
             VALUE "ProductVersion", "1, 0, 0, 1"
         END
     END

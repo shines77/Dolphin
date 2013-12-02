@@ -26,8 +26,8 @@
     the GNU General Public License.
 */
 
-#ifndef _HASH_TABLE_H_
-#define _HASH_TABLE_H_
+#ifndef _DOL_HASH_TABLE_H_
+#define _DOL_HASH_TABLE_H_
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
 # pragma once
@@ -127,7 +127,7 @@ public:
 
 private:
     pointer         m_hash_table;
-    cache_aligned m_hash_memory;
+    cache_aligned   m_hash_memory;
     bits_type       m_hash_bits;
     entry_type      m_hash_entries;
     size_type       m_hash_sizes;
@@ -142,7 +142,7 @@ public:
     static internal::hash_mask_t g_hash_flip_value[BOARD_MAX_DISC];
     static internal::hash_mask_t g_hash_color_mask[CHESS_MAX_COLOR];
     static internal::hash_mask_t g_hash_switch_side;
-    static internal::hash_mask_t g_hash_row_value[BOARD_ROW][BOARD_ROW_MASKS];
+    static internal::hash_mask_t g_hash_row_value[BOARD_ROWS][BOARD_ROW_MASKS];
     static internal::hash_mask_t g_hash_put_value[CHESS_MAX_COLOR+1][BOARD_MAX_DISC];
 
     inline static unsigned int hash_table::popcount32( unsigned int bits );
@@ -159,17 +159,17 @@ public:
     inline bits_type    get_hash_bits( void ) const     { return m_hash_bits; };
     inline mask_type    get_hash_mask( void ) const     { return m_hash_mask; };
     inline pointer      get_hash_table_ptr( void ) const    { return m_hash_table; };
-    inline pointer      get_data_ptr( void ) const      { return (pointer)m_hash_memory.GetDataPtr(); };
-    inline pointer      get_alloc_ptr( void ) const     { return (pointer)m_hash_memory.GetAllocPtr(); };
+    inline pointer      get_data_ptr( void ) const      { return (pointer)m_hash_memory.get_data_ptr(); };
+    inline pointer      get_alloc_ptr( void ) const     { return (pointer)m_hash_memory.get_alloc_ptr(); };
 
     inline bool is_valid( void ) const {
-        return ((m_hash_table != NULL) && (m_hash_memory.GetDataPtr() != NULL));
+        return ((m_hash_table != NULL) && (m_hash_memory.get_data_ptr() != NULL));
     };
     inline bool is_data_valid( void ) const {
-        return (m_hash_memory.GetDataPtr() != NULL);
+        return (m_hash_memory.get_data_ptr() != NULL);
     };
     inline bool is_alloc_valid( void ) const {
-        return (m_hash_memory.GetAllocPtr() != NULL);
+        return (m_hash_memory.get_alloc_ptr() != NULL);
     };
 
     inline bool is_initialized( void ) const { return m_initialized; };
@@ -220,4 +220,4 @@ hash_table::get_bits_closeness( unsigned int a0, unsigned int a1,
 
 }  // namespace dolphin
 
-#endif  /* _HASH_TABLE_H_ */
+#endif  /* _DOL_HASH_TABLE_H_ */

@@ -26,8 +26,8 @@
     the GNU General Public License.
 */
 
-#ifndef _TASK_T_H_
-#define _TASK_T_H_
+#ifndef _GMTL_TASK_H_
+#define _GMTL_TASK_H_
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
 # pragma once
@@ -211,4 +211,4 @@ public:
 
 }  // namespace gmtl
 
-#endif /* _TASK_T_H_ */
+#endif /* _GMTL_TASK_H_ */

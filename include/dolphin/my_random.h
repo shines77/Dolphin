@@ -26,8 +26,8 @@
     the GNU General Public License.
 */
 
-#ifndef _MY_RANDOM_H_
-#define _MY_RANDOM_H_
+#ifndef _DOL_MY_RANDOM_H_
+#define _DOL_MY_RANDOM_H_
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
 # pragma once
@@ -80,6 +80,13 @@ public:
         return get_range_number(x, range_min, range_max);
     }
 
+    inline static value_type next( void ) {
+        return _my_rand();
+    }
+    inline static value_type nextLong( void ) {
+        return _my_rand();
+    }
+
 protected:
 
     static void _my_srand( int seed = timer_null_seed );
@@ -91,4 +98,4 @@ protected:
 
 }  // namespace dolphin
 
-#endif  /* _MY_RANDOM_H_ */
+#endif  /* _DOL_MY_RANDOM_H_ */

@@ -26,8 +26,8 @@
     the GNU General Public License.
 */
 
-#ifndef _TICKCOUNT_T_H_
-#define _TICKCOUNT_T_H_
+#ifndef _GMTL_TICKCOUNT_H_
+#define _GMTL_TICKCOUNT_H_
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
 # pragma once
@@ -206,4 +206,4 @@ inline tickcount& tickcount::operator=( const tickcount& t ) {
 
 }  // namespace gmtl
 
-#endif /* _TICKCOUNT_T_H_ */
+#endif /* _GMTL_TICKCOUNT_H_ */

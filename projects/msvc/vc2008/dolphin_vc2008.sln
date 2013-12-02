@@ -1,0 +1,53 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lib_dolphin", "lib_dolphin\lib_dolphin.vcproj", "{5C797559-24F2-4DC6-A320-5FDE9C47C0F2}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B2514D20-C0B7-489E-9FEF-2CF6AE6276A4} = {B2514D20-C0B7-489E-9FEF-2CF6AE6276A4}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lib_gmtl", "lib_gmtl\lib_gmtl.vcproj", "{B2514D20-C0B7-489E-9FEF-2CF6AE6276A4}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dolphin", "dolphin\dolphin.vcproj", "{06D5ACD8-038A-40F9-BEF3-39BF106BB5DF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B2514D20-C0B7-489E-9FEF-2CF6AE6276A4} = {B2514D20-C0B7-489E-9FEF-2CF6AE6276A4}
+		{5C797559-24F2-4DC6-A320-5FDE9C47C0F2} = {5C797559-24F2-4DC6-A320-5FDE9C47C0F2}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug_MBCS|Win32 = Debug_MBCS|Win32
+		Debug|Win32 = Debug|Win32
+		Release_MBCS|Win32 = Release_MBCS|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5C797559-24F2-4DC6-A320-5FDE9C47C0F2}.Debug_MBCS|Win32.ActiveCfg = Debug_MBCS|Win32
+		{5C797559-24F2-4DC6-A320-5FDE9C47C0F2}.Debug_MBCS|Win32.Build.0 = Debug_MBCS|Win32
+		{5C797559-24F2-4DC6-A320-5FDE9C47C0F2}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5C797559-24F2-4DC6-A320-5FDE9C47C0F2}.Debug|Win32.Build.0 = Debug|Win32
+		{5C797559-24F2-4DC6-A320-5FDE9C47C0F2}.Release_MBCS|Win32.ActiveCfg = Release_MBCS|Win32
+		{5C797559-24F2-4DC6-A320-5FDE9C47C0F2}.Release_MBCS|Win32.Build.0 = Release_MBCS|Win32
+		{5C797559-24F2-4DC6-A320-5FDE9C47C0F2}.Release|Win32.ActiveCfg = Release|Win32
+		{5C797559-24F2-4DC6-A320-5FDE9C47C0F2}.Release|Win32.Build.0 = Release|Win32
+		{B2514D20-C0B7-489E-9FEF-2CF6AE6276A4}.Debug_MBCS|Win32.ActiveCfg = Debug_MBCS|Win32
+		{B2514D20-C0B7-489E-9FEF-2CF6AE6276A4}.Debug_MBCS|Win32.Build.0 = Debug_MBCS|Win32
+		{B2514D20-C0B7-489E-9FEF-2CF6AE6276A4}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B2514D20-C0B7-489E-9FEF-2CF6AE6276A4}.Debug|Win32.Build.0 = Debug|Win32
+		{B2514D20-C0B7-489E-9FEF-2CF6AE6276A4}.Release_MBCS|Win32.ActiveCfg = Release_MBCS|Win32
+		{B2514D20-C0B7-489E-9FEF-2CF6AE6276A4}.Release_MBCS|Win32.Build.0 = Release_MBCS|Win32
+		{B2514D20-C0B7-489E-9FEF-2CF6AE6276A4}.Release|Win32.ActiveCfg = Release|Win32
+		{B2514D20-C0B7-489E-9FEF-2CF6AE6276A4}.Release|Win32.Build.0 = Release|Win32
+		{06D5ACD8-038A-40F9-BEF3-39BF106BB5DF}.Debug_MBCS|Win32.ActiveCfg = Debug_MBCS|Win32
+		{06D5ACD8-038A-40F9-BEF3-39BF106BB5DF}.Debug_MBCS|Win32.Build.0 = Debug_MBCS|Win32
+		{06D5ACD8-038A-40F9-BEF3-39BF106BB5DF}.Debug|Win32.ActiveCfg = Debug|Win32
+		{06D5ACD8-038A-40F9-BEF3-39BF106BB5DF}.Debug|Win32.Build.0 = Debug|Win32
+		{06D5ACD8-038A-40F9-BEF3-39BF106BB5DF}.Release_MBCS|Win32.ActiveCfg = Release_MBCS|Win32
+		{06D5ACD8-038A-40F9-BEF3-39BF106BB5DF}.Release_MBCS|Win32.Build.0 = Release_MBCS|Win32
+		{06D5ACD8-038A-40F9-BEF3-39BF106BB5DF}.Release|Win32.ActiveCfg = Release|Win32
+		{06D5ACD8-038A-40F9-BEF3-39BF106BB5DF}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

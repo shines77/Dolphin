@@ -26,8 +26,8 @@
     the GNU General Public License.
 */
 
-#ifndef _SCHEDULER_T_H_
-#define _SCHEDULER_T_H_
+#ifndef _GMTL_SCHEDULER_H_
+#define _GMTL_SCHEDULER_H_
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
 # pragma once
@@ -54,4 +54,4 @@ private:
 
 }  // namespace gmtl
 
-#endif /* _SCHEDULER_T_H_ */
+#endif /* _GMTL_SCHEDULER_H_ */
