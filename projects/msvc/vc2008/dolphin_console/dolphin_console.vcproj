@@ -4,7 +4,7 @@
 	Version="9.00"
 	Name="dolphin"
 	ProjectGUID="{06D5ACD8-038A-40F9-BEF3-39BF106BB5DF}"
-	RootNamespace="dolphin_console"
+	RootNamespace="dolphin"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="196613"
 	>
@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)src&quot;;..\..\..\..\include;..\..\..\..\src;&quot;..\..\..\..\external-deps&quot;"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)src&quot;;..\..\..\..\include;..\..\..\..\src;&quot;..\..\..\..\deps&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -64,7 +64,7 @@
 				AdditionalDependencies="winmm.lib lib_dolphin_mbcs_debug.lib lib_gmtl_mbcs_debug.lib"
 				OutputFile="$(OutDir)\$(ProjectName).exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\..\..\lib;..\..\..\..\lib\windows\x86\vc2008;&quot;..\..\..\..\external-deps&quot;"
+				AdditionalLibraryDirectories="..\..\..\..\lib;..\..\..\..\lib\windows\x86\vc2008;&quot;..\..\..\..\deps&quot;"
 				UACExecutionLevel="1"
 				ModuleDefinitionFile=""
 				GenerateDebugInformation="true"
@@ -120,7 +120,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)src&quot;;..\..\..\..\include;..\..\..\..\src;&quot;..\..\..\..\external-deps&quot;"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)src&quot;;..\..\..\..\include;..\..\..\..\src;&quot;..\..\..\..\deps&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -142,7 +142,7 @@
 				AdditionalDependencies="winmm.lib lib_dolphin_mbcs.lib lib_gmtl_mbcs.lib"
 				OutputFile="$(OutDir)\$(ProjectName).exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\..\..\lib;..\..\..\..\lib\windows\x86\vc2008;&quot;..\..\..\..\external-deps&quot;"
+				AdditionalLibraryDirectories="..\..\..\..\lib;..\..\..\..\lib\windows\x86\vc2008;&quot;..\..\..\..\deps&quot;"
 				UACExecutionLevel="1"
 				ModuleDefinitionFile=""
 				GenerateDebugInformation="true"
@@ -198,7 +198,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)src&quot;;..\..\..\..\include;..\..\..\..\src;&quot;..\..\..\..\external-deps&quot;"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)src&quot;;..\..\..\..\include;..\..\..\..\src;&quot;..\..\..\..\deps&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -221,7 +221,7 @@
 				AdditionalDependencies="winmm.lib lib_dolphin_debug.lib lib_gmtl_debug.lib"
 				OutputFile="$(OutDir)\$(ProjectName).exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\..\..\lib;..\..\..\..\lib\windows\x86\vc2008;&quot;..\..\..\..\external-deps&quot;"
+				AdditionalLibraryDirectories="..\..\..\..\lib;..\..\..\..\lib\windows\x86\vc2008;&quot;..\..\..\..\deps&quot;"
 				UACExecutionLevel="1"
 				ModuleDefinitionFile=""
 				GenerateDebugInformation="true"
@@ -277,7 +277,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)src&quot;;..\..\..\..\include;..\..\..\..\src;&quot;..\..\..\..\external-deps&quot;"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)src&quot;;..\..\..\..\include;..\..\..\..\src;&quot;..\..\..\..\deps&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -299,7 +299,7 @@
 				AdditionalDependencies="winmm.lib lib_dolphin.lib lib_gmtl.lib"
 				OutputFile="$(OutDir)\$(ProjectName).exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\..\..\lib;..\..\..\..\lib\windows\x86\vc2008;&quot;..\..\..\..\external-deps&quot;"
+				AdditionalLibraryDirectories="..\..\..\..\lib;..\..\..\..\lib\windows\x86\vc2008;&quot;..\..\..\..\deps&quot;"
 				UACExecutionLevel="1"
 				ModuleDefinitionFile=""
 				GenerateDebugInformation="true"
@@ -340,7 +340,7 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\..\..\src\dolphin_console\dolphin_main.cpp"
+				RelativePath="..\..\..\..\src\dolphin_con\dolphin_main.cpp"
 				>
 			</File>
 		</Filter>
@@ -350,7 +350,7 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\..\..\..\res\dolphin_console\vc2008\resource.h"
+				RelativePath="..\..\..\..\res\dolphin_con\vc2008\resource.h"
 				>
 			</File>
 		</Filter>
@@ -360,7 +360,7 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 			<File
-				RelativePath="..\..\..\..\res\dolphin_console\vc2008\dolphin_console.rc"
+				RelativePath="..\..\..\..\res\dolphin_con\vc2008\dolphin_con.rc"
 				>
 			</File>
 		</Filter>
