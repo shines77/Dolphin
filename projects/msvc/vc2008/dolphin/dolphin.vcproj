@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)src&quot;;..\..\..\..\include;..\..\..\..\src;&quot;..\..\..\..\deps&quot;"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)src&quot;;..\..\..\..\include;..\..\..\..\include\dolphin_con;..\..\..\..\src;..\..\..\..\src\dolphin_con;..\..\..\..\deps"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -120,7 +120,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)src&quot;;..\..\..\..\include;..\..\..\..\src;&quot;..\..\..\..\deps&quot;"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)src&quot;;..\..\..\..\include;..\..\..\..\include\dolphin_con;..\..\..\..\src;..\..\..\..\src\dolphin_con;..\..\..\..\deps"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -198,7 +198,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)src&quot;;..\..\..\..\include;..\..\..\..\src;&quot;..\..\..\..\deps&quot;"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)src&quot;;..\..\..\..\include;..\..\..\..\include\dolphin_con;..\..\..\..\src;..\..\..\..\src\dolphin_con;..\..\..\..\deps"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -277,7 +277,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)src&quot;;..\..\..\..\include;..\..\..\..\src;&quot;..\..\..\..\deps&quot;"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)src&quot;;..\..\..\..\include;..\..\..\..\include\dolphin_con;..\..\..\..\src;..\..\..\..\src\dolphin_con;..\..\..\..\deps"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -349,6 +349,10 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath="..\..\..\..\include\dolphin_con\dolphin_main.h"
+				>
+			</File>
 			<File
 				RelativePath="..\..\..\..\res\dolphin_con\vc2008\resource.h"
 				>

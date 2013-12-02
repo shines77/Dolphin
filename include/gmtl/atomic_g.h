@@ -371,4 +371,4 @@ INT atomic_clear_mask(atomic_t *v, INT mask)
 
 #endif
 
-#endif  // _GMTL_ATOMIC_G_H_
+#endif  /* _GMTL_ATOMIC_G_H_ */

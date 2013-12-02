@@ -3,7 +3,7 @@
 #define _DOL_COLOUR_H_
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 /* Symbolic values for the possible contents of a square */
@@ -19,4 +19,4 @@
 
 #define OPP_COLOR( color )          ((CHESS_BLACK + CHESS_WHITE) - (color))
 
-#endif // _DOL_COLOUR_H_
+#endif  /* _DOL_COLOUR_H_ */

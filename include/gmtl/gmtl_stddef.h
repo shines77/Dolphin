@@ -3,7 +3,7 @@
 #define _GMTL_STDDEF_H_
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 // Platform Initialization ==================================================
@@ -179,4 +179,4 @@ public:
 
 #endif  // RC_INVOKED
 
-#endif  // _GMTL_STDDEF_H_
+#endif  /* _GMTL_STDDEF_H_ */

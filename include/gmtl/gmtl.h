@@ -3,7 +3,7 @@
 #define _GMTL_H_
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 #include <gmtl/gmtl_stddef.h>
@@ -16,4 +16,4 @@
 #include <gmtl/scheduler.h>
 #include <gmtl/task.h>
 
-#endif // _GMTL_H_
+#endif /* _GMTL_H_ */

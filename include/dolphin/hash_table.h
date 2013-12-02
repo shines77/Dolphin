@@ -30,7 +30,7 @@
 #define _DOL_HASH_TABLE_H_
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 #include <gmtl/cache_aligned.h>
