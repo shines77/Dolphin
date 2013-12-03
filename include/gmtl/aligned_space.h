@@ -30,7 +30,7 @@
 #define _GMTL_ALIGNED_SPACE_H_
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 #include <gmtl/gmtl_stddef.h>
@@ -82,4 +82,4 @@ public:
 
 }  // namespace gmtl
 
-#endif  // _GMTL_ALIGNED_SPACE_H_
+#endif  /* _GMTL_ALIGNED_SPACE_H_ */

@@ -30,7 +30,7 @@
 #define _GMTL_CONFIG_H_
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 /** This header is supposed to contain macro definitions and C style comments only.

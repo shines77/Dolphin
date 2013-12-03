@@ -38,6 +38,9 @@
 *.opensdf
 *.layout
 *.depend
+*.sln.old
+*.vcxproj.filters
+*.vcxproj.user
 /Debug
 /Release
 

@@ -3,7 +3,7 @@
 #define _DOL_STDDEF_H_
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 // Platform Initialization ==================================================
@@ -139,4 +139,4 @@ public:
 
 #endif  // RC_INVOKED
 
-#endif  // _DOL_STDDEF_H_
+#endif  /* _DOL_STDDEF_H_ */

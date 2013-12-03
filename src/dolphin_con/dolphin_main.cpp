@@ -8,6 +8,8 @@
 #include <dolphin/dolphin.h>
 #include <mmsystem.h>
 
+#include "dolphin_main.h"
+
 #ifdef _DEBUG
 #define DEBUG_CLIENTBLOCK   new( _CLIENT_BLOCK, __FILE__, __LINE__)
 #else
@@ -131,6 +133,7 @@ int _tmain(int argc, _TCHAR *argv[])
     gcd = GetMaxCommonDivide_new(7, 5);
     printf("GCD(7, 5) = %d\n\n", gcd);
 
+#if 0
     int m, n, p, p1, p2;
     n = 20; p = 2;
     p1 = 2; p2 = 4;
@@ -140,6 +143,7 @@ int _tmain(int argc, _TCHAR *argv[])
     m = HashMask_GetMaxLength(n, p1, p2, 5);
     //m = HashMask_GetMaxLength(n, p, (1 << 11) - 1);
     printf("HashMask_GetMaxLength(%d, %d, %d) = %d\n\n", n, p1, p2, m);
+#endif
 
     //system("pause");
     //return 0;
@@ -273,8 +277,12 @@ int _tmain(int argc, _TCHAR *argv[])
         _aligned_free(pbuffer);
     }
 
+    printf("BoardCast Send the \"WM_SETTINGCHANGE\" message to all processes and windows.\n");
+
     DWORD dwRet = 0;
     SendMessageTimeout(HWND_BROADCAST, WM_SETTINGCHANGE, NULL, (LPARAM)"Environment", SMTO_NOTIMEOUTIFNOTHUNG, INFINITE, &dwRet);
+
+    printf("Done.\n");
 
     system("pause");
     return 0;

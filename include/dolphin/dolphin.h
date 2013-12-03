@@ -3,7 +3,7 @@
 #define _DOLPHIN_H_
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 #include <dolphin/dol_stddef.h>
@@ -16,4 +16,4 @@
 #include <dolphin/hash_table.h>
 #include <dolphin/search_engine.h>
 
-#endif // _DOLPHIN_H_
+#endif  /* _DOLPHIN_H_ */

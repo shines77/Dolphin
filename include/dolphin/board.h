@@ -3,7 +3,7 @@
 #define _DOL_BOARD_H_
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 #ifdef __cplusplus
@@ -22,6 +22,10 @@ extern "C" {
 #define EX_BOARD_MAX_DISC           (EX_BOARD_ROWS * EX_BOARD_COLS)
 
 #define BOARD_ROW_MASKS             (1 << BOARD_COLS)
+
+#ifdef __cplusplus
+}
+#endif
 
 namespace dolphin {
 
@@ -43,8 +47,4 @@ enum Coord_8x8 {
 
 }  // namespace dolphin
 
-#ifdef __cplusplus
-}
-#endif
-
-#endif // _DOL_BOARD_H_
+#endif  /* _DOL_BOARD_H_ */

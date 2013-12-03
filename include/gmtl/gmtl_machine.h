@@ -30,7 +30,7 @@
 #define _GMTL_MACHINE_H_
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
+#pragma once
 #endif
 
 /** This header provides basic platform abstraction layer by hooking up appropriate
