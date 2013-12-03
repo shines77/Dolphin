@@ -214,4 +214,4 @@ inline itimer& itimer::operator=( const itimer& t ) {
 
 }  // namespace gmtl
 
-#endif /* _GMTL_ITIMER_H_ */
+#endif  /* _GMTL_ITIMER_H_ */

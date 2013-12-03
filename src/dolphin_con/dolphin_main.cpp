@@ -233,8 +233,8 @@ int _tmain(int argc, _TCHAR *argv[])
     iii = asp.elements(0);
     int i223 = (int)asp.size();
 
-    my_random::srand();
-    sys_random::srand();
+    //my_random::srand();
+    //sys_random::srand();
 
     my_random  my_random_;
     sys_random sys_random_;
@@ -277,12 +277,14 @@ int _tmain(int argc, _TCHAR *argv[])
         _aligned_free(pbuffer);
     }
 
+#if 0
     printf("BoardCast Send the \"WM_SETTINGCHANGE\" message to all processes and windows.\n");
 
     DWORD dwRet = 0;
     SendMessageTimeout(HWND_BROADCAST, WM_SETTINGCHANGE, NULL, (LPARAM)"Environment", SMTO_NOTIMEOUTIFNOTHUNG, INFINITE, &dwRet);
 
-    printf("Done.\n");
+    printf("Done.\n\n");
+#endif
 
     system("pause");
     return 0;

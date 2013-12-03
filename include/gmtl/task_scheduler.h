@@ -89,4 +89,4 @@ public:
 
 }  // namespace gmtl
 
-#endif /* _GMTL_TASK_SCHEDULER_H_ */
+#endif  /* _GMTL_TASK_SCHEDULER_H_ */

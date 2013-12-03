@@ -206,4 +206,4 @@ inline tickcount& tickcount::operator=( const tickcount& t ) {
 
 }  // namespace gmtl
 
-#endif /* _GMTL_TICKCOUNT_H_ */
+#endif  /* _GMTL_TICKCOUNT_H_ */

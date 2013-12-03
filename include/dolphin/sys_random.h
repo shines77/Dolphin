@@ -92,6 +92,7 @@ public:
     }
 protected:
 
+    static void _new_sys_srand( unsigned int seed = timer_null_seed );
     static void _sys_srand( unsigned int seed = timer_null_seed );
     static value_type _sys_rand( void );
 };

@@ -827,4 +827,4 @@ T __GMTL_ReverseBits(T src) {
     return dst;
 }
 
-#endif /* _GMTL_MACHINE_H_ */
+#endif  /* _GMTL_MACHINE_H_ */

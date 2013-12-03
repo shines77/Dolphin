@@ -16,4 +16,4 @@
 #include <gmtl/scheduler.h>
 #include <gmtl/task.h>
 
-#endif /* _GMTL_H_ */
+#endif  /* _GMTL_H_ */

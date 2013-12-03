@@ -141,4 +141,4 @@ private:
 
 }  // namespace gmtl
 
-#endif  // _GMTL_CACHE_ALIGNED_H_
+#endif  /* _GMTL_CACHE_ALIGNED_H_ */
