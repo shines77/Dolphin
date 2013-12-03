@@ -10,10 +10,10 @@
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
     <Filter Include="include\machine">
-      <UniqueIdentifier>{6176c713-fdde-4f27-958b-117d68b8b47c}</UniqueIdentifier>
+      <UniqueIdentifier>{fb741e9b-5572-48de-9c69-771533a8afe4}</UniqueIdentifier>
     </Filter>
     <Filter Include="include\vs">
-      <UniqueIdentifier>{cef2b811-b11e-4763-8524-e942230c07c6}</UniqueIdentifier>
+      <UniqueIdentifier>{cfeafb8a-d23e-4074-9d7b-3054f422ab43}</UniqueIdentifier>
     </Filter>
     <Filter Include="res">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
@@ -22,6 +22,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\src\dolphin\bitboard.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\dolphin\hash_mask.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\dolphin\hash_table.cpp">
@@ -53,13 +56,13 @@
     <ClInclude Include="..\..\..\..\include\dolphin\dolphin.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\include\dolphin\hash_mask.h">
+      <Filter>include</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\include\dolphin\hash_table.h">
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\dolphin\my_random.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\res\dolphin\vc2008\resource.h">
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\dolphin\search_engine.h">
@@ -74,9 +77,12 @@
     <ClInclude Include="..\..\..\..\include\dolphin\vs\stdint.h">
       <Filter>include\vs</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\res\dolphin\vc2010\resource.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="..\..\..\..\res\dolphin\vc2008\lib_dolphin.rc">
+    <ResourceCompile Include="..\..\..\..\res\dolphin\vc2010\lib_dolphin.rc">
       <Filter>res</Filter>
     </ResourceCompile>
   </ItemGroup>

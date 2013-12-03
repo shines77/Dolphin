@@ -17,9 +17,9 @@
 	</ToolFiles>
 	<Configurations>
 		<Configuration
-			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			Name="Debug_MBCS|Win32"
+			OutputDirectory="$(SolutionDir)..\..\..\lib\windows\x86\vc2008"
+			IntermediateDirectory="$(SolutionDir)..\..\..\tmp\windows\x86\vc2008\$(ConfigurationName)\$(ProjectName)"
 			ConfigurationType="4"
 			CharacterSet="2"
 			>
@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)src&quot;;..\..\..\..\include;..\..\..\..\src;&quot;..\..\..\..\external-deps&quot;"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)src&quot;;..\..\..\..\include;..\..\..\..\include\dolphin;..\..\..\..\src;..\..\..\..\src\dolphin;..\..\..\..\deps"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -61,7 +61,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\..\..\..\..\lib\windows\x86\$(ProjectName)_mbcs_debug.lib"
+				OutputFile="$(OutDir)\$(ProjectName)_mbcs_debug.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -80,9 +80,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			Name="Release_MBCS|Win32"
+			OutputDirectory="$(SolutionDir)..\..\..\lib\windows\x86\vc2008"
+			IntermediateDirectory="$(SolutionDir)..\..\..\tmp\windows\x86\vc2008\$(ConfigurationName)\$(ProjectName)"
 			ConfigurationType="4"
 			CharacterSet="2"
 			WholeProgramOptimization="1"
@@ -106,7 +106,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)src&quot;;..\..\..\..\include;..\..\..\..\src;&quot;..\..\..\..\external-deps&quot;"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)src&quot;;..\..\..\..\include;..\..\..\..\include\dolphin;..\..\..\..\src;..\..\..\..\src\dolphin;..\..\..\..\deps"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -125,7 +125,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\..\..\..\..\lib\windows\x86\$(ProjectName)_mbcs.lib"
+				OutputFile="$(OutDir)\$(ProjectName)_mbcs.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -144,9 +144,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Debug_Unicode|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			Name="Debug|Win32"
+			OutputDirectory="$(SolutionDir)..\..\..\lib\windows\x86\vc2008"
+			IntermediateDirectory="$(SolutionDir)..\..\..\tmp\windows\x86\vc2008\$(ConfigurationName)\$(ProjectName)"
 			ConfigurationType="4"
 			CharacterSet="1"
 			>
@@ -168,7 +168,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)src&quot;;..\..\..\..\include;..\..\..\..\src;&quot;..\..\..\..\external-deps&quot;"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)src&quot;;..\..\..\..\include;..\..\..\..\include\dolphin;..\..\..\..\src;..\..\..\..\src\dolphin;..\..\..\..\deps"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_UNICODE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -188,7 +188,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\..\..\..\..\lib\windows\x86\$(ProjectName)_debug.lib"
+				OutputFile="$(OutDir)\$(ProjectName)_debug.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -207,9 +207,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Release_Unicode|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			Name="Release|Win32"
+			OutputDirectory="$(SolutionDir)..\..\..\lib\windows\x86\vc2008"
+			IntermediateDirectory="$(SolutionDir)..\..\..\tmp\windows\x86\vc2008\$(ConfigurationName)\$(ProjectName)"
 			ConfigurationType="4"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
@@ -233,7 +233,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)src&quot;;..\..\..\..\include;..\..\..\..\src;&quot;..\..\..\..\external-deps&quot;"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)src&quot;;..\..\..\..\include;..\..\..\..\include\dolphin;..\..\..\..\src;..\..\..\..\src\dolphin;..\..\..\..\deps"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_UNICODE"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -252,7 +252,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\..\..\..\..\lib\windows\x86\$(ProjectName).lib"
+				OutputFile="$(OutDir)\$(ProjectName).lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -281,6 +281,10 @@
 			>
 			<File
 				RelativePath="..\..\..\..\src\dolphin\bitboard.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\src\dolphin\hash_mask.cpp"
 				>
 			</File>
 			<File
@@ -323,6 +327,10 @@
 			</File>
 			<File
 				RelativePath="..\..\..\..\include\dolphin\dolphin.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\include\dolphin\hash_mask.h"
 				>
 			</File>
 			<File

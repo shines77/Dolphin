@@ -10,13 +10,13 @@
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
     <Filter Include="include\internal">
-      <UniqueIdentifier>{e501ef3e-7719-4c4d-b922-835a5ae4a114}</UniqueIdentifier>
+      <UniqueIdentifier>{30f06045-4403-4587-b798-be61d09b2d56}</UniqueIdentifier>
     </Filter>
     <Filter Include="include\machine">
-      <UniqueIdentifier>{7b30eaac-a84a-4b31-8650-b6a4061c4c60}</UniqueIdentifier>
+      <UniqueIdentifier>{a1baffb1-20c7-4d3d-a21d-21ec3d8af6c7}</UniqueIdentifier>
     </Filter>
     <Filter Include="include\vs">
-      <UniqueIdentifier>{41de92cc-2cf4-4b74-a307-6ec109b67fdd}</UniqueIdentifier>
+      <UniqueIdentifier>{ac40e44a-6039-4f0f-85bb-a242e575b35d}</UniqueIdentifier>
     </Filter>
     <Filter Include="res">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
@@ -59,9 +59,6 @@
     <ClInclude Include="..\..\..\..\include\gmtl\itimer.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\res\gmtl\vc2008\resource.h">
-      <Filter>include</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\include\gmtl\scheduler.h">
       <Filter>include</Filter>
     </ClInclude>
@@ -92,9 +89,12 @@
     <ClInclude Include="..\..\..\..\include\gmtl\vs\stdint.h">
       <Filter>include\vs</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\res\gmtl\vc2010\resource.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="..\..\..\..\res\gmtl\vc2008\lib_gmtl.rc">
+    <ResourceCompile Include="..\..\..\..\res\gmtl\vc2010\lib_gmtl.rc">
       <Filter>res</Filter>
     </ResourceCompile>
   </ItemGroup>

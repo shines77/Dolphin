@@ -15,17 +15,20 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\dolphin_console\dolphin_main.cpp">
+    <ClCompile Include="..\..\..\..\src\dolphin_con\dolphin_main.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\res\dolphin_console\vc2008\resource.h">
+    <ClInclude Include="..\..\..\..\include\dolphin_con\dolphin_main.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\res\dolphin_con\vc2010\resource.h">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="..\..\..\..\res\dolphin_console\vc2008\dolphin_console.rc">
+    <ResourceCompile Include="..\..\..\..\res\dolphin_con\vc2010\dolphin_console.rc">
       <Filter>res</Filter>
     </ResourceCompile>
   </ItemGroup>
