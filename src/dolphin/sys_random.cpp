@@ -33,8 +33,6 @@
 #include <time.h>
 #endif
 
-#define USE_NEW_SYS_SRAND       1
-
 namespace dolphin {
 
 void sys_random::_new_sys_srand( unsigned int seed /* =timer_null_seed(0) */ )
@@ -79,11 +77,10 @@ void sys_random::_new_sys_srand( unsigned int seed /* =timer_null_seed(0) */ )
 /*
   Init c runtime lib's random number seed
 */
-
 void sys_random::_sys_srand( unsigned int seed /* =timer_null_seed(0) */ )
 {
 #if defined(USE_NEW_SYS_SRAND) && (USE_NEW_SYS_SRAND != 0)
-    return _new_sys_srand(seed);
+    _new_sys_srand(seed);
 #else
     if (seed == timer_null_seed)
         ::srand((unsigned)time(NULL));
@@ -95,7 +92,6 @@ void sys_random::_sys_srand( unsigned int seed /* =timer_null_seed(0) */ )
 /*
   Generates a random number use c runtime lib'
 */
-
 sys_random::value_type sys_random::_sys_rand( void )
 {
 #if defined(RAND_MAX) && (RAND_MAX == 0x7FFF)

@@ -200,11 +200,11 @@ void my_random::_my_srand( int seed /* =timer_null_seed(0) */ )
     else {
         my_state[0] = seed;
         for (i=1; i<my_rand_deg; i++) {
-            my_state[i] = 1103515245*my_state[i - 1] + 12345;
+            my_state[i] = 1103515245 * my_state[i - 1] + 12345;
         }
         my_fptr = &my_state[my_rand_sep];
         my_rptr = &my_state[0];
-        for (i=0; i<my_rand_deg*10; i++)
+        for (i=0; i<my_rand_deg * 10; i++)
             _my_rand();
     }
 }
@@ -229,7 +229,7 @@ my_random::value_type my_random::_my_rand( void )
     value_type i;
 
     if (my_rand_type == TYPE_0) {
-        i = my_state[0] = (my_state[0]*1103515245 + 12345) & 0x7fffffff;
+        i = my_state[0] = (my_state[0] * 1103515245 + 12345) & 0x7fffffff;
     }
     else {
         *my_fptr += *my_rptr;

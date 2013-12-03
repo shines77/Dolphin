@@ -338,6 +338,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\..\include\dolphin\mt_random.hpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\..\include\dolphin\my_random.h"
 				>
 			</File>

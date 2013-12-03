@@ -238,12 +238,18 @@ int _tmain(int argc, _TCHAR *argv[])
 
     my_random  my_random_;
     sys_random sys_random_;
+    mt_random  mt_random_;
+    mt_random_.srand();
+
     my_random_.rand();
     sys_random_.rand();
+    mt_random_.rand();
     printf("my_random [0, 100]      = %d\n", my_random_.rand(0, 100));
     printf("my_random [-1000, 1000] = %d\n", my_random_.rand(-1000, 1000));
     printf("sys_random[0, 100]      = %d\n", sys_random_.rand(0, 100));
     printf("sys_random[-1000, 1000] = %d\n", sys_random_.rand(-1000, 1000));
+    printf("mt_random[0, 100]       = %d\n", mt_random_.rand(0, 100));
+    printf("mt_random[-1000, 1000]  = %d\n", mt_random_.rand(-1000, 1000));
     printf("\n");
 
     hash_table hash_table_;

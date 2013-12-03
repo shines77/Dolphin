@@ -12,6 +12,7 @@
 #include <dolphin/bitboard.h>
 #include <dolphin/my_random.h>
 #include <dolphin/sys_random.h>
+#include <dolphin/mt_random.hpp>
 #include <dolphin/hash_mask.h>
 #include <dolphin/hash_table.h>
 #include <dolphin/search_engine.h>
