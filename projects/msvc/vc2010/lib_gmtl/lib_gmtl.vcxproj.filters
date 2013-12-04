@@ -12,9 +12,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\include\gmtl\internal\_gmtl_windef.h">
-      <Filter>include</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\include\gmtl\aligned_space.h">
       <Filter>include</Filter>
     </ClInclude>
@@ -36,13 +33,7 @@
     <ClInclude Include="..\..\..\..\include\gmtl\itimer.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\include\gmtl\machine\linux_ia32.h">
-      <Filter>include</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\include\gmtl\scheduler.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\gmtl\vs\stdint.h">
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\gmtl\task.h">
@@ -54,20 +45,29 @@
     <ClInclude Include="..\..\..\..\include\gmtl\tickcount.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\include\gmtl\machine\windows_api.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\gmtl\machine\windows_intel64.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\gmtl\machine\windows_ia32.h">
-      <Filter>include</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\include\gmtl\atomic_g.h">
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\res\gmtl\vc2010\resource.h">
-      <Filter>res</Filter>
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\gmtl\internal\_gmtl_windef.h">
+      <Filter>include\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\gmtl\machine\windows_intel64.h">
+      <Filter>include\machine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\gmtl\machine\windows_ia32.h">
+      <Filter>include\machine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\gmtl\machine\windows_api.h">
+      <Filter>include\machine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\gmtl\vs\stdint.h">
+      <Filter>include\vs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\gmtl\machine\linux_ia32.h">
+      <Filter>include\machine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -82,6 +82,15 @@
     </Filter>
     <Filter Include="res">
       <UniqueIdentifier>{fe293192-81a3-4791-b7d0-40e2f94a9f20}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\internal">
+      <UniqueIdentifier>{8a77037c-e4e9-461e-b592-9f4c67c6b86c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\machine">
+      <UniqueIdentifier>{2ccc3f58-938c-4cc3-8fca-3c08cd845094}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\vs">
+      <UniqueIdentifier>{430ecdaa-5d1a-4aa0-8515-d6532f55e3bc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
