@@ -39,8 +39,7 @@
 *.layout
 *.depend
 *.sln.old
-*.vcxproj.filters
-*.vcxproj.user
+# *.vcxproj.user
 /Debug
 /Release
 

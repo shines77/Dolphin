@@ -230,8 +230,8 @@ public:
 
 mt_random mt_random_help::r;
 
-extern void mt_srand(unsigned int s) { mt_random_help()(s); }
-extern size_t mt_irand()       { return mt_random_help()(); }
-extern double mt_drand()    { return mt_random_help()(1.0); }
+extern void mt_srand(size_t s)    { mt_random_help()(s); }
+extern size_t mt_irand()    { return mt_random_help()(); }
+extern double mt_drand() { return mt_random_help()(1.0); }
 
 #endif  /* _MT_RANDOM_HPP_ */
