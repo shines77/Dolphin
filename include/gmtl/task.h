@@ -211,4 +211,4 @@ public:
 
 }  // namespace gmtl
 
-#endif /* _GMTL_TASK_H_ */
+#endif  /* _GMTL_TASK_H_ */

@@ -54,4 +54,4 @@ private:
 
 }  // namespace gmtl
 
-#endif /* _GMTL_SCHEDULER_H_ */
+#endif  /* _GMTL_SCHEDULER_H_ */

@@ -265,4 +265,4 @@
     #define __GMTL_ALIGNOF_NOT_INSTANTIATED_TYPES_BROKEN 1
 #endif
 
-#endif /* _GMTL_CONFIG_H_ */
+#endif  /* _GMTL_CONFIG_H_ */

@@ -48,7 +48,7 @@ private:
     static const int timer_null_seed = MY_RANDOM_SEED_DEFAULT;
 
 public:
-    my_random( void ) { _my_srand(); };
+    my_random( void ) { };
     my_random( int32_t x ) { _my_srand((int)x); };
     my_random( uint32_t x ) { _my_srand((int)x); };
     virtual ~my_random( void ) { };

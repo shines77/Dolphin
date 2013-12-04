@@ -37,7 +37,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define SYS_RANDOM_SEED_DEFAULT  0
+#define SYS_RANDOM_SEED_DEFAULT     0
+#define USE_NEW_SYS_SRAND           1
 
 namespace dolphin {
 
@@ -48,13 +49,17 @@ private:
     static const int timer_null_seed = SYS_RANDOM_SEED_DEFAULT;
 
 public:
-    sys_random( void ) { _sys_srand(); };
+    sys_random( void ) {};
     sys_random( int32_t x ) { _sys_srand((unsigned int)x); };
     sys_random( uint32_t x ) { _sys_srand((unsigned int)x); };
-    virtual ~sys_random( void ) { };
+    virtual ~sys_random( void ) {};
 
     inline static void srand( unsigned int seed = timer_null_seed ) {
+#if defined(USE_NEW_SYS_SRAND) && (USE_NEW_SYS_SRAND != 0)
+        _new_sys_srand(seed);
+#else
         _sys_srand(seed);
+#endif
     };
 
     inline static value_type get_range_number(value_type x, value_type range_min, value_type range_max) {
@@ -90,9 +95,10 @@ public:
     inline static value_type nextLong( void ) {
         return _sys_rand();
     }
-protected:
 
+protected:
     static void _sys_srand( unsigned int seed = timer_null_seed );
+    static void _new_sys_srand( unsigned int seed = timer_null_seed );
     static value_type _sys_rand( void );
 };
 

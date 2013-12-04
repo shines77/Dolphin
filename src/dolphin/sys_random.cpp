@@ -35,22 +35,63 @@
 
 namespace dolphin {
 
+void sys_random::_new_sys_srand( unsigned int seed /* =timer_null_seed(0) */ )
+{
+    // notice: prime[] can't empty!!
+    const double prime[] = { 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.3, 1.5, 1.7, 2.1, 2.3 };
+    const int prime_cnt = _countof(prime);
+    int range_min = 2, range_max = 10;
+    if (range_min < 0)
+        range_min = 0;
+    if (range_max <= range_min)
+        range_max = range_min + 1;
+
+    // 种随机种子(当前时间)
+    if (seed == timer_null_seed)
+        ::srand( (unsigned)time(NULL) );
+    else
+        ::srand(seed);
+
+    int first = ::rand();
+    printf("first rand() = %d\n", first);
+
+    int n = (::rand() % (range_max - range_min)) + range_min;
+    int m = 0;
+    for (int i = 0; i < n; ++i)
+        m = ::rand() % prime_cnt;
+
+    // check prime[] is not empty?
+    if (prime_cnt > 0) {
+        double f = prime[m];
+        printf("m = %d, f = %0.3g\n", m, f);
+
+        // 再根据得到的随机系数种一次种子, 这样就比较随机了
+        unsigned int new_seed = (unsigned int)((double)((unsigned)time(NULL)) * f);
+        ::srand(new_seed);
+    }
+
+    first = ::rand();
+    printf("new first rand() = %d\n\n", first);
+}
+
 /*
   Init c runtime lib's random number seed
 */
-
 void sys_random::_sys_srand( unsigned int seed /* =timer_null_seed(0) */ )
 {
+#if defined(USE_NEW_SYS_SRAND) && (USE_NEW_SYS_SRAND != 0)
+    _new_sys_srand(seed);
+#else
     if (seed == timer_null_seed)
         ::srand((unsigned)time(NULL));
     else
         ::srand(seed);
+#endif
 }
 
 /*
   Generates a random number use c runtime lib'
 */
-
 sys_random::value_type sys_random::_sys_rand( void )
 {
 #if defined(RAND_MAX) && (RAND_MAX == 0x7FFF)

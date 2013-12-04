@@ -233,17 +233,23 @@ int _tmain(int argc, _TCHAR *argv[])
     iii = asp.elements(0);
     int i223 = (int)asp.size();
 
-    my_random::srand();
-    sys_random::srand();
+    //my_random::srand();
+    //sys_random::srand();
 
     my_random  my_random_;
     sys_random sys_random_;
+    mt_random  mt_random_;
+    mt_random_.srand();
+
     my_random_.rand();
     sys_random_.rand();
+    mt_random_.rand();
     printf("my_random [0, 100]      = %d\n", my_random_.rand(0, 100));
     printf("my_random [-1000, 1000] = %d\n", my_random_.rand(-1000, 1000));
     printf("sys_random[0, 100]      = %d\n", sys_random_.rand(0, 100));
     printf("sys_random[-1000, 1000] = %d\n", sys_random_.rand(-1000, 1000));
+    printf("mt_random[0, 100]       = %d\n", mt_random_.rand(0, 100));
+    printf("mt_random[-1000, 1000]  = %d\n", mt_random_.rand(-1000, 1000));
     printf("\n");
 
     hash_table hash_table_;
@@ -277,12 +283,14 @@ int _tmain(int argc, _TCHAR *argv[])
         _aligned_free(pbuffer);
     }
 
+#if 0
     printf("BoardCast Send the \"WM_SETTINGCHANGE\" message to all processes and windows.\n");
 
     DWORD dwRet = 0;
     SendMessageTimeout(HWND_BROADCAST, WM_SETTINGCHANGE, NULL, (LPARAM)"Environment", SMTO_NOTIMEOUTIFNOTHUNG, INFINITE, &dwRet);
 
-    printf("Done.\n");
+    printf("Done.\n\n");
+#endif
 
     system("pause");
     return 0;
