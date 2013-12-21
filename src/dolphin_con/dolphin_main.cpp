@@ -97,25 +97,6 @@ int GetMaxCommonDivide(unsigned m, unsigned n)
             m = m - n;
         }
         else {
-            m = n - m;
-        }
-    }
-
-    return n;
-}
-
-// 辗转相减法, 简单高效, 清晰快捷, 无除法运算, 要求m, n不能为负数
-int GetMaxCommonDivide_new(unsigned m, unsigned n)
-{
-    while (m != n) {
-        if (m == 0)
-            return n;
-        if (n == 0)
-            return m;
-        if (m > n) {
-            m = m - n;
-        }
-        else {
             n = n - m;
         }
     }
@@ -129,6 +110,7 @@ int GetMaxCommonDivide_new(unsigned m, unsigned n)
 //
 // 可参阅: http://www.cnblogs.com/drizzlecrj/archive/2007/09/14/892340.html
 //         http://blog.163.com/zhoumhan_0351/blog/static/3995422720097236954783/
+//         http://www.baike.com/wiki/Stein%E7%AE%97%E6%B3%95
 //
 int gcd_stein(unsigned m, unsigned n)
 {
@@ -150,12 +132,12 @@ int gcd_stein(unsigned m, unsigned n)
         return gcd_stein(m, n >> 1);
     }
     else {  
-        // m, n均为奇数, 返回gcd_stein(abs(m - n), min(m, n));
+        // m, n均为奇数, 返回gcd_stein(abs(m - n) / 2, min(m, n));
         if (m > n) {
-            return gcd_stein(m - n, n);
+            return gcd_stein((m - n) >> 1, n);
         }
         else {
-            return gcd_stein(n - m, m); // or return gcd_stein(m, n - m);
+            return gcd_stein((n - m) >> 1, m); // or return gcd_stein(m, (n - m) >> 1);
         }
     }
 }
@@ -166,6 +148,7 @@ int gcd_stein(unsigned m, unsigned n)
 //
 // 可参阅: http://www.cnblogs.com/drizzlecrj/archive/2007/09/14/892340.html
 //         http://blog.163.com/zhoumhan_0351/blog/static/3995422720097236954783/
+//         http://www.baike.com/wiki/Stein%E7%AE%97%E6%B3%95
 //
 int gcd_stein_fast(unsigned m, unsigned n)
 {
@@ -180,29 +163,48 @@ int gcd_stein_fast(unsigned m, unsigned n)
         if (((m & 1) & (n & 1)) == 0) {     // 若m, n均为偶数
            // return gcd_stein_fast(m >> 1, n >> 1) << 1;
            m >>= 1; n >>= 1; ++s;
+           while ((((m & 1) & (n & 1)) == 0)) {
+               m >>= 1; n >>= 1; ++s;
+           }
         }
         else if ((m & 1) == 0) {            // 若m为偶数, n为奇数
             // return gcd_stein_fast(m >> 1, n);
             m >>= 1;
+            while ((m & 1) == 0)
+                m >>= 1;
+            if (m == 1)
+                return m << s;
         }
         else if ((n & 1) == 0) {            // 若m为奇数, n为偶数
             // return gcd_stein_fast(m, n >> 1);
             n >>= 1;
+            while ((n & 1) == 0)
+                n >>= 1;
+            if (n == 1)
+                return n << s;
         }
-        else {  
-            // m, n均为奇数, 返回gcd_stein(abs(m - n), min(m, n));
-            if (m > n) {
-                // return gcd_stein_fast(m - n, n);
-                m = m - n;
-                while ((m & 1) == 0)
-                    m >>= 1;
-            }
-            else {
-                // return gcd_stein_fast(n - m, m); // or return gcd_stein_fast(m, n - m);
-                n = n - m;
-                while ((n & 1) == 0)
-                    n >>= 1;
-            }
+        else {
+            if (m == 1 || n == 1)
+                return 1 << s;
+            do {
+                // m, n均为奇数, 返回gcd_stein(abs(m - n) / 2, min(m, n));
+                if (m > n) {
+                    // return gcd_stein_fast((m - n)/2, n);
+                    m = (m - n) >> 1;
+                    while ((m & 1) == 0)
+                        m >>= 1;
+                    if (m == 1)
+                        return m << s;
+                }
+                else {
+                    // return gcd_stein_fast((n - m)/2, m); // or return gcd_stein_fast(m, (n - m)/2);
+                    n = (n - m) >> 1;
+                    while ((n & 1) == 0)
+                        n >>= 1;
+                    if (n == 1)
+                        return n << s;
+                }
+            } while (m != n);
         }
     }
 
@@ -224,7 +226,7 @@ int _tmain(int argc, _TCHAR *argv[])
     }
 
     int gcd;
-    gcd = GetMaxCommonDivide_new(7, 5);
+    gcd = GetMaxCommonDivide(7, 5);
     printf("GCD(7, 5) = %d\n\n", gcd);
 
 #if 0
