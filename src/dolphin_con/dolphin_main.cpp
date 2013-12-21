@@ -192,13 +192,13 @@ int gcd_stein_fast(unsigned m, unsigned n)
         else {  
             // m, n均为奇数, 返回gcd_stein(abs(m - n), min(m, n));
             if (m > n) {
-                // return gcd_stein(m - n, n);
+                // return gcd_stein_fast(m - n, n);
                 m = m - n;
                 while ((m & 1) == 0)
                     m >>= 1;
             }
             else {
-                // return gcd_stein(n - m, m); // or return gcd_stein(m, n - m);
+                // return gcd_stein_fast(n - m, m); // or return gcd_stein_fast(m, n - m);
                 n = n - m;
                 while ((n & 1) == 0)
                     n >>= 1;
