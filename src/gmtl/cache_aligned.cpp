@@ -10,7 +10,14 @@ namespace gmtl {
 static unsigned char _cAlignSignFill    = 0xE9;     /* fill no-man's sign for aligned routines */
 static unsigned char _cClearSignFill    = 0x00;     /* fill no-man's sign for free routines */
 
+//
 // MS1B: BitScanForward
+//
+// ²Î¿¼:
+// http://stackoverflow.com/questions/466204/rounding-off-to-nearest-power-of-2
+// http://stackoverflow.com/questions/364985/algorithm-for-finding-the-smallest-power-of-two-thats-greater-or-equal-to-a-giv
+//
+
 unsigned cache_aligned::_get_nearest_power_of_2( unsigned x )
 {
 #if 0

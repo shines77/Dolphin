@@ -8,6 +8,7 @@
 #include <dolphin/dolphin.h>
 #include <mmsystem.h>
 
+#include "ms1b.h"
 #include "dolphin_main.h"
 
 #ifdef _DEBUG
@@ -228,6 +229,10 @@ int _tmain(int argc, _TCHAR *argv[])
     int gcd;
     gcd = GetMaxCommonDivide(7, 5);
     printf("GCD(7, 5) = %d\n\n", gcd);
+
+    ms1b_main();
+
+    ms1b2_main(0, NULL);
 
 #if 0
     int m, n, p, p1, p2;

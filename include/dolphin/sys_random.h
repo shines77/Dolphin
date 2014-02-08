@@ -63,8 +63,9 @@ public:
     };
 
     inline static value_type get_range_number(value_type x, value_type range_min, value_type range_max) {
-        if (range_min == range_max)
+        if (range_min == range_max) {
             return range_min;
+        }
         else if (range_min > range_max) {
             int temp = range_max;
             range_min = range_max;

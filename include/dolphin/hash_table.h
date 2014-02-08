@@ -115,15 +115,16 @@ using internal::hash_mask_t;
 class hash_table : internal::no_copy
 {
 public:
-    typedef long value_type;
-    typedef std::size_t size_type;
-    typedef unsigned int bits_type;
-    typedef std::size_t entry_type;
-    typedef unsigned int mask_type;
-    typedef internal::hash_entry_t * pointer;
-    typedef const internal::hash_entry_t * const_pointer;
-    typedef internal::hash_entry_t & reference;
-    typedef const internal::hash_entry_t & const_reference;
+    typedef long            value_type;
+    typedef std::size_t     size_type;
+    typedef unsigned int    bits_type;
+    typedef std::size_t     entry_type;
+    typedef unsigned int    mask_type;
+
+    typedef internal::hash_entry_t *        pointer;
+    typedef const internal::hash_entry_t *  const_pointer;
+    typedef internal::hash_entry_t &        reference;
+    typedef const internal::hash_entry_t &  const_reference;
 
 private:
     pointer         m_hash_table;
@@ -138,12 +139,12 @@ private:
 public:
     /* The 64-bit hash masks for a piece of a certain color in a
         certain position. */
-    static internal::hash_mask_t g_hash_disc_mask[CHESS_MAX_COLOR+1][BOARD_MAX_DISC];
-    static internal::hash_mask_t g_hash_flip_value[BOARD_MAX_DISC];
+    static internal::hash_mask_t g_hash_disc_mask[CHESS_MAX_COLOR + 1][BOARD_MAX_DISCS];
+    static internal::hash_mask_t g_hash_flip_value[BOARD_MAX_DISCS];
     static internal::hash_mask_t g_hash_color_mask[CHESS_MAX_COLOR];
     static internal::hash_mask_t g_hash_switch_side;
     static internal::hash_mask_t g_hash_row_value[BOARD_ROWS][BOARD_ROW_MASKS];
-    static internal::hash_mask_t g_hash_put_value[CHESS_MAX_COLOR+1][BOARD_MAX_DISC];
+    static internal::hash_mask_t g_hash_put_value[CHESS_MAX_COLOR + 1][BOARD_MAX_DISCS];
 
     inline static unsigned int hash_table::popcount32( unsigned int bits );
     inline static unsigned int get_bits_closeness( unsigned int a0, unsigned int a1,

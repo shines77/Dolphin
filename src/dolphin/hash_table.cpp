@@ -35,12 +35,12 @@
 namespace dolphin {
 
 bool hash_table::g_mask_initialized = false;
-internal::hash_mask_t hash_table::g_hash_disc_mask[CHESS_MAX_COLOR + 1][BOARD_MAX_DISC];
-internal::hash_mask_t hash_table::g_hash_flip_value[BOARD_MAX_DISC];
+internal::hash_mask_t hash_table::g_hash_disc_mask[CHESS_MAX_COLOR + 1][BOARD_MAX_DISCS];
+internal::hash_mask_t hash_table::g_hash_flip_value[BOARD_MAX_DISCS];
 internal::hash_mask_t hash_table::g_hash_color_mask[CHESS_MAX_COLOR];
 internal::hash_mask_t hash_table::g_hash_switch_side;
 internal::hash_mask_t hash_table::g_hash_row_value[BOARD_ROWS][BOARD_ROW_MASKS];
-internal::hash_mask_t hash_table::g_hash_put_value[CHESS_MAX_COLOR + 1][BOARD_MAX_DISC];
+internal::hash_mask_t hash_table::g_hash_put_value[CHESS_MAX_COLOR + 1][BOARD_MAX_DISCS];
 
 hash_table::hash_table( void ) :
     m_hash_table(NULL),
@@ -227,13 +227,13 @@ TRY_AGAIN2:
     }
 
 	index = 0;
-	for (i = 0; i < BOARD_MAX_DISC; ++i) {
+	for (i = 0; i < BOARD_MAX_DISCS; ++i) {
 		g_hash_disc_mask[CHESS_BLACK][i].low  = 0;
 		g_hash_disc_mask[CHESS_BLACK][i].high = 0;
 		g_hash_disc_mask[CHESS_WHITE][i].low  = 0;
 		g_hash_disc_mask[CHESS_WHITE][i].high = 0;
 	}
-	for (i = 0; i < BOARD_MAX_DISC; ++i) {
+	for (i = 0; i < BOARD_MAX_DISCS; ++i) {
 		g_hash_disc_mask[CHESS_BLACK][i].low  = rand_pair[index][0];
 		g_hash_disc_mask[CHESS_BLACK][i].high = rand_pair[index][1];
 		index++;
@@ -242,7 +242,7 @@ TRY_AGAIN2:
 		index++;
 	}
 
-    for (i = 0; i < BOARD_MAX_DISC; ++i) {
+    for (i = 0; i < BOARD_MAX_DISCS; ++i) {
         g_hash_flip_value[i].low  = g_hash_disc_mask[CHESS_BLACK][i].low  ^ g_hash_disc_mask[CHESS_WHITE][i].low;
         g_hash_flip_value[i].high = g_hash_disc_mask[CHESS_BLACK][i].high ^ g_hash_disc_mask[CHESS_WHITE][i].high;
     }
@@ -258,7 +258,7 @@ TRY_AGAIN2:
 	g_hash_switch_side.high = g_hash_color_mask[CHESS_BLACK].high ^ g_hash_color_mask[CHESS_WHITE].high;
 
     // put the disc hash values
-	for (i = 0; i < BOARD_MAX_DISC; ++i) {
+	for (i = 0; i < BOARD_MAX_DISCS; ++i) {
 		g_hash_put_value[CHESS_BLACK][i].low  = g_hash_disc_mask[CHESS_BLACK][i].low  ^ g_hash_switch_side.low;
 		g_hash_put_value[CHESS_BLACK][i].high = g_hash_disc_mask[CHESS_BLACK][i].high ^ g_hash_switch_side.high;
 		g_hash_put_value[CHESS_WHITE][i].low  = g_hash_disc_mask[CHESS_WHITE][i].low  ^ g_hash_switch_side.low;
@@ -306,7 +306,7 @@ void hash_table::determine_board_hash( const BitBoard my_bits,
 
     board_hash.low  = 0;
     board_hash.high = 0;
-    for (int pos = 0; pos < BOARD_MAX_DISC; ++pos) {
+    for (int pos = 0; pos < BOARD_MAX_DISCS; ++pos) {
         if ( ((my_bits.low & bitboard::square_mask[pos].low) != 0)
             || ((my_bits.high & bitboard::square_mask[pos].high) != 0) ) {
                 board_hash.low  ^= g_hash_disc_mask[color][pos].low;

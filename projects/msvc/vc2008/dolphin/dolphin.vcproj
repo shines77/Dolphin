@@ -343,6 +343,14 @@
 				RelativePath="..\..\..\..\src\dolphin_con\dolphin_main.cpp"
 				>
 			</File>
+			<File
+				RelativePath="..\..\..\..\src\dolphin_con\ms1b.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\include\dolphin_con\ms1b2.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="include"
@@ -351,6 +359,10 @@
 			>
 			<File
 				RelativePath="..\..\..\..\include\dolphin_con\dolphin_main.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\include\dolphin_con\ms1b.h"
 				>
 			</File>
 			<File
