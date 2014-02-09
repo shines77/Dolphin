@@ -136,19 +136,19 @@ inline itimer itimer::now() {
     result.my_count = qpcnt.QuadPart;
 #elif __linux__
     struct timespec ts;
-#if TBB_USE_ASSERT
+#if GMTL_USE_ASSERT
     int status = 
-#endif /* TBB_USE_ASSERT */
+#endif /* GMTL_USE_ASSERT */
         clock_gettime( CLOCK_REALTIME, &ts );
-    _DOL_ASSERT( status==0, "CLOCK_REALTIME not supported" );
+    _GMTL_ASSERT( status==0, "CLOCK_REALTIME not supported" );
     result.my_count = static_cast<int64_t>(1000000000UL)*static_cast<int64_t>(ts.tv_sec) + static_cast<int64_t>(ts.tv_nsec);
 #else /* generic Unix */
     struct timeval tv;
-#if TBB_USE_ASSERT
+#if GMTL_USE_ASSERT
     int status = 
-#endif /* TBB_USE_ASSERT */
+#endif /* GMTL_USE_ASSERT */
         gettimeofday(&tv, NULL);
-    _DOL_ASSERT( status==0, "gettimeofday failed" );
+    _GMTL_ASSERT( status==0, "gettimeofday failed" );
     result.my_count = static_cast<int64_t>(1000000)*static_cast<int64_t>(tv.tv_sec) + static_cast<int64_t>(tv.tv_usec);
 #endif /*(choice of OS) */
     return result;

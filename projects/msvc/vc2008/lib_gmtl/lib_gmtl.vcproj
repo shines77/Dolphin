@@ -338,6 +338,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\..\include\gmtl\stop_watch.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\..\include\gmtl\task.h"
 				>
 			</File>

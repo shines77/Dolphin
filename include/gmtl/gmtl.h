@@ -9,6 +9,7 @@
 #include <gmtl/gmtl_stddef.h>
 #include <gmtl/tickcount.h>
 #include <gmtl/itimer.h>
+#include <gmtl/stop_watch.h>
 #include <gmtl/cache_aligned.h>
 #include <gmtl/aligned_space.h>
 

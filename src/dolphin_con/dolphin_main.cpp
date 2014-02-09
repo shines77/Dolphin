@@ -230,9 +230,9 @@ int _tmain(int argc, _TCHAR *argv[])
     gcd = GetMaxCommonDivide(7, 5);
     printf("GCD(7, 5) = %d\n\n", gcd);
 
-    ms1b_main();
+    //ms1b_main();
 
-    ms1b2_main(0, NULL);
+    //ms1b2_main(0, NULL);
 
 #if 0
     int m, n, p, p1, p2;
@@ -273,6 +273,23 @@ int _tmain(int argc, _TCHAR *argv[])
 
     double f_interval = interval1.seconds();
 
+    printf("\n");
+    printf("elapsed time1 = %0.6f\n", interval1.seconds());
+    printf("elapsed time2 = %0.6f\n", interval3.seconds());
+
+    stop_watch sw1, sw2;
+    sw1.begin();
+    sw2.begin();
+    Sleep(500);
+    sw1.end();
+    sw2.end();
+    sw1.getMillisec();
+
+    printf("\n");
+    printf("stop_watch sw1 = %0.6f Millisec(s)\n", sw1.getMillisec());
+    printf("stop_watch sw2 = %0.6f Millisec(s)\n", sw2.getMillisec());
+    printf("\n");
+
     void *pbuffer = _aligned_malloc(31 + 24, 32);
     char *pchar = (char *)pbuffer;
     pchar[54] = 0;
@@ -304,11 +321,6 @@ int _tmain(int argc, _TCHAR *argv[])
     bb.init(bb2);
     bb = bb2;
     bb = 2;
-
-    printf("\n");
-    printf("elapsed time1 = %0.6f\n", interval1.seconds());
-    printf("elapsed time2 = %0.6f\n", interval3.seconds());
-    printf("\n");
 
     //system("pause");
     //printf("\n");
