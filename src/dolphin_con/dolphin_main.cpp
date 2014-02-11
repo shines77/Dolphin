@@ -278,15 +278,19 @@ int _tmain(int argc, _TCHAR *argv[])
     printf("elapsed time2 = %0.6f\n", interval3.seconds());
 
     stop_watch sw1, sw2;
-    sw1.begin();
-    sw2.begin();
+    sw1.start();
     Sleep(500);
-    sw1.end();
-    sw2.end();
-    sw1.getMillisec();
+    sw1.stop();
+
+    sw1.start();
+    sw2.start();
+    Sleep(500);
+    sw1.stop();
+    sw2.stop();
 
     printf("\n");
     printf("stop_watch sw1 = %0.6f Millisec(s)\n", sw1.getMillisec());
+    printf("stop_watch sw1 = %0.6f Millisec(s) [getTotalMillisec()]\n", sw1.getTotalMillisec());
     printf("stop_watch sw2 = %0.6f Millisec(s)\n", sw2.getMillisec());
     printf("\n");
 
