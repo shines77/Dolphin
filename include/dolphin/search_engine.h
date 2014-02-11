@@ -1,7 +1,7 @@
 #ifndef _DOL_SEARCH_ENGINE_H_
 #define _DOL_SEARCH_ENGINE_H_
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1020)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
 #endif
 

@@ -55,7 +55,7 @@
 #ifndef _DOL_MT_RANDOM_HPP_
 #define _DOL_MT_RANDOM_HPP_
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1020)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
 #endif
 

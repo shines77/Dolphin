@@ -29,7 +29,7 @@
 #ifndef _GMTL_STOP_WATCH_H_
 #define _GMTL_STOP_WATCH_H_
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1020)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
 #endif
 
@@ -175,7 +175,6 @@ inline void stop_watch::reset_and_begin(void)
 
 inline void stop_watch::start(void)
 {
-
 #if _WIN32 || _WIN64
     LARGE_INTEGER qp_cnt;
     QueryPerformanceCounter(&qp_cnt);
