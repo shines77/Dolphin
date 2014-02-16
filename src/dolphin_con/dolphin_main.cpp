@@ -1,4 +1,10 @@
 
+/**********************************************************
+   Use Visual Leak Detector(vld) for Visual C++,
+   Homepage: http://vld.codeplex.com/
+ **********************************************************/
+#include <vld.h>
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <tchar.h>
