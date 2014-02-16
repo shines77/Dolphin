@@ -26,8 +26,8 @@
     the GNU General Public License.
 */
 
-#ifndef _GMTL_STOP_WATCH_H_
-#define _GMTL_STOP_WATCH_H_
+#ifndef _GMTL_STOPWATCH_H_
+#define _GMTL_STOPWATCH_H_
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
@@ -49,14 +49,14 @@ namespace gmtl {
 
 //! Absolute timestamp
 /** @ingroup timing */
-class stop_watch
+class StopWatch
 {
 public:    
     //! Construct an absolute timestamp initialized to zero.
-    stop_watch() : startTime(0), endTime(0), elapsedTime(0), elapsedTimeTotal(0), bIsRunning(false) {};
-    stop_watch(const stop_watch &src);
+    StopWatch() : startTime(0), endTime(0), elapsedTime(0), elapsedTimeTotal(0), bIsRunning(false) {};
+    StopWatch(const StopWatch &src);
 
-    stop_watch &operator =(const stop_watch &t);
+    StopWatch &operator =(const StopWatch &t);
 
     bool    isRunning(void);
 
@@ -73,16 +73,16 @@ public:
     void    end(void);
 
     //! Return current time.
-    static int64_t  now(void);
+    static uint32_t now(void);
 
     //! Return current time(double).
     static double   nowf(void);
 
-    static double   intervalSeconds(int64_t t1, int64_t t2);
+    static double   intervalSeconds(uint32_t t1, uint32_t t2);
     static double   intervalSeconds(double t1, double t2);
 
     //! Return current time(millisecs).
-    static int64_t  currentTimeMillis(void);
+    static uint32_t currentTimeMillis(void);
     static double   currentTimeMillisf(void);
 
     double getSeconds(void);
@@ -95,13 +95,13 @@ public:
     double getUsedTimeTotal(void);
 
 private:
-    int64_t startTime, endTime;
-    int64_t elapsedTime;
-    int64_t elapsedTimeTotal;
-    bool    bIsRunning;
+    uint32_t startTime, endTime;
+    uint32_t elapsedTime;
+    uint32_t elapsedTimeTotal;
+    bool     bIsRunning;
 };
 
-stop_watch::stop_watch(const stop_watch &src)
+StopWatch::StopWatch(const StopWatch &src)
 {
     startTime           = src.startTime;
     endTime             = src.endTime;
@@ -111,7 +111,7 @@ stop_watch::stop_watch(const stop_watch &src)
 }
 
 ///*
-inline stop_watch &stop_watch::operator =(const stop_watch &t)
+inline StopWatch &StopWatch::operator =(const StopWatch &t)
 {
     startTime           = t.startTime;
     endTime             = t.endTime;
@@ -122,12 +122,12 @@ inline stop_watch &stop_watch::operator =(const stop_watch &t)
 }
 //*/
 
-inline bool stop_watch::isRunning(void)
+inline bool StopWatch::isRunning(void)
 {
     return bIsRunning;
 }
 
-inline void stop_watch::reset(void)
+inline void StopWatch::reset(void)
 {
     elapsedTime = 0;
     elapsedTimeTotal = 0;
@@ -135,15 +135,13 @@ inline void stop_watch::reset(void)
 }
 
 //! restart() is equivalent to reset() and begin()
-inline void stop_watch::restart(void)
+inline void StopWatch::restart(void)
 {
     elapsedTime = 0;
     elapsedTimeTotal = 0;
 
 #if _WIN32 || _WIN64
-    LARGE_INTEGER qp_cnt;
-    QueryPerformanceCounter(&qp_cnt);
-    startTime = (int64_t)qp_cnt.QuadPart;
+    startTime = (uint32_t)GetTickCount();
     endTime   = startTime;
 #elif __linux__
     struct timespec ts;
@@ -152,7 +150,7 @@ inline void stop_watch::restart(void)
 #endif /* GMTL_USE_ASSERT */
         clock_gettime(CLOCK_REALTIME, &ts);
     _GMTL_ASSERT(status == 0, "CLOCK_REALTIME not supported");
-    startTime = static_cast<int64_t>(1000000000UL) * static_cast<int64_t>(ts.tv_sec) + static_cast<int64_t>(ts.tv_nsec);
+    startTime = static_cast<uint32_t>(1000UL) * static_cast<uint32_t>(ts.tv_sec) + static_cast<uint32_t>(ts.tv_nsec) / static_cast<uint32_t>(1000000UL);
     endTime   = startTime;
 #else /* generic Unix */
     struct timeval tv;
@@ -161,24 +159,22 @@ inline void stop_watch::restart(void)
 #endif /* GMTL_USE_ASSERT */
         gettimeofday(&tv, NULL);
     _GMTL_ASSERT(status == 0, "gettimeofday failed");
-    startTime = static_cast<int64_t>(1000000) * static_cast<int64_t>(tv.tv_sec) + static_cast<int64_t>(tv.tv_usec);
+    startTime = static_cast<uint32_t>(1000UL) * static_cast<uint32_t>(tv.tv_sec) + static_cast<uint32_t>(tv.tv_usec) / static_cast<uint32_t>(1000UL);
     endTime   = startTime;
 #endif /*(choice of OS) */
 
     bIsRunning = true;
 }
 
-inline void stop_watch::reset_and_begin(void)
+inline void StopWatch::reset_and_begin(void)
 {
     restart();
 }
 
-inline void stop_watch::start(void)
+inline void StopWatch::start(void)
 {
 #if _WIN32 || _WIN64
-    LARGE_INTEGER qp_cnt;
-    QueryPerformanceCounter(&qp_cnt);
-    startTime = (int64_t)qp_cnt.QuadPart;
+    startTime = (uint32_t)GetTickCount();
     endTime   = startTime;
 #elif __linux__
     struct timespec ts;
@@ -187,7 +183,7 @@ inline void stop_watch::start(void)
 #endif /* GMTL_USE_ASSERT */
         clock_gettime(CLOCK_REALTIME, &ts);
     _GMTL_ASSERT(status == 0, "CLOCK_REALTIME not supported");
-    startTime = static_cast<int64_t>(1000000000UL) * static_cast<int64_t>(ts.tv_sec) + static_cast<int64_t>(ts.tv_nsec);
+    startTime = static_cast<uint32_t>(1000UL) * static_cast<uint32_t>(ts.tv_sec) + static_cast<uint32_t>(ts.tv_nsec) / static_cast<uint32_t>(1000000UL);
     endTime   = startTime;
 #else /* generic Unix */
     struct timeval tv;
@@ -196,24 +192,22 @@ inline void stop_watch::start(void)
 #endif /* GMTL_USE_ASSERT */
         gettimeofday(&tv, NULL);
     _GMTL_ASSERT(status == 0, "gettimeofday failed");
-    startTime = static_cast<int64_t>(1000000) * static_cast<int64_t>(tv.tv_sec) + static_cast<int64_t>(tv.tv_usec);
+    startTime = static_cast<uint32_t>(1000UL) * static_cast<uint32_t>(tv.tv_sec) + static_cast<uint32_t>(tv.tv_usec) / static_cast<uint32_t>(1000UL);
     endTime   = startTime;
 #endif /*(choice of OS) */
 
     bIsRunning = true;
 }
 
-inline void stop_watch::begin(void)
+inline void StopWatch::begin(void)
 {
     start();
 }
 
-inline void stop_watch::stop(void)
+inline void StopWatch::stop(void)
 {
 #if _WIN32 || _WIN64
-    LARGE_INTEGER qp_cnt;
-    QueryPerformanceCounter(&qp_cnt);
-    endTime = (int64_t)qp_cnt.QuadPart;
+    endTime = (uint32_t)GetTickCount();
 #elif __linux__
     struct timespec ts;
 #if GMTL_USE_ASSERT
@@ -221,7 +215,7 @@ inline void stop_watch::stop(void)
 #endif /* GMTL_USE_ASSERT */
         clock_gettime(CLOCK_REALTIME, &ts);
     _GMTL_ASSERT(status == 0, "CLOCK_REALTIME not supported");
-    endTime = static_cast<int64_t>(1000000000UL) * static_cast<int64_t>(ts.tv_sec) + static_cast<int64_t>(ts.tv_nsec);
+    endTime = static_cast<uint32_t>(1000UL) * static_cast<uint32_t>(ts.tv_sec) + static_cast<uint32_t>(ts.tv_nsec) / static_cast<uint32_t>(1000000UL);
 #else /* generic Unix */
     struct timeval tv;
 #if GMTL_USE_ASSERT
@@ -229,7 +223,7 @@ inline void stop_watch::stop(void)
 #endif /* GMTL_USE_ASSERT */
         gettimeofday(&tv, NULL);
     _GMTL_ASSERT(status == 0, "gettimeofday failed");
-    endTime = static_cast<int64_t>(1000000) * static_cast<int64_t>(tv.tv_sec) + static_cast<int64_t>(tv.tv_usec);
+    endTime = static_cast<uint32_t>(1000UL) * static_cast<uint32_t>(tv.tv_sec) + static_cast<uint32_t>(tv.tv_usec) / static_cast<uint32_t>(1000UL);
 #endif /*(choice of OS) */
 
     if (bIsRunning) {
@@ -243,20 +237,17 @@ inline void stop_watch::stop(void)
     bIsRunning = false;
 }
 
-inline void stop_watch::end(void)
+inline void StopWatch::end(void)
 {
     stop();
 }
 
-inline int64_t stop_watch::now(void)
+inline uint32_t StopWatch::now(void)
 {
-    int64_t result;
+    uint32_t result;
 
 #if _WIN32 || _WIN64
-    LARGE_INTEGER qp_cnt, qp_freq;
-    QueryPerformanceCounter(&qp_cnt);
-    QueryPerformanceFrequency(&qp_freq);
-    result = static_cast<int64_t>(((double)qp_cnt.QuadPart / (double)qp_freq.QuadPart) * 1000000000.0);
+    result = (uint32_t)GetTickCount();
 #elif __linux__
     struct timespec ts;
 #if GMTL_USE_ASSERT
@@ -264,7 +255,7 @@ inline int64_t stop_watch::now(void)
 #endif /* GMTL_USE_ASSERT */
         clock_gettime(CLOCK_REALTIME, &ts);
     _GMTL_ASSERT(status == 0, "CLOCK_REALTIME not supported");
-    result = static_cast<int64_t>(1000000000UL) * static_cast<int64_t>(ts.tv_sec) + static_cast<int64_t>(ts.tv_nsec);
+    result = static_cast<uint32_t>(1000UL) * static_cast<uint32_t>(ts.tv_sec) + static_cast<uint32_t>(ts.tv_nsec) / static_cast<uint32_t>(1000000UL);;
 #else /* generic Unix */
     struct timeval tv;
 #if GMTL_USE_ASSERT
@@ -272,21 +263,18 @@ inline int64_t stop_watch::now(void)
 #endif /* GMTL_USE_ASSERT */
         gettimeofday(&tv, NULL);
     _GMTL_ASSERT(status == 0, "gettimeofday failed");
-    result = static_cast<int64_t>(1000000000UL) * static_cast<int64_t>(tv.tv_sec) + static_cast<int64_t>(1000UL) * static_cast<int64_t>(tv.tv_usec);
+    result = static_cast<uint32_t>(1000UL) * static_cast<uint32_t>(tv.tv_sec) + static_cast<uint32_t>(tv.tv_usec) / static_cast<uint32_t>(1000UL);
 #endif /*(choice of OS) */
 
     return result;
 }
 
-inline double stop_watch::nowf(void)
+inline double StopWatch::nowf(void)
 {
     double result;
 
 #if _WIN32 || _WIN64
-    LARGE_INTEGER qp_cnt, qp_freq;
-    QueryPerformanceCounter(&qp_cnt);
-    QueryPerformanceFrequency(&qp_freq);
-    result = (double)qp_cnt.QuadPart / (double)qp_freq.QuadPart;
+    result = (uint32_t)GetTickCount();
 #elif __linux__
     int64_t time_usecs;
     struct timespec ts;
@@ -296,7 +284,7 @@ inline double stop_watch::nowf(void)
         clock_gettime(CLOCK_REALTIME, &ts);
     _GMTL_ASSERT(status == 0, "CLOCK_REALTIME not supported");
     time_usecs = static_cast<int64_t>(1000000000UL) * static_cast<int64_t>(ts.tv_sec) + static_cast<int64_t>(ts.tv_nsec);
-    result = (double)time_usecs * 1E-9
+    result = (double)time_usecs * 1E-6
 #else /* generic Unix */
     int64_t time_usecs;
     struct timeval tv;
@@ -306,110 +294,102 @@ inline double stop_watch::nowf(void)
         gettimeofday(&tv, NULL);
     _GMTL_ASSERT(status == 0, "gettimeofday failed");
     time_usecs = static_cast<int64_t>(1000000UL) * static_cast<int64_t>(tv.tv_sec) + static_cast<int64_t>(tv.tv_usec);
-    result = (double)time_usecs * 1E-6;
+    result = (double)time_usecs * 1E-3;
 #endif /*(choice of OS) */
 
     return result;
 }
 
-inline double stop_watch::intervalSeconds(int64_t t1, int64_t t2)
+inline double StopWatch::intervalSeconds(uint32_t t1, uint32_t t2)
 {
-    double seconds = (double)(t2 - t1) * 1E-9;
+    double seconds = (double)(t2 - t1) * 1E-3;
     return seconds;
 }
 
-inline double stop_watch::intervalSeconds(double t1, double t2)
+inline double StopWatch::intervalSeconds(double t1, double t2)
 {
     double seconds = (double)(t2 - t1);
     return seconds;
 }
 
-inline int64_t stop_watch::currentTimeMillis(void)
+inline uint32_t StopWatch::currentTimeMillis(void)
 {
-    int64_t now_usecs = (int64_t)stop_watch::now();
-    return now_usecs / static_cast<int64_t>(1000UL);
+    uint32_t now_usecs = (uint32_t)StopWatch::now();
+    return now_usecs;
 }
 
-inline double stop_watch::currentTimeMillisf(void)
+inline double StopWatch::currentTimeMillisf(void)
 {
-    double now_usecs = (double)stop_watch::nowf();
-    return now_usecs * 1E-3;
+    double now_usecs = (double)StopWatch::nowf();
+    return now_usecs;
 }
 
-inline double stop_watch::getSeconds(void)
-{
-    if (bIsRunning)
-        stop();
-
-#if _WIN32 || _WIN64
-    LARGE_INTEGER qp_freq;
-    QueryPerformanceFrequency(&qp_freq);
-    return (double)elapsedTime / (double)qp_freq.QuadPart;
-#elif __linux__
-    return elapsedTime * 1E-9;
-#else /* generic Unix */
-    return elapsedTime * 1E-6;
-#endif /* (choice of OS) */
-}
-
-inline double stop_watch::getMillisec(void)
+inline double StopWatch::getSeconds(void)
 {
     if (bIsRunning)
         stop();
 
 #if _WIN32 || _WIN64
-    LARGE_INTEGER qp_freq;
-    QueryPerformanceFrequency(&qp_freq);
-    return ((double)elapsedTime / (double)qp_freq.QuadPart) * 1E3;
+    return (double)elapsedTime * 1E-3;
 #elif __linux__
-    return elapsedTime * 1E-6;
+    return (double)elapsedTime * 1E-3;
 #else /* generic Unix */
-    return elapsedTime * 1E-3;
+    return (double)elapsedTime * 1E-3;
 #endif /* (choice of OS) */
 }
 
-inline double stop_watch::getTotalSeconds(void)
+inline double StopWatch::getMillisec(void)
 {
     if (bIsRunning)
         stop();
 
 #if _WIN32 || _WIN64
-    LARGE_INTEGER qp_freq;
-    QueryPerformanceFrequency(&qp_freq);
-    return (double)elapsedTimeTotal / (double)qp_freq.QuadPart;
+    return (double)elapsedTime;
 #elif __linux__
-    return elapsedTimeTotal * 1E-9;
+    return (double)elapsedTime;
 #else /* generic Unix */
-    return elapsedTimeTotal * 1E-6;
+    return (double)elapsedTime;
 #endif /* (choice of OS) */
 }
 
-inline double stop_watch::getTotalMillisec(void)
+inline double StopWatch::getTotalSeconds(void)
 {
     if (bIsRunning)
         stop();
 
 #if _WIN32 || _WIN64
-    LARGE_INTEGER qp_freq;
-    QueryPerformanceFrequency(&qp_freq);
-    return ((double)elapsedTimeTotal / (double)qp_freq.QuadPart) * 1E3;
+    return (double)elapsedTimeTotal * 1E-3;
 #elif __linux__
-    return elapsedTimeTotal * 1E-6;
+    return (double)elapsedTimeTotal * 1E-3;
 #else /* generic Unix */
-    return elapsedTimeTotal * 1E-3;
+    return (double)elapsedTimeTotal * 1E-3;
 #endif /* (choice of OS) */
 }
 
-inline double stop_watch::getUsedTime(void)
+inline double StopWatch::getTotalMillisec(void)
+{
+    if (bIsRunning)
+        stop();
+
+#if _WIN32 || _WIN64
+    return (double)elapsedTime;
+#elif __linux__
+    return (double)elapsedTime;
+#else /* generic Unix */
+    return (double)elapsedTime;
+#endif /* (choice of OS) */
+}
+
+inline double StopWatch::getUsedTime(void)
 {
     return getSeconds();
 }
 
-inline double stop_watch::getUsedTimeTotal(void)
+inline double StopWatch::getUsedTimeTotal(void)
 {
     return getTotalSeconds();
 }
 
 }  // namespace gmtl
 
-#endif  /* _GMTL_STOP_WATCH_H_ */
+#endif  /* _GMTL_STOPWATCH_H_ */

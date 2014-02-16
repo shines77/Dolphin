@@ -294,6 +294,24 @@ int _tmain(int argc, _TCHAR *argv[])
     printf("stop_watch sw2 = %0.6f Millisec(s)\n", sw2.getMillisec());
     printf("\n");
 
+    StopWatch sw3, sw4;
+    sw3.start();
+    Sleep(500);
+    sw3.stop();
+
+    sw3.start();
+    sw4.start();
+    Sleep(500);
+    sw3.stop();
+    sw4.stop();
+
+    printf("\n");
+    printf("stop_watch sw3 = %0.1f Millisec(s)\n", sw3.getMillisec());
+    printf("stop_watch sw3 = %0.1f Millisec(s) [getTotalMillisec()]\n", sw3.getTotalMillisec());
+    printf("stop_watch sw4 = %0.1f Millisec(s)\n", sw4.getMillisec());
+    printf("\n");
+
+
     void *pbuffer = _aligned_malloc(31 + 24, 32);
     char *pchar = (char *)pbuffer;
     pchar[54] = 0;
