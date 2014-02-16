@@ -348,7 +348,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\include\dolphin_con\ms1b2.cpp"
+				RelativePath="..\..\..\..\src\dolphin_con\ms1b2.cpp"
 				>
 			</File>
 		</Filter>
