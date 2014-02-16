@@ -344,6 +344,9 @@ int _tmain(int argc, _TCHAR *argv[])
     bb = bb2;
     bb = 2;
 
+    bitboard::set(&bb2, 16);
+    bb.set(12);
+
     //system("pause");
     //printf("\n");
 

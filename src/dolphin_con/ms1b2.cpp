@@ -83,110 +83,110 @@ unsigned __fastcall NearestPowerOf2_4( unsigned n )
 // always 5 if statements (unrolled compare)
 unsigned __fastcall NearestPowerOf2_5( unsigned n )
 {
-	if (n > 1<<16)
+	if (n > 1 << 16)
 	{
-		if (n > 1<<24)
+		if (n > 1 << 24)
 		{
-			if (n > 1<<28)
+			if (n > 1 << 28)
 			{
-				if (n > 1<<30)
+				if (n > 1 << 30)
 				{
-					if (n > 1<<31)
+					if (n > 1 << 31)
 					{
-						return 1<<32;
+						return (unsigned)(1ULL << 32);
 					}
 					else
 					{
-						return 1<<31;
+						return 1 << 31;
 					}
 				}
 				else
 				{
-					if (n > 1<<29)
+					if (n > 1 << 29)
 					{
-						return 1<<30;
+						return 1 << 30;
 					}
 					else
 					{
-						return 1<<29;
+						return 1 << 29;
 					}
 				}
 			}
 			else
 			{
-				if (n > 1<<26)
+				if (n > 1 << 26)
 				{
-					if (n > 1<<27)
+					if (n > 1 << 27)
 					{
-						return 1<<28;
+						return 1 << 28;
 					}
 					else
 					{
-						return 1<<27;
+						return 1 << 27;
 					}
 				}
 				else
 				{
-					if (n > 1<<25)
+					if (n > 1 << 25)
 					{
-						return 1<<26;
+						return 1 << 26;
 					}
 					else
 					{
-						return 1<<25;
+						return 1 << 25;
 					}
 				}
 			}
 		}
 		else
 		{
-			if (n > 1<<20)
+			if (n > 1 << 20)
 			{
-				if (n > 1<<22)
+				if (n > 1 << 22)
 				{
-					if (n > 1<<23)
+					if (n > 1 << 23)
 					{
-						return 1<<24;
+						return 1 << 24;
 					}
 					else
 					{
-						return 1<<23;
+						return 1 << 23;
 					}
 				}
 				else
 				{
-					if (n > 1<<21)
+					if (n > 1 << 21)
 					{
-						return 1<<22;
+						return 1 << 22;
 					}
 					else
 					{
-						return 1<<21;
+						return 1 << 21;
 					}
 				}
 			}
 			else
 			{
-				if (n > 1<<18)
+				if (n > 1 << 18)
 				{
-					if (n > 1<<19)
+					if (n > 1 << 19)
 					{
-						return 1<<20;
+						return 1 << 20;
 					}
 					else
 					{
-						return 1<<19;
+						return 1 << 19;
 					}
 				}
 				else
 				{
-					if (n > 1<<17)
+					if (n > 1 << 17)
 					{
-						return 1<<18;
+						return 1 << 18;
 					}
 					else
 					{
-						return 1<<17;
+						return 1 << 17;
 					}
 				}
 			}
@@ -194,108 +194,108 @@ unsigned __fastcall NearestPowerOf2_5( unsigned n )
 	}
 	else
 	{
-		if (n > 1<<8)
+		if (n > 1 << 8)
 		{
-			if (n > 1<<12)
+			if (n > 1 << 12)
 			{
-				if (n > 1<<14)
+				if (n > 1 << 14)
 				{
-					if (n > 1<<15)
+					if (n > 1 << 15)
 					{
-						return 1<<16;
+						return 1 << 16;
 					}
 					else
 					{
-						return 1<<15;
+						return 1 << 15;
 					}
 				}
 				else
 				{
-					if (n > 1<<13)
+					if (n > 1 << 13)
 					{
-						return 1<<14;
+						return 1 << 14;
 					}
 					else
 					{
-						return 1<<13;
+						return 1 << 13;
 					}
 				}
 			}
 			else
 			{
-				if (n > 1<<10)
+				if (n > 1 << 10)
 				{
-					if (n > 1<<11)
+					if (n > 1 << 11)
 					{
-						return 1<<12;
+						return 1 << 12;
 					}
 					else
 					{
-						return 1<<11;
+						return 1 << 11;
 					}
 				}
 				else
 				{
-					if (n > 1<<9)
+					if (n > 1 << 9)
 					{
-						return 1<<10;
+						return 1 << 10;
 					}
 					else
 					{
-						return 1<<9;
+						return 1 << 9;
 					}
 				}
 			}
 		}
 		else
 		{
-			if (n > 1<<4)
+			if (n > 1 << 4)
 			{
-				if (n > 1<<6)
+				if (n > 1 << 6)
 				{
-					if (n > 1<<7)
+					if (n > 1 << 7)
 					{
-						return 1<<8;
+						return 1 << 8;
 					}
 					else
 					{
-						return 1<<7;
+						return 1 << 7;
 					}
 				}
 				else
 				{
-					if (n > 1<<5)
+					if (n > 1 << 5)
 					{
-						return 1<<6;
+						return 1 << 6;
 					}
 					else
 					{
-						return 1<<5;
+						return 1 << 5;
 					}
 				}
 			}
 			else
 			{
-				if (n > 1<<2)
+				if (n > 1 << 2)
 				{
-					if (n > 1<<3)
+					if (n > 1 << 3)
 					{
-						return 1<<4;
+						return 1 << 4;
 					}
 					else
 					{
-						return 1<<3;
+						return 1 << 3;
 					}
 				}
 				else
 				{
-					if (n > 1<<1)
+					if (n > 1 << 1)
 					{
-						return 1<<2;
+						return 1 << 2;
 					}
 					else
 					{
-						return 1<<1;
+						return 1 << 1;
 					}
 				}
 			}

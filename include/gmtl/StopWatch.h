@@ -73,16 +73,16 @@ public:
     void    end(void);
 
     //! Return current time.
-    static uint32_t now(void);
+    static uint32 now(void);
 
     //! Return current time(double).
     static double   nowf(void);
 
-    static double   intervalSeconds(uint32_t t1, uint32_t t2);
+    static double   intervalSeconds(uint32 t1, uint32 t2);
     static double   intervalSeconds(double t1, double t2);
 
     //! Return current time(millisecs).
-    static uint32_t currentTimeMillis(void);
+    static uint32 currentTimeMillis(void);
     static double   currentTimeMillisf(void);
 
     double getSeconds(void);
@@ -95,9 +95,9 @@ public:
     double getUsedTimeTotal(void);
 
 private:
-    uint32_t startTime, endTime;
-    uint32_t elapsedTime;
-    uint32_t elapsedTimeTotal;
+    uint32 startTime, endTime;
+    uint32 elapsedTime;
+    uint32 elapsedTimeTotal;
     bool     bIsRunning;
 };
 
@@ -141,7 +141,7 @@ inline void StopWatch::restart(void)
     elapsedTimeTotal = 0;
 
 #if _WIN32 || _WIN64
-    startTime = (uint32_t)GetTickCount();
+    startTime = (uint32)GetTickCount();
     endTime   = startTime;
 #elif __linux__
     struct timespec ts;
@@ -150,7 +150,7 @@ inline void StopWatch::restart(void)
 #endif /* GMTL_USE_ASSERT */
         clock_gettime(CLOCK_REALTIME, &ts);
     _GMTL_ASSERT(status == 0, "CLOCK_REALTIME not supported");
-    startTime = static_cast<uint32_t>(1000UL) * static_cast<uint32_t>(ts.tv_sec) + static_cast<uint32_t>(ts.tv_nsec) / static_cast<uint32_t>(1000000UL);
+    startTime = static_cast<uint32>(1000UL) * static_cast<uint32>(ts.tv_sec) + static_cast<uint32>(ts.tv_nsec) / static_cast<uint32>(1000000UL);
     endTime   = startTime;
 #else /* generic Unix */
     struct timeval tv;
@@ -159,7 +159,7 @@ inline void StopWatch::restart(void)
 #endif /* GMTL_USE_ASSERT */
         gettimeofday(&tv, NULL);
     _GMTL_ASSERT(status == 0, "gettimeofday failed");
-    startTime = static_cast<uint32_t>(1000UL) * static_cast<uint32_t>(tv.tv_sec) + static_cast<uint32_t>(tv.tv_usec) / static_cast<uint32_t>(1000UL);
+    startTime = static_cast<uint32>(1000UL) * static_cast<uint32>(tv.tv_sec) + static_cast<uint32>(tv.tv_usec) / static_cast<uint32>(1000UL);
     endTime   = startTime;
 #endif /*(choice of OS) */
 
@@ -174,7 +174,7 @@ inline void StopWatch::reset_and_begin(void)
 inline void StopWatch::start(void)
 {
 #if _WIN32 || _WIN64
-    startTime = (uint32_t)GetTickCount();
+    startTime = (uint32)GetTickCount();
     endTime   = startTime;
 #elif __linux__
     struct timespec ts;
@@ -183,7 +183,7 @@ inline void StopWatch::start(void)
 #endif /* GMTL_USE_ASSERT */
         clock_gettime(CLOCK_REALTIME, &ts);
     _GMTL_ASSERT(status == 0, "CLOCK_REALTIME not supported");
-    startTime = static_cast<uint32_t>(1000UL) * static_cast<uint32_t>(ts.tv_sec) + static_cast<uint32_t>(ts.tv_nsec) / static_cast<uint32_t>(1000000UL);
+    startTime = static_cast<uint32>(1000UL) * static_cast<uint32>(ts.tv_sec) + static_cast<uint32>(ts.tv_nsec) / static_cast<uint32>(1000000UL);
     endTime   = startTime;
 #else /* generic Unix */
     struct timeval tv;
@@ -192,7 +192,7 @@ inline void StopWatch::start(void)
 #endif /* GMTL_USE_ASSERT */
         gettimeofday(&tv, NULL);
     _GMTL_ASSERT(status == 0, "gettimeofday failed");
-    startTime = static_cast<uint32_t>(1000UL) * static_cast<uint32_t>(tv.tv_sec) + static_cast<uint32_t>(tv.tv_usec) / static_cast<uint32_t>(1000UL);
+    startTime = static_cast<uint32>(1000UL) * static_cast<uint32>(tv.tv_sec) + static_cast<uint32>(tv.tv_usec) / static_cast<uint32>(1000UL);
     endTime   = startTime;
 #endif /*(choice of OS) */
 
@@ -207,7 +207,7 @@ inline void StopWatch::begin(void)
 inline void StopWatch::stop(void)
 {
 #if _WIN32 || _WIN64
-    endTime = (uint32_t)GetTickCount();
+    endTime = (uint32)GetTickCount();
 #elif __linux__
     struct timespec ts;
 #if GMTL_USE_ASSERT
@@ -215,7 +215,7 @@ inline void StopWatch::stop(void)
 #endif /* GMTL_USE_ASSERT */
         clock_gettime(CLOCK_REALTIME, &ts);
     _GMTL_ASSERT(status == 0, "CLOCK_REALTIME not supported");
-    endTime = static_cast<uint32_t>(1000UL) * static_cast<uint32_t>(ts.tv_sec) + static_cast<uint32_t>(ts.tv_nsec) / static_cast<uint32_t>(1000000UL);
+    endTime = static_cast<uint32>(1000UL) * static_cast<uint32>(ts.tv_sec) + static_cast<uint32>(ts.tv_nsec) / static_cast<uint32>(1000000UL);
 #else /* generic Unix */
     struct timeval tv;
 #if GMTL_USE_ASSERT
@@ -223,7 +223,7 @@ inline void StopWatch::stop(void)
 #endif /* GMTL_USE_ASSERT */
         gettimeofday(&tv, NULL);
     _GMTL_ASSERT(status == 0, "gettimeofday failed");
-    endTime = static_cast<uint32_t>(1000UL) * static_cast<uint32_t>(tv.tv_sec) + static_cast<uint32_t>(tv.tv_usec) / static_cast<uint32_t>(1000UL);
+    endTime = static_cast<uint32>(1000UL) * static_cast<uint32>(tv.tv_sec) + static_cast<uint32>(tv.tv_usec) / static_cast<uint32>(1000UL);
 #endif /*(choice of OS) */
 
     if (bIsRunning) {
@@ -242,12 +242,12 @@ inline void StopWatch::end(void)
     stop();
 }
 
-inline uint32_t StopWatch::now(void)
+inline uint32 StopWatch::now(void)
 {
-    uint32_t result;
+    uint32 result;
 
 #if _WIN32 || _WIN64
-    result = (uint32_t)GetTickCount();
+    result = (uint32)GetTickCount();
 #elif __linux__
     struct timespec ts;
 #if GMTL_USE_ASSERT
@@ -255,7 +255,7 @@ inline uint32_t StopWatch::now(void)
 #endif /* GMTL_USE_ASSERT */
         clock_gettime(CLOCK_REALTIME, &ts);
     _GMTL_ASSERT(status == 0, "CLOCK_REALTIME not supported");
-    result = static_cast<uint32_t>(1000UL) * static_cast<uint32_t>(ts.tv_sec) + static_cast<uint32_t>(ts.tv_nsec) / static_cast<uint32_t>(1000000UL);;
+    result = static_cast<uint32>(1000UL) * static_cast<uint32>(ts.tv_sec) + static_cast<uint32>(ts.tv_nsec) / static_cast<uint32>(1000000UL);;
 #else /* generic Unix */
     struct timeval tv;
 #if GMTL_USE_ASSERT
@@ -263,7 +263,7 @@ inline uint32_t StopWatch::now(void)
 #endif /* GMTL_USE_ASSERT */
         gettimeofday(&tv, NULL);
     _GMTL_ASSERT(status == 0, "gettimeofday failed");
-    result = static_cast<uint32_t>(1000UL) * static_cast<uint32_t>(tv.tv_sec) + static_cast<uint32_t>(tv.tv_usec) / static_cast<uint32_t>(1000UL);
+    result = static_cast<uint32>(1000UL) * static_cast<uint32>(tv.tv_sec) + static_cast<uint32>(tv.tv_usec) / static_cast<uint32>(1000UL);
 #endif /*(choice of OS) */
 
     return result;
@@ -274,7 +274,7 @@ inline double StopWatch::nowf(void)
     double result;
 
 #if _WIN32 || _WIN64
-    result = (uint32_t)GetTickCount();
+    result = (uint32)GetTickCount();
 #elif __linux__
     int64_t time_usecs;
     struct timespec ts;
@@ -300,7 +300,7 @@ inline double StopWatch::nowf(void)
     return result;
 }
 
-inline double StopWatch::intervalSeconds(uint32_t t1, uint32_t t2)
+inline double StopWatch::intervalSeconds(uint32 t1, uint32 t2)
 {
     double seconds = (double)(t2 - t1) * 1E-3;
     return seconds;
@@ -312,9 +312,9 @@ inline double StopWatch::intervalSeconds(double t1, double t2)
     return seconds;
 }
 
-inline uint32_t StopWatch::currentTimeMillis(void)
+inline uint32 StopWatch::currentTimeMillis(void)
 {
-    uint32_t now_usecs = (uint32_t)StopWatch::now();
+    uint32 now_usecs = (uint32)StopWatch::now();
     return now_usecs;
 }
 
