@@ -36,8 +36,6 @@ namespace internal {
     };
 }
 
-BitBoard bitboard::square_mask[64];
-
 ///////////////////////////////////////////////////////////////
 // bitbaord
 ///////////////////////////////////////////////////////////////
@@ -57,9 +55,19 @@ bitboard::bitboard(uint64 _bits)
     init(_bits);
 }
 
-bitboard::bitboard(BitBoard &b)
+bitboard::bitboard(const BitBoard &b)
 {
     init(b.low, b.high);
+}
+
+bitboard::bitboard(int _low)
+{
+    init((unsigned int)_low, 0);
+}
+
+bitboard::bitboard(unsigned int _low)
+{
+    init(_low, 0);
 }
 
 bitboard &bitboard::operator =(const bitboard &src)
@@ -74,5 +82,7 @@ bitboard::~bitboard(void)
 }
 
 ///////////////////////////////////////////////////////////////
+
+BitBoard bitboard::square_mask[64];
 
 }  // namespace dolphin
