@@ -92,6 +92,12 @@
 
 namespace dolphin {
 
+enum openning_pos {
+    OPENNING_EMPTY = 0,
+    OPENNING_POS1,
+    OPENNING_POS2
+};
+
 typedef struct BitBoard {
 	unsigned int low;
 	unsigned int high;
@@ -106,50 +112,41 @@ class bitboard : public BitBoard
 public:
     bitboard(void);
     bitboard(unsigned int _low, unsigned int _high);
+    bitboard(int _low);
+    bitboard(unsigned int _low);
     bitboard(uint64 _bits);
-    bitboard(BitBoard &b);
+    bitboard(const BitBoard &b);
     ~bitboard(void);
 
     bitboard &operator =(const bitboard &src);
 
     inline void init(uint32 _low, uint32 _high);
     inline void init(uint64 _bits);
-    inline void init(BitBoard &b);
+    inline void init(const BitBoard &b);
 
-    inline void clear(void);
+    inline void default     (int type = OPENNING_EMPTY);
 
-    inline void set      (unsigned int pos);
-    inline void not      (unsigned int pos);
-    inline void and      (unsigned int pos);
-    inline void or       (unsigned int pos);
-    inline void xor      (unsigned int pos);
-    inline void andnot   (unsigned int pos);
+    inline void clear       (void);
 
-    inline void set      (BitBoard *src);
-    inline void not      (BitBoard *src);
-    inline void and      (BitBoard *src);
-    inline void or       (BitBoard *src);
-    inline void xor      (BitBoard *src);
-    inline void andnot   (BitBoard *src);
+    inline void set         (unsigned int pos);
+    inline void not         (unsigned int pos);
+    inline void and         (unsigned int pos);
+    inline void or          (unsigned int pos);
+    inline void xor         (unsigned int pos);
+    inline void andnot      (unsigned int pos);
+
+    inline void set         (BitBoard *src);
+    inline void not         (BitBoard *src);
+    inline void and         (BitBoard *src);
+    inline void or          (BitBoard *src);
+    inline void xor         (BitBoard *src);
+    inline void andnot      (BitBoard *src);
+
+    inline void reverse     (void);
+    inline void popcount    (void);
 
 public:
     static BitBoard square_mask[64];
-
-    static inline void clear(BitBoard *b);
-
-    static inline void set      (BitBoard *b, unsigned int pos);
-    static inline void not      (BitBoard *b, unsigned int pos);
-    static inline void and      (BitBoard *b, unsigned int pos);
-    static inline void or       (BitBoard *b, unsigned int pos);
-    static inline void xor      (BitBoard *b, unsigned int pos);
-    static inline void andnot   (BitBoard *b, unsigned int pos);
-
-    static inline void set      (BitBoard *b, BitBoard *src);
-    static inline void not      (BitBoard *b, BitBoard *src);
-    static inline void and      (BitBoard *b, BitBoard *src);
-    static inline void or       (BitBoard *b, BitBoard *src);
-    static inline void xor      (BitBoard *b, BitBoard *src);
-    static inline void andnot   (BitBoard *b, BitBoard *src);
 
     static inline unsigned int reverse32(unsigned int val);
 
@@ -190,12 +187,29 @@ inline void bitboard::init(uint64 _bits)
     init((uint32)(_bits & 0xFFFFFFFFULL), (uint32)(_bits >> 32));
 }
 
-inline void bitboard::init(BitBoard &b)
+inline void bitboard::init(const BitBoard &b)
 {
     init(b.low, b.high);
 }
 
 ///////////////////////////////////////////////////////////////////////////
+
+inline void bitboard::default(int type /* =OPENNING_EMPTY */)
+{
+    if (type == OPENNING_POS1) {
+        low  = 1UL << 27;
+        high = 1UL << 4;
+    }
+    else if (type == OPENNING_POS2) {
+        low  = 1UL << 28;
+        high = 1UL << 3;
+    }
+    /* type == OPENNING_EMPTY */
+    else {
+        low  = 0;
+        high = 0;
+    }
+}
 
 inline void bitboard::clear(void)
 {
@@ -312,122 +326,6 @@ inline void bitboard::andnot(BitBoard *src)
 /////////////////////////////////////////////////////////
 // static inline routines
 /////////////////////////////////////////////////////////
-
-inline void bitboard::clear(BitBoard *b)
-{
-    b->low  = 0;
-    b->high = 0;
-}
-
-///////////////////////////////////////////////////////////////////////////
-
-inline void bitboard::set(BitBoard *b, unsigned int pos)
-{
-    if (pos < 32) {
-        b->low  = (1 << pos);
-        b->high = 0;
-    }
-    else {
-        b->low  = 0;
-        b->high = (1 << (pos - 32));
-    }
-}
-
-inline void bitboard::not(BitBoard *b, unsigned int pos)
-{
-    if (pos < 32) {
-        b->low  = ~(unsigned int)(1UL << pos);
-        b->high = ~(0UL);
-    }
-    else {
-        b->low  = ~(0UL);
-        b->high = ~(unsigned int)(1UL << (pos - 32));
-    }
-}
-
-inline void bitboard::and(BitBoard *b, unsigned int pos)
-{
-    if (pos < 32) {
-        b->low  &= (1UL << pos);
-        b->high  = 0UL;
-    }
-    else {
-        b->low   = 0UL;
-        b->high &= (1UL << (pos - 32));
-    }
-}
-
-inline void bitboard::or(BitBoard *b, unsigned int pos)
-{
-    if (pos < 32)
-        b->low  |= (1UL << pos);
-    else
-        b->high |= (1UL << (pos - 32));
-}
-
-inline void bitboard::xor(BitBoard *b, unsigned int pos)
-{
-    if (pos < 32) {
-        b->low  ^= (1UL << pos);
-        b->high ^= 0UL;
-    }
-    else {
-        b->low  ^= 0UL;
-        b->high ^= (1UL << (pos - 32));
-    }
-}
-
-inline void bitboard::andnot(BitBoard *b, unsigned int pos)
-{
-    if (pos < 32) {
-        b->low  &= ~(unsigned int)(1UL << pos);
-        b->high &= ~(0UL);
-    }
-    else {
-        b->low  &= ~(0UL);
-        b->high &= ~(unsigned int)(1UL << (pos - 32));
-    }
-}
-
-///////////////////////////////////////////////////////////////////////////
-
-inline void bitboard::set(BitBoard *b, BitBoard *src)
-{
-    b->low  = src->low;
-    b->high = src->high;
-}
-
-inline void bitboard::not(BitBoard *b, BitBoard *src)
-{
-    b->low  = ~(src->low);
-    b->high = ~(src->high);
-}
-
-inline void bitboard::and(BitBoard *b, BitBoard *src)
-{
-    b->low  &= src->low;
-    b->high &= src->high;
-}
-
-inline void bitboard::or(BitBoard *b, BitBoard *src)
-{
-    b->low  |= src->low;
-    b->high |= src->high;
-}
-
-inline void bitboard::xor(BitBoard *b, BitBoard *src)
-{
-    b->low  ^= src->low;
-    b->high ^= src->high;
-}
-
-inline void bitboard::andnot(BitBoard *b, BitBoard *src)
-{
-    b->low  &= ~(src->low);
-    b->high &= ~(src->high);
-}
-
-///////////////////////////////////////////////////////////////////////////
 
 /*
   BIT_REVERSE_32

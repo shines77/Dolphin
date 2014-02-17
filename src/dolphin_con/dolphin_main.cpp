@@ -317,7 +317,6 @@ int _tmain(int argc, _TCHAR *argv[])
     printf("stop_watch sw4 = %0.1f Millisec(s)\n", sw4.getMillisec());
     printf("\n");
 
-
     void *pbuffer = _aligned_malloc(31 + 24, 32);
     char *pchar = (char *)pbuffer;
     pchar[54] = 0;
@@ -342,16 +341,17 @@ int _tmain(int argc, _TCHAR *argv[])
     task_scheduler.initialize(4);
 
     bitboard::init_square_mask();
-    bitboard bb, bb2;
+    bitboard bb1, bb2;
     bb2.init(1, 1);
-    bb.init(0ULL);
-    bb.init(0, 0);
-    bb.init(bb2);
-    bb = bb2;
-    bb = 2;
+    bb1.init(0ULL);
+    bb1.init(0, 0);
+    bb1.init(bb2);
+    bb1 = bb2;
+    bb1 = 2;
 
-    bitboard::set(&bb2, 16);
-    bb.set(12);
+    bb1.set(12);
+    bb1.default(OPENNING_POS1);
+    bb2.default(OPENNING_POS2);
 
     //system("pause");
     //printf("\n");
