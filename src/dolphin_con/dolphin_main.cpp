@@ -351,7 +351,17 @@ int _tmain(int argc, _TCHAR *argv[])
 
     bb1.set(12);
     bb1.default(OPENNING_POS1);
-    bb2.default(OPENNING_POS2);
+    bb2.default(OPENNING_POS3);
+
+    bb1.set(bb2);
+
+    bb1.clear();
+    bb1.set(bitboard::make_pos(3, 3));
+    bb1.or (bitboard::make_pos(4, 4));
+
+    bb1.reverse();
+    int n_popcount = bb1.popcount();
+    printf("n_popcount = %d\n", n_popcount);
 
     //system("pause");
     //printf("\n");

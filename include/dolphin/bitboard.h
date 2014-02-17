@@ -95,7 +95,8 @@ namespace dolphin {
 enum openning_pos {
     OPENNING_EMPTY = 0,
     OPENNING_POS1,
-    OPENNING_POS2
+    OPENNING_POS2,
+    OPENNING_POS3
 };
 
 typedef struct BitBoard {
@@ -135,26 +136,35 @@ public:
     inline void xor         (unsigned int pos);
     inline void andnot      (unsigned int pos);
 
-    inline void set         (BitBoard *src);
-    inline void not         (BitBoard *src);
-    inline void and         (BitBoard *src);
-    inline void or          (BitBoard *src);
-    inline void xor         (BitBoard *src);
-    inline void andnot      (BitBoard *src);
+    inline void set         (const BitBoard *src);
+    inline void not         (const BitBoard *src);
+    inline void and         (const BitBoard *src);
+    inline void or          (const BitBoard *src);
+    inline void xor         (const BitBoard *src);
+    inline void andnot      (const BitBoard *src);
 
-    inline void reverse     (void);
-    inline void popcount    (void);
+    inline void set         (const bitboard &src);
+    inline void not         (const bitboard &src);
+    inline void and         (const bitboard &src);
+    inline void or          (const bitboard &src);
+    inline void xor         (const bitboard &src);
+    inline void andnot      (const bitboard &src);
+
+    inline void reverse             (void);
+    inline unsigned int popcount    (void);
 
 public:
     static BitBoard square_mask[64];
 
     static inline unsigned int reverse32(unsigned int val);
 
-    static inline unsigned int popcount(BitBoard b);
+    static inline unsigned int popcount(const BitBoard &b);
     static inline unsigned int REGPARM(2) non_iterative_popcount(unsigned int n1, unsigned int n2);
     static inline unsigned int iterative_popcount(BitBoard b);
 
     static inline void init_square_mask(void);
+
+    static inline unsigned int make_pos(unsigned int x, unsigned int y);
 
     static inline void set_bitboard(int *board, int color,
         BitBoard *my_out, BitBoard *opp_out);
@@ -203,6 +213,10 @@ inline void bitboard::default(int type /* =OPENNING_EMPTY */)
     else if (type == OPENNING_POS2) {
         low  = 1UL << 28;
         high = 1UL << 3;
+    }
+    else if (type == OPENNING_POS3) {
+        low  = 3UL << 27;
+        high = 3UL << 3;
     }
     /* type == OPENNING_EMPTY */
     else {
@@ -287,40 +301,119 @@ inline void bitboard::andnot(unsigned int pos)
 
 ///////////////////////////////////////////////////////////////////////////
 
-inline void bitboard::set(BitBoard *src)
+inline void bitboard::set(const BitBoard *src)
 {
     low  = src->low;
     high = src->high;
 }
 
-inline void bitboard::not(BitBoard *src)
+inline void bitboard::not(const BitBoard *src)
 {
     low  = ~(src->low);
     high = ~(src->high);
 }
 
-inline void bitboard::and(BitBoard *src)
+inline void bitboard::and(const BitBoard *src)
 {
     low  &= src->low;
     high &= src->high;
 }
 
-inline void bitboard::or(BitBoard *src)
+inline void bitboard::or(const BitBoard *src)
 {
     low  |= src->low;
     high |= src->high;
 }
 
-inline void bitboard::xor(BitBoard *src)
+inline void bitboard::xor(const BitBoard *src)
 {
     low  ^= src->low;
     high ^= src->high;
 }
 
-inline void bitboard::andnot(BitBoard *src)
+inline void bitboard::andnot(const BitBoard *src)
 {
     low  &= ~(src->low);
     high &= ~(src->high);
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+inline void bitboard::set(const bitboard &src)
+{
+    low  = src.low;
+    high = src.high;
+}
+
+inline void bitboard::not(const bitboard &src)
+{
+    low  = ~(src.low);
+    high = ~(src.high);
+}
+
+inline void bitboard::and(const bitboard &src)
+{
+    low  &= src.low;
+    high &= src.high;
+}
+
+inline void bitboard::or(const bitboard &src)
+{
+    low  |= src.low;
+    high |= src.high;
+}
+
+inline void bitboard::xor(const bitboard &src)
+{
+    low  ^= src.low;
+    high ^= src.high;
+}
+
+inline void bitboard::andnot(const bitboard &src)
+{
+    low  &= ~(src.low);
+    high &= ~(src.high);
+}
+
+inline void bitboard::reverse(void)
+{
+    unsigned int _low, _high;
+    _low  = ((low  >>  1) & 0x55555555UL) | ((low  <<  1) & 0xAAAAAAAAUL);
+    _high = ((high >>  1) & 0x55555555UL) | ((high <<  1) & 0xAAAAAAAAUL);
+
+    _low  = ((_low  >>  2) & 0x33333333UL) | ((_low  <<  2) & 0xCCCCCCCCUL);
+    _high = ((_high >>  2) & 0x33333333UL) | ((_high <<  2) & 0xCCCCCCCCUL);
+
+    _low  = ((_low  >>  4) & 0x0F0F0F0FUL) | ((_low  <<  4) & 0xF0F0F0F0UL);
+    _high = ((_high >>  4) & 0x0F0F0F0FUL) | ((_high <<  4) & 0xF0F0F0F0UL);
+
+    _low  = ((_low  >>  8) & 0x00FF00FFUL) | ((_low  <<  8) & 0xFF00FF00UL);
+    _high = ((_high >>  8) & 0x00FF00FFUL) | ((_high <<  8) & 0xFF00FF00UL);
+
+    // swap low and high
+    high  = ((_low  >> 16) & 0x0000FFFFUL) | ((_low  << 16) & 0xFFFF0000UL);
+    low   = ((_high >> 16) & 0x0000FFFFUL) | ((_high << 16) & 0xFFFF0000UL);
+}
+
+inline unsigned int bitboard::popcount(void)
+{
+    const unsigned long m1 = 0x55555555UL;
+    const unsigned long m2 = 0x33333333UL;
+    unsigned int a, b, n1, n2;
+
+    a  = high - ((high >> 1) & m1);
+    n1 = (a & m2) + ((a >> 2) & m2);
+    n1 = (n1 & 0x0F0F0F0FUL) + ((n1 >>  4) & 0x0F0F0F0FUL);
+    n1 = (n1 & 0x0000FFFFUL) +  (n1 >> 16);
+    n1 = (n1 & 0x000000FFUL) +  (n1 >>  8);
+
+    b  = low - ((low >> 1) & m1);
+    n2 = (b & m2) + ((b >> 2) & m2);
+    n2 = (n2 & 0x0F0F0F0FUL) + ((n2 >>  4) & 0x0F0F0F0FUL);
+    n2 = (n2 & 0x0000FFFFUL) +  (n2 >> 16);
+    n2 = (n2 & 0x000000FFUL) +  (n2 >>  8);
+
+    return n1 + n2;
 }
 
 /////////////////////////////////////////////////////////
@@ -332,15 +425,15 @@ inline void bitboard::andnot(BitBoard *src)
   Returns the bit-reverse of a 32-bit integer.
 */
 
-inline unsigned int bitboard::reverse32(unsigned int val)
+inline unsigned int bitboard::reverse32(unsigned int bits)
 {
-    val = ((val >>  1) & 0x55555555UL) | ((val <<  1) & 0xAAAAAAAAUL);
-    val = ((val >>  2) & 0x33333333UL) | ((val <<  2) & 0xCCCCCCCCUL);
-    val = ((val >>  4) & 0x0F0F0F0FUL) | ((val <<  4) & 0xF0F0F0F0UL);
-    val = ((val >>  8) & 0x00FF00FFUL) | ((val <<  8) & 0xFF00FF00UL);
-    val = ((val >> 16) & 0x0000FFFFUL) | ((val << 16) & 0xFFFF0000UL);
+    bits = ((bits >>  1) & 0x55555555UL) | ((bits <<  1) & 0xAAAAAAAAUL);
+    bits = ((bits >>  2) & 0x33333333UL) | ((bits <<  2) & 0xCCCCCCCCUL);
+    bits = ((bits >>  4) & 0x0F0F0F0FUL) | ((bits <<  4) & 0xF0F0F0F0UL);
+    bits = ((bits >>  8) & 0x00FF00FFUL) | ((bits <<  8) & 0xFF00FF00UL);
+    bits = ((bits >> 16) & 0x0000FFFFUL) | ((bits << 16) & 0xFFFF0000UL);
 
-    return val;
+    return bits;
 }
 
 /*
@@ -349,7 +442,7 @@ inline unsigned int bitboard::reverse32(unsigned int val)
   This is done using some bitfiddling tricks.
 */
 
-inline unsigned int bitboard::popcount(BitBoard b)
+inline unsigned int bitboard::popcount(const BitBoard &b)
 {
     const unsigned long m1 = 0x55555555UL;
     const unsigned long m2 = 0x33333333UL;
@@ -405,6 +498,12 @@ inline unsigned int bitboard::iterative_popcount(BitBoard b)
     for (; b.low != 0; n++, b.low &= (b.low - 1))
         ;
     return n;
+}
+
+inline unsigned int bitboard::make_pos(unsigned int x, unsigned int y)
+{
+    /* pos = y * 8 + x */
+    return (y << 3) + x;
 }
 
 inline void bitboard::init_square_mask(void)
