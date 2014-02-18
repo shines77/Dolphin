@@ -127,6 +127,7 @@ public:
 
     inline void default     (int type = OPENNING_EMPTY);
 
+    inline void empty       (void);
     inline void clear       (void);
 
     inline void set         (unsigned int pos);
@@ -151,6 +152,11 @@ public:
     inline void andnot      (const bitboard &src);
 
     inline void reverse             (void);
+    inline void h_mirror            (void);
+    inline void v_mirror            (void);
+    inline void rotation_rt         (void);
+    inline void rotation_lt         (void);
+
     inline unsigned int popcount    (void);
 
 public:
@@ -162,6 +168,7 @@ public:
     static inline unsigned int REGPARM(2) non_iterative_popcount(unsigned int n1, unsigned int n2);
     static inline unsigned int iterative_popcount(BitBoard b);
 
+    static inline void init_bitboard(void);
     static inline void init_square_mask(void);
 
     static inline unsigned int make_pos(unsigned int x, unsigned int y);
@@ -207,14 +214,17 @@ inline void bitboard::init(const BitBoard &b)
 inline void bitboard::default(int type /* =OPENNING_EMPTY */)
 {
     if (type == OPENNING_POS1) {
+        // (3, 3), (4, 4)
         low  = 1UL << 27;
         high = 1UL << 4;
     }
     else if (type == OPENNING_POS2) {
+        // (4, 3), (3, 4)
         low  = 1UL << 28;
         high = 1UL << 3;
     }
     else if (type == OPENNING_POS3) {
+        // (3, 3), (4, 4), (4, 3), (3, 4)
         low  = 3UL << 27;
         high = 3UL << 3;
     }
@@ -223,6 +233,12 @@ inline void bitboard::default(int type /* =OPENNING_EMPTY */)
         low  = 0;
         high = 0;
     }
+}
+
+inline void bitboard::empty(void)
+{
+    low  = 0;
+    high = 0;
 }
 
 inline void bitboard::clear(void)
@@ -375,24 +391,190 @@ inline void bitboard::andnot(const bitboard &src)
     high &= ~(src.high);
 }
 
+/**************************************************************************
+    Bit Twiddling Hacks
+
+    From: http://graphics.stanford.edu/~seander/bithacks.html#ReverseParallel
+
+    -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+    Reverse an N-bit quantity in parallel in 5 * lg(N) operations:
+
+    unsigned int v; // 32-bit word to reverse bit order
+
+    // swap odd and even bits
+    v = ((v >> 1) & 0x55555555) | ((v & 0x55555555) << 1);
+    // swap consecutive pairs
+    v = ((v >> 2) & 0x33333333) | ((v & 0x33333333) << 2);
+    // swap nibbles ... 
+    v = ((v >> 4) & 0x0F0F0F0F) | ((v & 0x0F0F0F0F) << 4);
+    // swap bytes
+    v = ((v >> 8) & 0x00FF00FF) | ((v & 0x00FF00FF) << 8);
+    // swap 2-byte long pairs
+    v = ( v >> 16             ) | ( v               << 16);
+
+    -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+    // The original bits
+
+    01 02 03 04 05 06 07 08
+    09 10 11 12 13 14 15 16
+    17 18 19 20 21 22 23 24
+    25 26 27 28 29 30 31 32
+
+    // swap odd and even bits
+
+    02 01 04 03 06 05 08 07
+    10 09 12 11 14 13 16 15
+    18 17 20 19 22 21 24 23
+    26 25 28 27 30 29 32 31
+
+    // swap consecutive pairs
+
+    04 03 02 01 08 07 06 05
+    12 11 10 09 16 15 14 13
+    20 19 18 17 24 23 22 21
+    28 27 26 25 32 31 30 29
+
+    // swap nibbles ...
+
+    08 07 06 05 04 03 02 01
+    16 15 14 13 12 11 10 09
+    24 23 22 21 20 19 18 17
+    32 31 30 29 28 27 26 25
+
+    // swap bytes
+
+    16 15 14 13 12 11 10 09
+    08 07 06 05 04 03 02 01
+    32 31 30 29 28 27 26 25
+    24 23 22 21 20 19 18 17
+
+    // swap 2-byte long pairs
+
+    32 31 30 29 28 27 26 25
+    24 23 22 21 20 19 18 17
+    16 15 14 13 12 11 10 09
+    08 07 06 05 04 03 02 01
+
+**************************************************************************/
+
 inline void bitboard::reverse(void)
 {
     unsigned int _low, _high;
-    _low  = ((low  >>  1) & 0x55555555UL) | ((low  <<  1) & 0xAAAAAAAAUL);
-    _high = ((high >>  1) & 0x55555555UL) | ((high <<  1) & 0xAAAAAAAAUL);
+    // swap odd and even bits
+    _low  = ((low   >>  1) & 0x55555555UL) | ((low   <<  1) & 0xAAAAAAAAUL);
+    _high = ((high  >>  1) & 0x55555555UL) | ((high  <<  1) & 0xAAAAAAAAUL);
 
+    // swap consecutive pairs
     _low  = ((_low  >>  2) & 0x33333333UL) | ((_low  <<  2) & 0xCCCCCCCCUL);
     _high = ((_high >>  2) & 0x33333333UL) | ((_high <<  2) & 0xCCCCCCCCUL);
 
+    // swap nibbles ...
     _low  = ((_low  >>  4) & 0x0F0F0F0FUL) | ((_low  <<  4) & 0xF0F0F0F0UL);
     _high = ((_high >>  4) & 0x0F0F0F0FUL) | ((_high <<  4) & 0xF0F0F0F0UL);
 
+    // swap bytes
     _low  = ((_low  >>  8) & 0x00FF00FFUL) | ((_low  <<  8) & 0xFF00FF00UL);
     _high = ((_high >>  8) & 0x00FF00FFUL) | ((_high <<  8) & 0xFF00FF00UL);
 
-    // swap low and high
+    // swap 2-byte long pairs and swap low and high
     high  = ((_low  >> 16) & 0x0000FFFFUL) | ((_low  << 16) & 0xFFFF0000UL);
     low   = ((_high >> 16) & 0x0000FFFFUL) | ((_high << 16) & 0xFFFF0000UL);
+}
+
+/**************************************************************************
+
+    Horizontal mirror an N-bit quantity
+
+**************************************************************************/
+
+inline void bitboard::h_mirror(void)
+{
+    unsigned int _low, _high;
+    _low  = low;
+    _high = high;
+#if 1
+    low   = ((_high & 0xFF000000UL) >> 24);
+    high  = ((_low  & 0xFF000000UL) >> 24);
+
+    low  |= ((_high & 0x00FF0000UL) >>  8);
+    high |= ((_low  & 0x00FF0000UL) >>  8);
+
+    low  |= ((_high & 0x0000FF00UL) <<  8);
+    high |= ((_low  & 0x0000FF00UL) <<  8);
+
+    low  |= ((_high & 0x000000FFUL) << 24);
+    high |= ((_low  & 0x000000FFUL) << 24);
+#else
+    low  = ((_high & 0xFF000000UL) >> 24) | ((_high & 0x00FF0000UL) >>  8)
+         | ((_high & 0x0000FF00UL) <<  8) | ((_high & 0x000000FFUL) << 24);
+    high = ((_low  & 0xFF000000UL) >> 24) | ((_low  & 0x00FF0000UL) >>  8)
+         | ((_low  & 0x0000FF00UL) <<  8) | ((_low  & 0x000000FFUL) << 24);
+#endif
+}
+
+/**************************************************************************
+
+    -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+    Vertical mirror an N-bit quantity in parallel in 3 * lg(N) operations:
+
+    unsigned int v; // 32-bit word to vertical mirror bit order
+
+    // swap odd and even bits
+    v = ((v >> 1) & 0x55555555) | ((v & 0x55555555) << 1);
+    // swap consecutive pairs
+    v = ((v >> 2) & 0x33333333) | ((v & 0x33333333) << 2);
+    // swap nibbles ... 
+    v = ((v >> 4) & 0x0F0F0F0F) | ((v & 0x0F0F0F0F) << 4);
+
+    -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+    // The original bits
+
+    01 02 03 04 05 06 07 08
+    09 10 11 12 13 14 15 16
+    17 18 19 20 21 22 23 24
+    25 26 27 28 29 30 31 32
+
+    // swap odd and even bits
+
+    02 01 04 03 06 05 08 07
+    10 09 12 11 14 13 16 15
+    18 17 20 19 22 21 24 23
+    26 25 28 27 30 29 32 31
+
+    // swap consecutive pairs
+
+    04 03 02 01 08 07 06 05
+    12 11 10 09 16 15 14 13
+    20 19 18 17 24 23 22 21
+    28 27 26 25 32 31 30 29
+
+    // swap nibbles ...
+
+    08 07 06 05 04 03 02 01
+    16 15 14 13 12 11 10 09
+    24 23 22 21 20 19 18 17
+    32 31 30 29 28 27 26 25
+
+**************************************************************************/
+
+inline void bitboard::v_mirror(void)
+{
+    unsigned int _low, _high;
+    // swap odd and even bits
+    _low  = ((low   >>  1) & 0x55555555UL) | ((low   <<  1) & 0xAAAAAAAAUL);
+    _high = ((high  >>  1) & 0x55555555UL) | ((high  <<  1) & 0xAAAAAAAAUL);
+
+    // swap consecutive pairs
+    _low  = ((_low  >>  2) & 0x33333333UL) | ((_low  <<  2) & 0xCCCCCCCCUL);
+    _high = ((_high >>  2) & 0x33333333UL) | ((_high <<  2) & 0xCCCCCCCCUL);
+
+    // swap nibbles ...
+    low   = ((_low  >>  4) & 0x0F0F0F0FUL) | ((_low  <<  4) & 0xF0F0F0F0UL);
+    high  = ((_high >>  4) & 0x0F0F0F0FUL) | ((_high <<  4) & 0xF0F0F0F0UL);
 }
 
 inline unsigned int bitboard::popcount(void)
@@ -504,6 +686,11 @@ inline unsigned int bitboard::make_pos(unsigned int x, unsigned int y)
 {
     /* pos = y * 8 + x */
     return (y << 3) + x;
+}
+
+inline void bitboard::init_bitboard(void)
+{
+    bitboard::init_square_mask();
 }
 
 inline void bitboard::init_square_mask(void)

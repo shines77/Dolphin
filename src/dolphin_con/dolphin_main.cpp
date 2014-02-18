@@ -340,7 +340,7 @@ int _tmain(int argc, _TCHAR *argv[])
     task_scheduler task_scheduler(task_scheduler::MTL_AUTOMATIC);
     task_scheduler.initialize(4);
 
-    bitboard::init_square_mask();
+    bitboard::init_bitboard();
     bitboard bb1, bb2;
     bb2.init(1, 1);
     bb1.init(0ULL);
@@ -355,7 +355,7 @@ int _tmain(int argc, _TCHAR *argv[])
 
     bb1.set(bb2);
 
-    bb1.clear();
+    bb1.empty();
     bb1.set(bitboard::make_pos(3, 3));
     bb1.or (bitboard::make_pos(4, 4));
 

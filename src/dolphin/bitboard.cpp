@@ -44,7 +44,7 @@ BitBoard bitboard::square_mask[64];
 
 bitboard::bitboard(void)
 {
-    init(0, 0);
+    /* Do nothing!! */
 }
 
 bitboard::bitboard(uint32 _low, uint32 _high)
