@@ -341,7 +341,7 @@ int _tmain(int argc, _TCHAR *argv[])
     task_scheduler.initialize(4);
 
     bitboard::init_bitboard();
-    bitboard bb1, bb2;
+    bitboard bb1, bb2, bb3;
     bb2.init(1, 1);
     bb1.init(0ULL);
     bb1.init(0, 0);
@@ -350,8 +350,8 @@ int _tmain(int argc, _TCHAR *argv[])
     bb1 = 2;
 
     bb1.set(12);
-    bb1.default(OPENNING_POS1);
-    bb2.default(OPENNING_POS3);
+    bb1.default(OPENNING_POS_1);
+    bb2.default(OPENNING_POS_3);
 
     bb1.set(bb2);
 
@@ -360,8 +360,15 @@ int _tmain(int argc, _TCHAR *argv[])
     bb1.or (bitboard::make_pos(4, 4));
 
     bb1.reverse();
-    int n_popcount = bb1.popcount();
-    printf("n_popcount = %d\n", n_popcount);
+    int n_popcount_1 = bb1.popcount();
+
+    bb3.default(OPENNING_POS_TEST);
+    bb3.rotate(RT_MIRROR_DIAG_1);
+    //bb3.rotate(RT_REVERSE);
+    //bb3.rotate(RT_ROTATE_LT);
+    int n_popcount_3 = bb3.popcount();
+
+    printf("n_popcount_1 = %d, n_popcount_3 = %d\n", n_popcount_1, n_popcount_3);
 
     //system("pause");
     //printf("\n");

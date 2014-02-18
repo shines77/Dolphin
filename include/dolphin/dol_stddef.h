@@ -48,8 +48,8 @@
 #  include <stdint.h>
 #endif
 
-#include <dolphin/colour.h>
-#include <dolphin/board.h>
+//#include <dolphin/colour.h>
+//#include <dolphin/board.h>
 
 #ifndef MIN
 #define MIN(a, b)   (((a) < (b)) ? (a) : (b))

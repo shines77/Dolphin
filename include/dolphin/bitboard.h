@@ -34,6 +34,8 @@
 #endif
 
 #include <dolphin/dol_stddef.h>
+#include <dolphin/colour.h>
+#include <dolphin/board.h>
 
 #define BITBOARD_CLEAR(a) { \
     a.low  = 0; \
@@ -94,9 +96,21 @@ namespace dolphin {
 
 enum openning_pos {
     OPENNING_EMPTY = 0,
-    OPENNING_POS1,
-    OPENNING_POS2,
-    OPENNING_POS3
+    OPENNING_POS_1,
+    OPENNING_POS_2,
+    OPENNING_POS_3,
+    OPENNING_POS_TEST
+};
+
+enum rotate_dir {
+    RT_SELF             = 0,
+    RT_MIRROR_V         = 1,
+    RT_ROTATE_RT        = 2,
+    RT_REVERSE          = 3,
+    RT_MIRROR_DIAG_1    = 4,
+    RT_MIRROR_H         = 5,
+    RT_ROTATE_LT        = 6,
+    RT_MIRROR_DIAG_2    = 7
 };
 
 typedef struct BitBoard {
@@ -151,13 +165,18 @@ public:
     inline void xor         (const bitboard &src);
     inline void andnot      (const bitboard &src);
 
-    inline void reverse             (void);
-    inline void h_mirror            (void);
-    inline void v_mirror            (void);
-    inline void rotation_rt         (void);
-    inline void rotation_lt         (void);
+    inline void reverse     (void);
+    inline void mirror_h    (void);
+    inline void mirror_v    (void);
+    inline void rotate_rt   (void);
+    inline void rotate_lt   (void);
 
-    inline unsigned int popcount    (void);
+    inline void mirror_diag_1(void);
+    inline void mirror_diag_2(void);
+
+    inline void rotate      (unsigned int dir);
+
+    inline unsigned int popcount (void);
 
 public:
     static BitBoard square_mask[64];
@@ -213,20 +232,24 @@ inline void bitboard::init(const BitBoard &b)
 
 inline void bitboard::default(int type /* =OPENNING_EMPTY */)
 {
-    if (type == OPENNING_POS1) {
+    if (type == OPENNING_POS_1) {
         // (3, 3), (4, 4)
         low  = 1UL << 27;
         high = 1UL << 4;
     }
-    else if (type == OPENNING_POS2) {
+    else if (type == OPENNING_POS_2) {
         // (4, 3), (3, 4)
         low  = 1UL << 28;
         high = 1UL << 3;
     }
-    else if (type == OPENNING_POS3) {
+    else if (type == OPENNING_POS_3) {
         // (3, 3), (4, 4), (4, 3), (3, 4)
         low  = 3UL << 27;
         high = 3UL << 3;
+    }
+    else if (type == OPENNING_POS_TEST) {
+        low  = 0x55555555UL;
+        high = 0x33333333UL;
     }
     /* type == OPENNING_EMPTY */
     else {
@@ -489,7 +512,7 @@ inline void bitboard::reverse(void)
 
 **************************************************************************/
 
-inline void bitboard::h_mirror(void)
+inline void bitboard::mirror_h(void)
 {
     unsigned int _low, _high;
     _low  = low;
@@ -561,7 +584,7 @@ inline void bitboard::h_mirror(void)
 
 **************************************************************************/
 
-inline void bitboard::v_mirror(void)
+inline void bitboard::mirror_v(void)
 {
     unsigned int _low, _high;
     // swap odd and even bits
@@ -575,6 +598,114 @@ inline void bitboard::v_mirror(void)
     // swap nibbles ...
     low   = ((_low  >>  4) & 0x0F0F0F0FUL) | ((_low  <<  4) & 0xF0F0F0F0UL);
     high  = ((_high >>  4) & 0x0F0F0F0FUL) | ((_high <<  4) & 0xF0F0F0F0UL);
+}
+
+/**************************************************************************
+
+    rotate_rt() equivalent to mirror_diag_2() and mirror_v()
+
+**************************************************************************/
+
+inline void bitboard::rotate_rt(void)
+{
+    mirror_diag_2();
+    mirror_v();
+}
+
+inline void bitboard::rotate_lt(void)
+{
+    unsigned int _low, _high;
+
+    // A1-A8 rotate to A8-H8
+    _high  = ((((low & 0x01010101UL) | ((high & 0x01010101UL) << 4)) * 0x00204081UL) & 0x1FE00000UL) << 3;
+    // B1-B8 rotate to A7-H7
+    _high |= ((((low & 0x02020202UL) | ((high & 0x02020202UL) << 4)) * 0x00204081UL) & 0x3FC00000UL) >> 6;
+    // C1-C8 rotate to A6-H6
+    _high |= ((((low & 0x04040404UL) | ((high & 0x04040404UL) << 4)) * 0x00204081UL) & 0x7F800000UL) >> 15;
+    // D1-D8 rotate to A5-H5
+    _high |= ((((low & 0x08080808UL) | ((high & 0x08080808UL) << 4)) * 0x00204081UL) & 0xFF000000UL) >> 24;
+
+    // E1-E8 rotate to A4-H4
+    _low   = (((((low & 0x10101010UL) >> 4) | (high & 0x10101010UL)) * 0x00204081UL) & 0x1FE00000UL) << 3;
+    // F1-F8 rotate to A3-H3
+    _low  |= (((((low & 0x20202020UL) >> 4) | (high & 0x20202020UL)) * 0x00204081UL) & 0x3FC00000UL) >> 6;
+    // G1-G8 rotate to A2-H2
+    _low  |= (((((low & 0x40404040UL) >> 4) | (high & 0x40404040UL)) * 0x00204081UL) & 0x7F800000UL) >> 15;
+    // H1-H8 rotate to A1-H1
+    _low  |= (((((low & 0x80808080UL) >> 4) | (high & 0x80808080UL)) * 0x00204081UL) & 0xFF000000UL) >> 24;
+
+    low  = _low;
+    high = _high;
+}
+
+/**************************************************************************
+
+    mirror_diag_1() equivalent to rotate_lt() and mirror_v()
+
+**************************************************************************/
+
+inline void bitboard::mirror_diag_1(void)
+{
+    rotate_lt();
+    mirror_v();
+}
+
+inline void bitboard::mirror_diag_2(void)
+{
+    unsigned int _low, _high;
+
+    // A1-A8 transform to A1-H1
+    _low   = ((((low & 0x01010101UL) | ((high & 0x01010101UL) << 4)) * 0x00204081UL) & 0x1FE00000UL) >> 21;
+    // B1-B8 transform to A2-H2
+    _low  |= ((((low & 0x02020202UL) | ((high & 0x02020202UL) << 4)) * 0x00204081UL) & 0x3FC00000UL) >> 14;
+    // C1-C8 transform to A3-H3
+    _low  |= ((((low & 0x04040404UL) | ((high & 0x04040404UL) << 4)) * 0x00204081UL) & 0x7F800000UL) >> 7;
+    // D1-D8 transform to A4-H4
+    _low  |= ((((low & 0x08080808UL) | ((high & 0x08080808UL) << 4)) * 0x00204081UL) & 0xFF000000UL);
+
+    // E1-E8 transform to A5-H5
+    _high  = (((((low & 0x10101010UL) >> 4) | (high & 0x10101010UL)) * 0x00204081UL) & 0x1FE00000UL) >> 21;
+    // F1-F8 transform to A6-H6
+    _high |= (((((low & 0x20202020UL) >> 4) | (high & 0x20202020UL)) * 0x00204081UL) & 0x3FC00000UL) >> 14;
+    // G1-G8 transform to A7-H7
+    _high |= (((((low & 0x40404040UL) >> 4) | (high & 0x40404040UL)) * 0x00204081UL) & 0x7F800000UL) >> 7;
+    // H1-H8 transform to A8-H8
+    _high |= (((((low & 0x80808080UL) >> 4) | (high & 0x80808080UL)) * 0x00204081UL) & 0xFF000000UL);
+
+    low  = _low;
+    high = _high;
+}
+
+inline void bitboard::rotate(unsigned int dir)
+{
+    switch (dir) {
+        case RT_SELF:
+            // don't need rotate
+            break;
+        case RT_MIRROR_V:
+            mirror_v();
+            break;
+        case RT_ROTATE_RT:
+            rotate_rt();
+            break;
+        case RT_REVERSE:
+            reverse();
+            break;
+        case RT_MIRROR_DIAG_1:
+            mirror_diag_1();
+            break;
+        case RT_MIRROR_H:
+            mirror_h();
+            break;
+        case RT_ROTATE_LT:
+            rotate_lt();
+            break;
+        case RT_MIRROR_DIAG_2:
+            mirror_diag_2();
+            break;
+        default:
+            break;
+    }
 }
 
 inline unsigned int bitboard::popcount(void)
