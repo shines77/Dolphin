@@ -26,7 +26,7 @@
     the GNU General Public License.
 */
 
-#include <dolphin/bitboard.h>
+#include <dolphin/bitboards.h>
 
 namespace dolphin {
 
@@ -36,50 +36,45 @@ namespace internal {
     };
 }
 
-BitBoard bitboard::square_mask[64];
-
 ///////////////////////////////////////////////////////////////
-// bitbaord
+// bitbaords
 ///////////////////////////////////////////////////////////////
 
-bitboard::bitboard(void)
+bitboards::bitboards(void)
 {
     /* do nothing! */
 }
 
-bitboard::bitboard(uint32 _low, uint32 _high)
+bitboards::bitboards(uint32 my_low, uint32 my_high, uint32 opp_low, uint32 opp_high)
 {
-    init(_low, _high);
+    init(my_low, my_high, opp_low, opp_high);
 }
 
-bitboard::bitboard(uint64 _bits)
+bitboards::bitboards(uint64 _my_bits, uint64 _opp_bits)
 {
-    init(_bits);
+    init(_my_bits, _opp_bits);
 }
 
-bitboard::bitboard(const BitBoard &b)
+bitboards::bitboards(const BitBoard &_my_bits, const BitBoard &_opp_bits)
 {
-    init(b.low, b.high);
+    init(_my_bits, _opp_bits);
 }
 
-bitboard::bitboard(int32 _low)
+bitboards::bitboards(const bitboard &_my_bits, const bitboard &_opp_bits)
 {
-    init((uint32)_low, 0);
+    init(_my_bits, _opp_bits);
 }
 
-bitboard::bitboard(uint32 _low)
+bitboards &bitboards::operator =(const bitboards &src)
 {
-    init(_low, 0);
-}
-
-bitboard &bitboard::operator =(const bitboard &src)
-{
-    low  = src.low;
-    high = src.high;
+    my_bits.low     = src.my_bits.low;
+    my_bits.high    = src.my_bits.high;
+    opp_bits.low    = src.opp_bits.low;
+    opp_bits.high   = src.opp_bits.high;
     return *this;
 }
 
-bitboard::~bitboard(void)
+bitboards::~bitboards(void)
 {
     /* do nothing! */
 }

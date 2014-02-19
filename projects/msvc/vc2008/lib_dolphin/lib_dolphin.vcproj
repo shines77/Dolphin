@@ -284,6 +284,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\..\src\dolphin\bitboards.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\..\src\dolphin\hash_mask.cpp"
 				>
 			</File>
@@ -311,6 +315,10 @@
 			>
 			<File
 				RelativePath="..\..\..\..\include\dolphin\bitboard.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\include\dolphin\bitboards.h"
 				>
 			</File>
 			<File

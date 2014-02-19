@@ -10,6 +10,7 @@
 #include <dolphin/colour.h>
 #include <dolphin/board.h>
 #include <dolphin/bitboard.h>
+#include <dolphin/bitboards.h>
 #include <dolphin/my_random.h>
 #include <dolphin/sys_random.h>
 #include <dolphin/mt_random.hpp>

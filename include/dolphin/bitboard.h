@@ -96,9 +96,11 @@ namespace dolphin {
 
 enum openning_pos {
     OPENNING_EMPTY = 0,
-    OPENNING_POS_1,
-    OPENNING_POS_2,
-    OPENNING_POS_3,
+    OPENNING_POS_1_BLACK,
+    OPENNING_POS_1_WHITE,
+    OPENNING_POS_2_BLACK,
+    OPENNING_POS_2_WHITE,
+    OPENNING_POS_ALL,
     OPENNING_POS_TEST
 };
 
@@ -110,13 +112,30 @@ enum rotate_dir {
     RT_MIRROR_DIAG_1    = 4,
     RT_MIRROR_H         = 5,
     RT_ROTATE_LT        = 6,
-    RT_MIRROR_DIAG_2    = 7
+    RT_MIRROR_DIAG_2    = 7,
+    RT_MAX_DIR
 };
 
 typedef struct BitBoard {
-	unsigned int low;
-	unsigned int high;
-} bitboard_t, *PBitBoard;
+	//uint32 low;
+	//uint32 high;
+    union {
+        uint64 bits;
+        struct {
+	        uint32 low;
+	        uint32 high;
+        };
+    };
+} BitBoard_t, *PBitBoard;
+
+typedef union ubitboard
+{
+    uint64 bits;
+    struct {
+	    uint32 low;
+	    uint32 high;
+    };
+} ubitboard_t;
 
 /////////////////////////////////////////////////////////
 // bitboard_t
@@ -126,9 +145,9 @@ class bitboard : public BitBoard
 {
 public:
     bitboard(void);
-    bitboard(unsigned int _low, unsigned int _high);
-    bitboard(int _low);
-    bitboard(unsigned int _low);
+    bitboard(uint32 _low, uint32 _high);
+    bitboard(int32 _low);
+    bitboard(uint32 _low);
     bitboard(uint64 _bits);
     bitboard(const BitBoard &b);
     ~bitboard(void);
@@ -138,6 +157,7 @@ public:
     inline void init(uint32 _low, uint32 _high);
     inline void init(uint64 _bits);
     inline void init(const BitBoard &b);
+    inline void init(const bitboard &b);
 
     inline void default     (int type = OPENNING_EMPTY);
 
@@ -151,19 +171,19 @@ public:
     inline void xor         (unsigned int pos);
     inline void andnot      (unsigned int pos);
 
-    inline void set         (const BitBoard *src);
-    inline void not         (const BitBoard *src);
-    inline void and         (const BitBoard *src);
-    inline void or          (const BitBoard *src);
-    inline void xor         (const BitBoard *src);
-    inline void andnot      (const BitBoard *src);
+    inline void set         (const BitBoard *src_bits);
+    inline void not         (const BitBoard *src_bits);
+    inline void and         (const BitBoard *src_bits);
+    inline void or          (const BitBoard *src_bits);
+    inline void xor         (const BitBoard *src_bits);
+    inline void andnot      (const BitBoard *src_bits);
 
-    inline void set         (const bitboard &src);
-    inline void not         (const bitboard &src);
-    inline void and         (const bitboard &src);
-    inline void or          (const bitboard &src);
-    inline void xor         (const bitboard &src);
-    inline void andnot      (const bitboard &src);
+    inline void set         (const bitboard &src_bits);
+    inline void not         (const bitboard &src_bits);
+    inline void and         (const bitboard &src_bits);
+    inline void or          (const bitboard &src_bits);
+    inline void xor         (const bitboard &src_bits);
+    inline void andnot      (const bitboard &src_bits);
 
     inline void reverse     (void);
     inline void mirror_h    (void);
@@ -228,21 +248,26 @@ inline void bitboard::init(const BitBoard &b)
     init(b.low, b.high);
 }
 
+inline void bitboard::init(const bitboard &b)
+{
+    init(b.low, b.high);
+}
+
 ///////////////////////////////////////////////////////////////////////////
 
 inline void bitboard::default(int type /* =OPENNING_EMPTY */)
 {
-    if (type == OPENNING_POS_1) {
+    if (type == OPENNING_POS_1_BLACK || type == OPENNING_POS_2_WHITE) {
         // (3, 3), (4, 4)
         low  = 1UL << 27;
         high = 1UL << 4;
     }
-    else if (type == OPENNING_POS_2) {
+    else if (type == OPENNING_POS_1_WHITE || type == OPENNING_POS_2_BLACK) {
         // (4, 3), (3, 4)
         low  = 1UL << 28;
         high = 1UL << 3;
     }
-    else if (type == OPENNING_POS_3) {
+    else if (type == OPENNING_POS_ALL) {
         // (3, 3), (4, 4), (4, 3), (3, 4)
         low  = 3UL << 27;
         high = 3UL << 3;
@@ -340,78 +365,78 @@ inline void bitboard::andnot(unsigned int pos)
 
 ///////////////////////////////////////////////////////////////////////////
 
-inline void bitboard::set(const BitBoard *src)
+inline void bitboard::set(const BitBoard *src_bits)
 {
-    low  = src->low;
-    high = src->high;
+    low  = src_bits->low;
+    high = src_bits->high;
 }
 
-inline void bitboard::not(const BitBoard *src)
+inline void bitboard::not(const BitBoard *src_bits)
 {
-    low  = ~(src->low);
-    high = ~(src->high);
+    low  = ~(src_bits->low);
+    high = ~(src_bits->high);
 }
 
-inline void bitboard::and(const BitBoard *src)
+inline void bitboard::and(const BitBoard *src_bits)
 {
-    low  &= src->low;
-    high &= src->high;
+    low  &= src_bits->low;
+    high &= src_bits->high;
 }
 
-inline void bitboard::or(const BitBoard *src)
+inline void bitboard::or(const BitBoard *src_bits)
 {
-    low  |= src->low;
-    high |= src->high;
+    low  |= src_bits->low;
+    high |= src_bits->high;
 }
 
-inline void bitboard::xor(const BitBoard *src)
+inline void bitboard::xor(const BitBoard *src_bits)
 {
-    low  ^= src->low;
-    high ^= src->high;
+    low  ^= src_bits->low;
+    high ^= src_bits->high;
 }
 
-inline void bitboard::andnot(const BitBoard *src)
+inline void bitboard::andnot(const BitBoard *src_bits)
 {
-    low  &= ~(src->low);
-    high &= ~(src->high);
+    low  &= ~(src_bits->low);
+    high &= ~(src_bits->high);
 }
 
 ///////////////////////////////////////////////////////////////////////////
 
-inline void bitboard::set(const bitboard &src)
+inline void bitboard::set(const bitboard &src_bits)
 {
-    low  = src.low;
-    high = src.high;
+    low  = src_bits.low;
+    high = src_bits.high;
 }
 
-inline void bitboard::not(const bitboard &src)
+inline void bitboard::not(const bitboard &src_bits)
 {
-    low  = ~(src.low);
-    high = ~(src.high);
+    low  = ~(src_bits.low);
+    high = ~(src_bits.high);
 }
 
-inline void bitboard::and(const bitboard &src)
+inline void bitboard::and(const bitboard &src_bits)
 {
-    low  &= src.low;
-    high &= src.high;
+    low  &= src_bits.low;
+    high &= src_bits.high;
 }
 
-inline void bitboard::or(const bitboard &src)
+inline void bitboard::or(const bitboard &src_bits)
 {
-    low  |= src.low;
-    high |= src.high;
+    low  |= src_bits.low;
+    high |= src_bits.high;
 }
 
-inline void bitboard::xor(const bitboard &src)
+inline void bitboard::xor(const bitboard &src_bits)
 {
-    low  ^= src.low;
-    high ^= src.high;
+    low  ^= src_bits.low;
+    high ^= src_bits.high;
 }
 
-inline void bitboard::andnot(const bitboard &src)
+inline void bitboard::andnot(const bitboard &src_bits)
 {
-    low  &= ~(src.low);
-    high &= ~(src.high);
+    low  &= ~(src_bits.low);
+    high &= ~(src_bits.high);
 }
 
 /**************************************************************************

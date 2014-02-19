@@ -262,6 +262,8 @@ int _tmain(int argc, _TCHAR *argv[])
     }
     //*/
 
+    /*
+
     tickcount t1, t2, tnow;
     itimer it1, it2;
     tickcount::interval interval1, interval2;
@@ -317,6 +319,18 @@ int _tmain(int argc, _TCHAR *argv[])
     printf("stop_watch sw4 = %0.1f Millisec(s)\n", sw4.getMillisec());
     printf("\n");
 
+    itimer::interval itimval_;
+    it1.begin();
+    for (int i = 0; i < 10; i++) {
+        //asm_pause_test();
+    }
+    itimval_ = it1.end();
+
+    printf("\n");
+    printf("elapsed time (ReadTSC) = %0.6f\n", itimval_.seconds());
+    printf("\n");
+    //*/
+
     void *pbuffer = _aligned_malloc(31 + 24, 32);
     char *pchar = (char *)pbuffer;
     pchar[54] = 0;
@@ -350,8 +364,8 @@ int _tmain(int argc, _TCHAR *argv[])
     bb1 = 2;
 
     bb1.set(12);
-    bb1.default(OPENNING_POS_1);
-    bb2.default(OPENNING_POS_3);
+    bb1.default(OPENNING_POS_1_BLACK);
+    bb2.default(OPENNING_POS_ALL);
 
     bb1.set(bb2);
 
@@ -369,22 +383,14 @@ int _tmain(int argc, _TCHAR *argv[])
     int n_popcount_3 = bb3.popcount();
 
     printf("n_popcount_1 = %d, n_popcount_3 = %d\n", n_popcount_1, n_popcount_3);
+    printf("\n");
+
+    ubitboard ubb1;
+    ubb1.low  = 0;
+    ubb1.high = 0;
 
     //system("pause");
     //printf("\n");
-
-    ///*
-    itimer::interval itimval_;
-    it1.begin();
-    for (int i = 0; i < 10; i++) {
-        //asm_pause_test();
-    }
-    itimval_ = it1.end();
-    //*/
-
-    printf("\n");
-    printf("elapsed time (ReadTSC) = %0.6f\n", itimval_.seconds());
-    printf("\n");
 
     aligned_space<itimer, 20> asp;
     itimer *iii = asp[0];
