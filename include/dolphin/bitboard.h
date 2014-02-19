@@ -509,7 +509,7 @@ inline void bitboard::andnot(const bitboard &src_bits)
 
 inline void bitboard::reverse(void)
 {
-    unsigned int _low, _high;
+    uint32 _low, _high;
     // swap odd and even bits
     _low  = ((low   >>  1) & 0x55555555UL) | ((low   <<  1) & 0xAAAAAAAAUL);
     _high = ((high  >>  1) & 0x55555555UL) | ((high  <<  1) & 0xAAAAAAAAUL);
@@ -539,7 +539,7 @@ inline void bitboard::reverse(void)
 
 inline void bitboard::mirror_h(void)
 {
-    unsigned int _low, _high;
+    uint32 _low, _high;
     _low  = low;
     _high = high;
 #if 1
@@ -611,7 +611,7 @@ inline void bitboard::mirror_h(void)
 
 inline void bitboard::mirror_v(void)
 {
-    unsigned int _low, _high;
+    uint32 _low, _high;
     // swap odd and even bits
     _low  = ((low   >>  1) & 0x55555555UL) | ((low   <<  1) & 0xAAAAAAAAUL);
     _high = ((high  >>  1) & 0x55555555UL) | ((high  <<  1) & 0xAAAAAAAAUL);
@@ -639,7 +639,7 @@ inline void bitboard::rotate_rt(void)
 
 inline void bitboard::rotate_lt(void)
 {
-    unsigned int _low, _high;
+    uint32 _low, _high;
 
     // A1-A8 rotate to A8-H8
     _high  = ((((low & 0x01010101UL) | ((high & 0x01010101UL) << 4)) * 0x00204081UL) & 0x1FE00000UL) << 3;
@@ -677,7 +677,7 @@ inline void bitboard::mirror_diag_1(void)
 
 inline void bitboard::mirror_diag_2(void)
 {
-    unsigned int _low, _high;
+    uint32 _low, _high;
 
     // A1-A8 transform to A1-H1
     _low   = ((((low & 0x01010101UL) | ((high & 0x01010101UL) << 4)) * 0x00204081UL) & 0x1FE00000UL) >> 21;

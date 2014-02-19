@@ -131,6 +131,149 @@ inline void bitboards::init(const bitboard &_my_bits, const bitboard &_opp_bits)
     init(_my_bits.low, _my_bits.high, _opp_bits.low, _opp_bits.high);
 }
 
+///////////////////////////////////////////////////////////////////////////
+
+inline void bitboards::empty(void)
+{
+    my_bits.low     = 0;
+    my_bits.high    = 0;
+    opp_bits.low    = 0;
+    opp_bits.high   = 0;
+}
+
+inline void bitboards::clear(void)
+{
+    my_bits.low     = 0;
+    my_bits.high    = 0;
+    opp_bits.low    = 0;
+    opp_bits.high   = 0;
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+inline void bitboards::set(const bitboard &src_bits)
+{
+    my_bits.low  = src_bits.low;
+    my_bits.high = src_bits.high;
+}
+
+inline void bitboards::not(const bitboard &src_bits)
+{
+    my_bits.low  = ~(src_bits.low);
+    my_bits.high = ~(src_bits.high);
+}
+
+inline void bitboards::and(const bitboard &src_bits)
+{
+    my_bits.low  &= src_bits.low;
+    my_bits.high &= src_bits.high;
+}
+
+inline void bitboards::or(const bitboard &src_bits)
+{
+    my_bits.low  |= src_bits.low;
+    my_bits.high |= src_bits.high;
+}
+
+inline void bitboards::xor(const bitboard &src_bits)
+{
+    my_bits.low  ^= src_bits.low;
+    my_bits.high ^= src_bits.high;
+}
+
+inline void bitboards::andnot(const bitboard &src_bits)
+{
+    my_bits.low  &= ~(src_bits.low);
+    my_bits.high &= ~(src_bits.high);
+}
+
+inline void bitboards::reverse(void)
+{
+    uint32 my_low, my_high;
+    uint32 opp_low, opp_high;
+
+#if 1
+    // swap odd and even bits
+    my_low   = ((my_bits.low   >>  1) & 0x55555555UL) | ((my_bits.low   <<  1) & 0xAAAAAAAAUL);
+    opp_low  = ((opp_bits.low  >>  1) & 0x55555555UL) | ((opp_bits.low  <<  1) & 0xAAAAAAAAUL);
+
+    my_high  = ((my_bits.high  >>  1) & 0x55555555UL) | ((my_bits.high  <<  1) & 0xAAAAAAAAUL);
+    opp_high = ((opp_bits.high >>  1) & 0x55555555UL) | ((opp_bits.high <<  1) & 0xAAAAAAAAUL);
+
+    // swap consecutive pairs
+    my_low   = ((my_low   >>  2) & 0x33333333UL) | ((my_low   <<  2) & 0xCCCCCCCCUL);
+    opp_low  = ((opp_low  >>  2) & 0x33333333UL) | ((opp_low  <<  2) & 0xCCCCCCCCUL);
+
+    my_high  = ((my_high  >>  2) & 0x33333333UL) | ((my_high  <<  2) & 0xCCCCCCCCUL);
+    opp_high = ((opp_high >>  2) & 0x33333333UL) | ((opp_high <<  2) & 0xCCCCCCCCUL);
+
+    // swap nibbles ...
+    my_low   = ((my_low   >>  4) & 0x0F0F0F0FUL) | ((my_low   <<  4) & 0xF0F0F0F0UL);
+    opp_low  = ((opp_low  >>  4) & 0x0F0F0F0FUL) | ((opp_low  <<  4) & 0xF0F0F0F0UL);
+
+    my_high  = ((my_high  >>  4) & 0x0F0F0F0FUL) | ((my_high  <<  4) & 0xF0F0F0F0UL);
+    opp_high = ((opp_high >>  4) & 0x0F0F0F0FUL) | ((opp_high <<  4) & 0xF0F0F0F0UL);
+
+    // swap bytes
+    my_low   = ((my_low   >>  8) & 0x00FF00FFUL) | ((my_low   <<  8) & 0xFF00FF00UL);
+    opp_low  = ((opp_low  >>  8) & 0x00FF00FFUL) | ((opp_low  <<  8) & 0xFF00FF00UL);
+
+    my_high  = ((my_high  >>  8) & 0x00FF00FFUL) | ((my_high  <<  8) & 0xFF00FF00UL);
+    opp_high = ((opp_high >>  8) & 0x00FF00FFUL) | ((opp_high <<  8) & 0xFF00FF00UL);
+
+    // swap 2-byte long pairs and swap low and high
+    my_bits.high  = ((my_low   >> 16) & 0x0000FFFFUL) | ((my_low   << 16) & 0xFFFF0000UL);
+    opp_bits.high = ((opp_low  >> 16) & 0x0000FFFFUL) | ((opp_low  << 16) & 0xFFFF0000UL);
+
+    my_bits.low   = ((my_high  >> 16) & 0x0000FFFFUL) | ((my_high  << 16) & 0xFFFF0000UL);
+    opp_bits.low  = ((opp_high >> 16) & 0x0000FFFFUL) | ((opp_high << 16) & 0xFFFF0000UL);
+
+#else
+    // swap odd and even bits
+    my_low  = ((my_bits.low   >>  1) & 0x55555555UL) | ((my_bits.low   <<  1) & 0xAAAAAAAAUL);
+    my_high = ((my_bits.high  >>  1) & 0x55555555UL) | ((my_bits.high  <<  1) & 0xAAAAAAAAUL);
+
+    // swap consecutive pairs
+    my_low  = ((my_low  >>  2) & 0x33333333UL) | ((my_low  <<  2) & 0xCCCCCCCCUL);
+    my_high = ((my_high >>  2) & 0x33333333UL) | ((my_high <<  2) & 0xCCCCCCCCUL);
+
+    // swap nibbles ...
+    my_low  = ((my_low  >>  4) & 0x0F0F0F0FUL) | ((my_low  <<  4) & 0xF0F0F0F0UL);
+    my_high = ((my_high >>  4) & 0x0F0F0F0FUL) | ((my_high <<  4) & 0xF0F0F0F0UL);
+
+    // swap bytes
+    my_low  = ((my_low  >>  8) & 0x00FF00FFUL) | ((my_low  <<  8) & 0xFF00FF00UL);
+    my_high = ((my_high >>  8) & 0x00FF00FFUL) | ((my_high <<  8) & 0xFF00FF00UL);
+
+    // swap 2-byte long pairs and swap low and high
+    my_bits.high = ((my_low  >> 16) & 0x0000FFFFUL) | ((my_low  << 16) & 0xFFFF0000UL);
+    my_bits.low  = ((my_high >> 16) & 0x0000FFFFUL) | ((my_high << 16) & 0xFFFF0000UL);
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    // swap odd and even bits
+    opp_low  = ((opp_bits.low   >>  1) & 0x55555555UL) | ((opp_bits.low   <<  1) & 0xAAAAAAAAUL);
+    opp_high = ((opp_bits.high  >>  1) & 0x55555555UL) | ((opp_bits.high  <<  1) & 0xAAAAAAAAUL);
+
+    // swap consecutive pairs
+    opp_low  = ((opp_low  >>  2) & 0x33333333UL) | ((opp_low  <<  2) & 0xCCCCCCCCUL);
+    opp_high = ((opp_high >>  2) & 0x33333333UL) | ((opp_high <<  2) & 0xCCCCCCCCUL);
+
+    // swap nibbles ...
+    opp_low  = ((opp_low  >>  4) & 0x0F0F0F0FUL) | ((opp_low  <<  4) & 0xF0F0F0F0UL);
+    opp_high = ((opp_high >>  4) & 0x0F0F0F0FUL) | ((opp_high <<  4) & 0xF0F0F0F0UL);
+
+    // swap bytes
+    opp_low  = ((opp_low  >>  8) & 0x00FF00FFUL) | ((opp_low  <<  8) & 0xFF00FF00UL);
+    opp_high = ((opp_high >>  8) & 0x00FF00FFUL) | ((opp_high <<  8) & 0xFF00FF00UL);
+
+    // swap 2-byte long pairs and swap low and high
+    opp_bits.high = ((opp_low  >> 16) & 0x0000FFFFUL) | ((opp_low  << 16) & 0xFFFF0000UL);
+    opp_bits.low  = ((opp_high >> 16) & 0x0000FFFFUL) | ((opp_high << 16) & 0xFFFF0000UL);
+
+#endif
+}
+
 }  // namespace dolphin
 
 #endif  /* _DOL_BITBOARDS_H_ */
