@@ -44,7 +44,7 @@
 
 #define ALIGN_SIGN_SIZE             sizeof(void *)
 
-#define IS_POWER_OF_2(x)            (((x) & (x - 1)) == 0)
+#define IS_POWER_OF_2(x)            ((!(x)) && (((x) & (x - 1)) == 0))
 
 namespace gmtl {
 
@@ -69,9 +69,9 @@ private:
 
 public:
 	cache_aligned(void);
-    explicit cache_aligned(size_t n_size);
-	cache_aligned(size_t n_size, int n_align_size, bool b_auto_delete = true);
-    explicit cache_aligned(const cache_aligned &src, bool b_copy_data = true);
+    explicit cache_aligned(size_t size);
+	cache_aligned(size_t size, int align_size, bool auto_delete = true);
+    explicit cache_aligned(const cache_aligned &src, bool copy_data = true);
     virtual ~cache_aligned(void);
 
     cache_aligned & operator =(const cache_aligned &src);
@@ -84,19 +84,19 @@ public:
     static unsigned     _next_power_of_2(unsigned x);
     static bool __cdecl _check_bytes(unsigned char *, unsigned char, size_t);
 
-    void            free_cache(bool bForceDelete = false);
+    void            free_cache(bool force_delete = false);
 
     inline int      get_align_size(void) const   { return m_align_size; };
     inline size_t   get_size(void) const         { return m_size;      };
     inline size_t   get_alloc_size(void) const   { return m_alloc_size; };
 
-    int             set_align_size(int n_align_size, bool b_force_reset = false);
+    int             set_align_size(int align_size, bool force_realloc = false);
 
     bool get_auto_delete(void) const { return m_auto_delete; };
-    bool set_auto_delete(bool b_auto_delete) {
-        bool b_old_value = m_auto_delete;
-        m_auto_delete = m_auto_delete;
-        return b_old_value;
+    bool set_auto_delete(bool auto_delete) {
+        bool old_value = m_auto_delete;
+        m_auto_delete = auto_delete;
+        return old_value;
     };
 
     int get_front_padded_size(void) const {
@@ -111,13 +111,13 @@ public:
     inline void *   get_data_ptr(void) const  { return m_pvData;  };
     inline void *   get_alloc_ptr(void) const { return m_pvAlloc; };
 
-    void *          mem_malloc (size_t n_size, int n_align_size = USE_CURRENT_ALIGN_SIZE, bool b_force_realloc = false);
-    void *          mem_realloc(size_t n_size, int n_align_size = USE_CURRENT_ALIGN_SIZE);
-    bool            copy       (const cache_aligned &src, bool b_is_inited = false);     // full copy, include struct and data
-    void            clone      (const cache_aligned &src, bool b_is_inited = false);     // only copy struct, not copy data
+    void *          mem_malloc (size_t size, int align_size = USE_CURRENT_ALIGN_SIZE, bool force_realloc = false);
+    void *          mem_realloc(size_t size, int align_size = USE_CURRENT_ALIGN_SIZE);
+    bool            copy       (const cache_aligned &src, bool _is_inited = false);     // full copy, include struct and data
+    void            clone      (const cache_aligned &src, bool _is_inited = false);     // only copy struct, not copy data
     void *          copy_data  (const cache_aligned &src);                               // only copy data
 
-    void *          mem_set    (int n_value, size_t n_size = 0);
+    void *          mem_set    (int value, size_t size = 0);
     void *          mem_copy   (const void *src, size_t count);
     void *          mem_move   (const void *src, size_t count);
     void *          mem_copy_s (const void *src, size_t count);
@@ -131,10 +131,10 @@ public:
     int             mem_icmp_l (const void *buf, size_t count, _locale_t locale);
 
 protected:
-    void            init_cache(int n_align_size = DEFAILT_CACHE_ALIGN_SIZE, bool b_auto_delete = true);
+    void            init_cache(int align_size = DEFAILT_CACHE_ALIGN_SIZE, bool auto_delete = true);
 
 private:
-    int             _std_align_size(int n_align_size);
+    int             _std_align_size(int align_size);
 
     static void *   _free_block_header(ALIGN_BLOCK_HEADER * pBlockHdr, bool b_free_memblock = false);	
 };
