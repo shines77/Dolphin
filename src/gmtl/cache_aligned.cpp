@@ -18,7 +18,7 @@ static unsigned char _cClearSignFill    = 0x00;     /* fill no-man's sign for fr
 // http://stackoverflow.com/questions/364985/algorithm-for-finding-the-smallest-power-of-two-thats-greater-or-equal-to-a-giv
 //
 
-unsigned cache_aligned::_get_nearest_power_of_2( unsigned x )
+unsigned cache_aligned::_next_power_of_2(unsigned x)
 {
 #if 0
     unsigned MS1B = 1;
@@ -58,7 +58,7 @@ bool __cdecl cache_aligned::_check_bytes(
         unsigned char *pb,
         unsigned char bCheck,
         size_t nSize
-        )
+       )
 {
         bool bOkay = true;
         while (nSize--) {
@@ -72,26 +72,26 @@ bool __cdecl cache_aligned::_check_bytes(
         return bOkay;
 }
 
-cache_aligned::cache_aligned( void )
+cache_aligned::cache_aligned(void)
 {
 	init_cache(DEFAILT_CACHE_ALIGN_SIZE, true);
 }
 
-cache_aligned::cache_aligned( size_t n_size )
+cache_aligned::cache_aligned(size_t n_size)
 {
     init_cache(DEFAILT_CACHE_ALIGN_SIZE, true);
-    malloc_mem(n_size);
+    mem_malloc(n_size);
 }
 
-cache_aligned::cache_aligned( size_t n_size,
-                                 int n_align_size, /*= DEFAILT_CACHE_ALIGN_SIZE */
-                                 bool b_auto_delete /*= false */)
+cache_aligned::cache_aligned(size_t n_size,
+                             int n_align_size, /*= DEFAILT_CACHE_ALIGN_SIZE */
+                             bool b_auto_delete /*= false */)
 {
     init_cache(n_align_size, b_auto_delete);
-    malloc_mem(n_size);
+    mem_malloc(n_size);
 }
 
-cache_aligned::cache_aligned( const cache_aligned &src, bool b_copy_data /*= true */ )
+cache_aligned::cache_aligned(const cache_aligned &src, bool b_copy_data /*= true */)
 {
     if (b_copy_data)
         copy(src, true);
@@ -99,20 +99,20 @@ cache_aligned::cache_aligned( const cache_aligned &src, bool b_copy_data /*= tru
         clone(src, true);
 }
 
-cache_aligned& cache_aligned::operator =( const cache_aligned &src )
+cache_aligned& cache_aligned::operator =(const cache_aligned &src)
 {
     copy(src);
     return *this;
 }
 
-cache_aligned::~cache_aligned( void )
+cache_aligned::~cache_aligned(void)
 {
     if (m_auto_delete)
 	    free_cache(true);
 }
 
-void cache_aligned::init_cache( int n_align_size /*= DEFAILT_CACHE_ALIGN_SIZE */,
-                           bool b_auto_delete /*= true */ )
+void cache_aligned::init_cache(int n_align_size /*= DEFAILT_CACHE_ALIGN_SIZE */,
+                           bool b_auto_delete /*= true */)
 {
     m_pvData  = NULL;
     m_pvAlloc = NULL;
@@ -126,7 +126,7 @@ void cache_aligned::init_cache( int n_align_size /*= DEFAILT_CACHE_ALIGN_SIZE */
     set_align_size(n_align_size);
 }
 
-void cache_aligned::free_cache( bool b_force_reset /*= false */ )
+void cache_aligned::free_cache(bool b_force_reset /*= false */)
 {
     if (m_inited) {
         bool b_need_delete = (b_force_reset || m_auto_delete);
@@ -158,35 +158,35 @@ void cache_aligned::free_cache( bool b_force_reset /*= false */ )
 }
 
 // full copy, include struct and data
-bool cache_aligned::copy( const cache_aligned &src, bool b_is_inited /*= false */ )
+bool cache_aligned::copy(const cache_aligned &src, bool b_is_inited /*= false */)
 {
     if (!b_is_inited)
         free_cache(true);
     init_cache(src.get_align_size(), src.get_auto_delete());
-	malloc_mem(src.get_size());
+	mem_malloc(src.get_size());
     return (copy_data(src) != NULL);
 }
 
 // only copy struct, not copy data
-void cache_aligned::clone( const cache_aligned &src, bool b_is_inited /*= false */ )
+void cache_aligned::clone(const cache_aligned &src, bool b_is_inited /*= false */)
 {
     if (!b_is_inited)
         free_cache(true);
     init_cache(src.get_align_size(), src.get_auto_delete());
-	malloc_mem(src.get_size());
+	mem_malloc(src.get_size());
 }
 
 // only copy data
-void *cache_aligned::copy_data( const cache_aligned &src )
+void *cache_aligned::copy_data(const cache_aligned &src)
 {
     return mem_copy_s(src.get_ptr(), src.get_size());
 }
 
-int cache_aligned::_std_align_size( int n_align_size )
+int cache_aligned::_std_align_size(int n_align_size)
 {
     if (n_align_size < 0)
         n_align_size = -n_align_size;
-    n_align_size = _get_nearest_power_of_2(n_align_size);
+    n_align_size = _next_power_of_2(n_align_size);
     _ASSERT(IS_POWER_OF_2(n_align_size));
 
     n_align_size = (n_align_size > sizeof(unsigned int)) ? n_align_size : sizeof(unsigned int);
@@ -203,12 +203,12 @@ int cache_aligned::_std_align_size( int n_align_size )
     return n_align_size;
 }
 
-int cache_aligned::set_align_size( int n_align_size, bool b_force_reset /*= false */ )
+int cache_aligned::set_align_size(int n_align_size, bool b_force_reset /*= false */)
 {
     // whether need force realloc the memory use the new align size?
     if (b_force_reset) {
         if (n_align_size != m_align_size) {
-            if (realloc_mem(m_size, n_align_size) != NULL)
+            if (mem_realloc(m_size, n_align_size) != NULL)
                 n_align_size = m_align_size;
             else
                 n_align_size = -1;
@@ -224,18 +224,18 @@ int cache_aligned::set_align_size( int n_align_size, bool b_force_reset /*= fals
     return n_align_size;
 }
 
-void *cache_aligned::malloc_mem( size_t n_size,
-                              int n_align_size, /*= -1 */
-                              bool b_force_realloc /*= false */ )
+void *cache_aligned::mem_malloc(size_t n_size,
+                                int n_align_size, /*= -1 */
+                                bool b_force_realloc /*= false */)
 {
     if (!is_inited() || b_force_realloc)
-        return realloc_mem(n_size, n_align_size);
+        return mem_realloc(n_size, n_align_size);
     else
         return NULL;
 }
 
-void *cache_aligned::realloc_mem( size_t n_size,
-                               int n_align_size /*= -1 */ )
+void *cache_aligned::mem_realloc(size_t n_size,
+                                 int n_align_size /*= -1 */)
 {
     // Release previous alloc memory data first
     free_cache(true);
@@ -303,7 +303,7 @@ void *cache_aligned::realloc_mem( size_t n_size,
     }
 }
 
-void *cache_aligned::_free_block_header( ALIGN_BLOCK_HEADER *pBlockHdr,
+void *cache_aligned::_free_block_header(ALIGN_BLOCK_HEADER *pBlockHdr,
                                         bool bFreeMemBlock /* = false*/)
 {
     void *pvAlloc = NULL;
@@ -342,7 +342,7 @@ void *cache_aligned::_free_block_header( ALIGN_BLOCK_HEADER *pBlockHdr,
     return pvAlloc;
 }
 
-void *cache_aligned::free_block( const void *pvData )
+void *cache_aligned::free_block(const void *pvData)
 {
     ALIGN_BLOCK_HEADER *pBlockHdr;
     void *pvAlloc = NULL;
@@ -358,7 +358,7 @@ void *cache_aligned::free_block( const void *pvData )
     return pvAlloc;
 }
 
-void *cache_aligned::mem_set( int _value, size_t _size /* =0 */ )
+void *cache_aligned::mem_set(int _value, size_t _size /* =0 */)
 {
     if (is_inited()) {
         if (m_pvAlloc != NULL && m_pvData != NULL && m_size > 0) {
@@ -376,7 +376,7 @@ void *cache_aligned::mem_set( int _value, size_t _size /* =0 */ )
     return NULL;
 }
 
-void *cache_aligned::mem_copy( const void *src, size_t count )
+void *cache_aligned::mem_copy(const void *src, size_t count)
 {
     if (is_inited()) {
         if (m_pvAlloc != NULL && m_pvData != NULL && m_size > 0) {
@@ -387,7 +387,7 @@ void *cache_aligned::mem_copy( const void *src, size_t count )
     return NULL;
 }
 
-void *cache_aligned::mem_copy_s( const void *src, size_t count )
+void *cache_aligned::mem_copy_s(const void *src, size_t count)
 {
     if (is_inited()) {
         if (m_pvAlloc != NULL && m_pvData != NULL && m_size > 0) {
@@ -399,7 +399,7 @@ void *cache_aligned::mem_copy_s( const void *src, size_t count )
     return NULL;
 }
 
-void *cache_aligned::mem_move( const void *src, size_t count )
+void *cache_aligned::mem_move(const void *src, size_t count)
 {
     if (is_inited()) {
         if (m_pvAlloc != NULL && m_pvData != NULL && m_size > 0) {
@@ -410,7 +410,7 @@ void *cache_aligned::mem_move( const void *src, size_t count )
     return NULL;
 }
 
-void *cache_aligned::mem_move_s( const void *src, size_t count )
+void *cache_aligned::mem_move_s(const void *src, size_t count)
 {
     if (is_inited()) {
         if (m_pvAlloc != NULL && m_pvData != NULL && m_size > 0) {
@@ -422,7 +422,7 @@ void *cache_aligned::mem_move_s( const void *src, size_t count )
     return NULL;
 }
 
-void *cache_aligned::mem_chr( int c )
+void *cache_aligned::mem_chr(int c)
 {
     if (is_inited()) {
         if (m_pvAlloc != NULL && m_pvData != NULL && m_size > 0) {
@@ -432,7 +432,7 @@ void *cache_aligned::mem_chr( int c )
     return NULL;
 }
 
-void *cache_aligned::mem_chr( size_t offset, int c )
+void *cache_aligned::mem_chr(size_t offset, int c)
 {
     if (is_inited()) {
         if (m_pvAlloc != NULL && m_pvData != NULL && m_size > 0) {
@@ -443,7 +443,7 @@ void *cache_aligned::mem_chr( size_t offset, int c )
     return NULL;
 }
 
-int cache_aligned::mem_cmp( const void *buf, size_t count )
+int cache_aligned::mem_cmp(const void *buf, size_t count)
 {
     if (is_inited()) {
         if (m_pvAlloc != NULL && m_pvData != NULL && m_size > 0) {
@@ -454,7 +454,7 @@ int cache_aligned::mem_cmp( const void *buf, size_t count )
     return NULL;
 }
 
-int cache_aligned::mem_icmp( const void *buf, size_t count )
+int cache_aligned::mem_icmp(const void *buf, size_t count)
 {
     if (is_inited()) {
         if (m_pvAlloc != NULL && m_pvData != NULL && m_size > 0) {
@@ -465,9 +465,9 @@ int cache_aligned::mem_icmp( const void *buf, size_t count )
     return NULL;
 }
 
-int cache_aligned::mem_icmp_l( const void *buf, size_t count, _locale_t locale )
+int cache_aligned::mem_icmp_l(const void *buf, size_t count, _locale_t locale)
 {
-        if (is_inited()) {
+    if (is_inited()) {
         if (m_pvAlloc != NULL && m_pvData != NULL && m_size > 0) {
             count = (count > m_size) ? m_size : count;
             return ::_memicmp_l((unsigned char *)m_pvData, buf, count, locale);

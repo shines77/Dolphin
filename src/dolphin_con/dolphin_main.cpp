@@ -341,7 +341,7 @@ int _tmain(int argc, _TCHAR *argv[])
 
     cache_aligned cache_align, c1, c2;
     cache_align.set_align_size(32);
-    cache_align.malloc_mem(31 + 24);
+    cache_align.mem_malloc(31 + 24);
     c1 = c2 = cache_align;
     //c1 = c2 = 2;
 
@@ -388,6 +388,9 @@ int _tmain(int argc, _TCHAR *argv[])
     ubitboard ubb1;
     ubb1.low  = 0;
     ubb1.high = 0;
+
+    bitboards bbs1, bbs2;
+    bbs1.set(bb1, bb2);
 
     //system("pause");
     //printf("\n");

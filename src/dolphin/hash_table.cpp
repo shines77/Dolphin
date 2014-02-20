@@ -131,7 +131,7 @@ hash_table::pointer hash_table::init_hash_entries( entry_type hash_entries )
 
     size_type nAllocSize = m_hash_entries * sizeof(internal::hash_entry_t);
     m_hash_table = (hash_table::pointer)
-        m_hash_memory.malloc_mem(nAllocSize, cache_aligned::USE_CURRENT_ALIGN_SIZE);
+        m_hash_memory.mem_malloc(nAllocSize, cache_aligned::USE_CURRENT_ALIGN_SIZE);
     _DOL_ASSERT((m_hash_table != NULL), "m_hash_table is NULL, hash table malloc failure.");
     if (m_hash_table == NULL) {
         m_hash_bits = 0;

@@ -81,7 +81,7 @@ public:
     static const int USE_DEFAULT_ALIGN_SIZE = -2;
 
     static void *       free_block(const void *pvData);
-    static unsigned     _get_nearest_power_of_2(unsigned x);
+    static unsigned     _next_power_of_2(unsigned x);
     static bool __cdecl _check_bytes(unsigned char *, unsigned char, size_t);
 
     void            free_cache(bool bForceDelete = false);
@@ -92,17 +92,17 @@ public:
 
     int             set_align_size(int n_align_size, bool b_force_reset = false);
 
-    bool    get_auto_delete(void) const { return m_auto_delete; };
-    bool    set_auto_delete(bool b_auto_delete) {
+    bool get_auto_delete(void) const { return m_auto_delete; };
+    bool set_auto_delete(bool b_auto_delete) {
         bool b_old_value = m_auto_delete;
         m_auto_delete = m_auto_delete;
         return b_old_value;
     };
 
-    int     get_front_padded_size(void) const {
+    int get_front_padded_size(void) const {
         return (int)((unsigned char *)m_pvData - (unsigned char *)m_pvAlloc);
     };
-    int     get_last_padded_size (void) const {
+    int get_last_padded_size (void) const {
         return (int)(m_alloc_size - m_size - get_front_padded_size());
     };
 
@@ -111,8 +111,8 @@ public:
     inline void *   get_data_ptr(void) const  { return m_pvData;  };
     inline void *   get_alloc_ptr(void) const { return m_pvAlloc; };
 
-    void *          malloc_mem (size_t n_size, int n_align_size = USE_CURRENT_ALIGN_SIZE, bool b_force_realloc = false);
-    void *          realloc_mem(size_t n_size, int n_align_size = USE_CURRENT_ALIGN_SIZE);
+    void *          mem_malloc (size_t n_size, int n_align_size = USE_CURRENT_ALIGN_SIZE, bool b_force_realloc = false);
+    void *          mem_realloc(size_t n_size, int n_align_size = USE_CURRENT_ALIGN_SIZE);
     bool            copy       (const cache_aligned &src, bool b_is_inited = false);     // full copy, include struct and data
     void            clone      (const cache_aligned &src, bool b_is_inited = false);     // only copy struct, not copy data
     void *          copy_data  (const cache_aligned &src);                               // only copy data

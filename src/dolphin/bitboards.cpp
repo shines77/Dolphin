@@ -31,7 +31,7 @@
 namespace dolphin {
 
 namespace internal {
-    class no_name3 {
+    class no_name4 {
         int i;
     };
 }

@@ -71,14 +71,14 @@ public:
     inline void empty       (void);
     inline void clear       (void);
 
-    inline void set         (const BitBoard &src_bits);
+    inline void set         (const BitBoard &src_my_bits, const BitBoard &src_opp_bits);
     inline void not         (const BitBoard &src_bits);
     inline void and         (const BitBoard &src_bits);
     inline void or          (const BitBoard &src_bits);
     inline void xor         (const BitBoard &src_bits);
     inline void andnot      (const BitBoard &src_bits);
 
-    inline void set         (const bitboard &src_bits);
+    inline void set         (const bitboard &src_my_bits, const bitboard &src_opp_bits);
     inline void not         (const bitboard &src_bits);
     inline void and         (const bitboard &src_bits);
     inline void or          (const bitboard &src_bits);
@@ -151,10 +151,22 @@ inline void bitboards::clear(void)
 
 ///////////////////////////////////////////////////////////////////////////
 
-inline void bitboards::set(const bitboard &src_bits)
+inline void bitboards::set(const BitBoard &src_my_bits, const BitBoard &src_opp_bits)
 {
-    my_bits.low  = src_bits.low;
-    my_bits.high = src_bits.high;
+    my_bits.low   = src_my_bits.low;
+    my_bits.high  = src_my_bits.high;
+
+    opp_bits.low  = src_opp_bits.low;
+    opp_bits.high = src_opp_bits.high;
+}
+
+inline void bitboards::set(const bitboard &src_my_bits, const bitboard &src_opp_bits)
+{
+    my_bits.low   = src_my_bits.low;
+    my_bits.high  = src_my_bits.high;
+
+    opp_bits.low  = src_opp_bits.low;
+    opp_bits.high = src_opp_bits.high;
 }
 
 inline void bitboards::not(const bitboard &src_bits)
