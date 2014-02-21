@@ -7,20 +7,20 @@
 class atomic_c
 {
 public:
-	long m_nValue;
+    long m_nValue;
 
 public:
-	atomic_c(void);
-	virtual ~atomic_c(void);
+    atomic_c(void);
+    virtual ~atomic_c(void);
 
-	atomic_c(const atomic_c& src);
-	void operator=(const atomic_c& src);
+    atomic_c(const atomic_c& src);
+    void operator=(const atomic_c& src);
 
 protected:
     void __inline Copy(const atomic_c& src);
 
 private:
-	void __inline Init(long value);
+    void __inline Init(long value);
 };
 
 #endif  // _ATOMIC_C_H_

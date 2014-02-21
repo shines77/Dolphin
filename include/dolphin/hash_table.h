@@ -184,7 +184,7 @@ public:
 
     void init_hash_mask( bool b_clear = true, bool b_srand = true );
 
-    int resize_hash( bits_type new_hash_bits ); 
+    int resize_hash( bits_type new_hash_bits );
     void clear_drafts( void );
 
     void determine_board_hash( const BitBoard my_bits,
@@ -201,10 +201,10 @@ protected:
 inline
 unsigned int
 hash_table::popcount32( unsigned int bits ) {
-	unsigned int n;
-	for ( n = 0; bits != 0; n++, bits &= (bits - 1) )
+    unsigned int n;
+    for ( n = 0; bits != 0; n++, bits &= (bits - 1) )
         ;
-	return n;
+    return n;
 }
 
 /*

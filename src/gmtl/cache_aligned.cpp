@@ -22,8 +22,8 @@ unsigned cache_aligned::_next_power_of_2(unsigned x)
 {
 #if 0
     unsigned MS1B = 1;
-	while (MS1B < x)
-		MS1B <<= 1;
+    while (MS1B < x)
+        MS1B <<= 1;
 
     return MS1B;
 #else
@@ -74,7 +74,7 @@ bool __cdecl cache_aligned::_check_bytes(
 
 cache_aligned::cache_aligned(void)
 {
-	init_cache(DEFAILT_CACHE_ALIGN_SIZE, true);
+    init_cache(DEFAILT_CACHE_ALIGN_SIZE, true);
 }
 
 cache_aligned::cache_aligned(size_t size)
@@ -108,7 +108,7 @@ cache_aligned& cache_aligned::operator =(const cache_aligned &src)
 cache_aligned::~cache_aligned(void)
 {
     if (m_auto_delete)
-	    free_cache(true);
+        free_cache(true);
 }
 
 void cache_aligned::init_cache(int align_size /*= DEFAILT_CACHE_ALIGN_SIZE */,
@@ -163,7 +163,7 @@ bool cache_aligned::copy(const cache_aligned &src, bool _is_inited /*= false */)
     if (!_is_inited)
         free_cache(true);
     init_cache(src.get_align_size(), src.get_auto_delete());
-	mem_malloc(src.get_size());
+    mem_malloc(src.get_size());
     return (copy_data(src) != NULL);
 }
 
@@ -173,7 +173,7 @@ void cache_aligned::clone(const cache_aligned &src, bool _is_inited /*= false */
     if (!_is_inited)
         free_cache(true);
     init_cache(src.get_align_size(), src.get_auto_delete());
-	mem_malloc(src.get_size());
+    mem_malloc(src.get_size());
 }
 
 // only copy data
@@ -320,7 +320,7 @@ void *cache_aligned::_free_block_header(ALIGN_BLOCK_HEADER *pBlockHdr,
         }
         else {
             if (_check_bytes(pBlockHdr->Sign, _cAlignSignFill, ALIGN_SIGN_SIZE)) {
-                // Set and fill clear sign 
+                // Set and fill clear sign
                 ::memset(pBlockHdr->Sign, _cClearSignFill, ALIGN_SIGN_SIZE);
 
                 // Set pvAlloc's value to NULL

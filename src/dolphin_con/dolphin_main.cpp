@@ -138,7 +138,7 @@ int gcd_stein(unsigned m, unsigned n)
     else if ((n & 1) == 0) {            // 若m为奇数, n为偶数
         return gcd_stein(m, n >> 1);
     }
-    else {  
+    else {
         // m, n均为奇数, 返回gcd_stein(abs(m - n) / 2, min(m, n));
         if (m > n) {
             return gcd_stein((m - n) >> 1, n);

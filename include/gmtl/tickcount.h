@@ -92,7 +92,7 @@ public:
         //! Subtraction operator
         interval& operator-=( const interval& i ) { my_value -= i.my_value; return *this; }
     };
-    
+
     //! Construct an absolute timestamp initialized to zero.
     tickcount() : my_count(0) {};
 
@@ -102,7 +102,7 @@ public:
 
     //! Return current time.
     static tickcount    now( void );
-    
+
     //! Subtract two timestamps to get the time interval between
     friend interval operator-( const tickcount& t1, const tickcount& t0 );
 
@@ -137,7 +137,7 @@ inline tickcount tickcount::now( void ) {
 #elif __linux__
     struct timespec ts;
 #if GMTL_USE_ASSERT
-    int status = 
+    int status =
 #endif /* GMTL_USE_ASSERT */
         clock_gettime( CLOCK_REALTIME, &ts );
     _GMTL_ASSERT( status==0, "CLOCK_REALTIME not supported" );
@@ -145,7 +145,7 @@ inline tickcount tickcount::now( void ) {
 #else /* generic Unix */
     struct timeval tv;
 #if GMTL_USE_ASSERT
-    int status = 
+    int status =
 #endif /* GMTL_USE_ASSERT */
         gettimeofday(&tv, NULL);
     _GMTL_ASSERT( status==0, "gettimeofday failed" );

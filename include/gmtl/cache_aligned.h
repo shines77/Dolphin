@@ -57,7 +57,7 @@ typedef struct align_block_header_t
 class cache_aligned
 {
 private:
-	void *  m_pvData;
+    void *  m_pvData;
     void *  m_pvAlloc;
 
     int     m_align_size;
@@ -68,9 +68,9 @@ private:
     bool    m_inited;
 
 public:
-	cache_aligned(void);
+    cache_aligned(void);
     explicit cache_aligned(size_t size);
-	cache_aligned(size_t size, int align_size, bool auto_delete = true);
+    cache_aligned(size_t size, int align_size, bool auto_delete = true);
     explicit cache_aligned(const cache_aligned &src, bool copy_data = true);
     virtual ~cache_aligned(void);
 
@@ -136,7 +136,7 @@ protected:
 private:
     int             _std_align_size(int align_size);
 
-    static void *   _free_block_header(ALIGN_BLOCK_HEADER * pBlockHdr, bool b_free_memblock = false);	
+    static void *   _free_block_header(ALIGN_BLOCK_HEADER * pBlockHdr, bool b_free_memblock = false);
 };
 
 }  // namespace gmtl

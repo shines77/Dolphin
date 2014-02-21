@@ -117,13 +117,13 @@ enum rotate_dir {
 };
 
 typedef struct BitBoard {
-	//uint32 low;
-	//uint32 high;
+    //uint32 low;
+    //uint32 high;
     union {
         uint64 bits;
         struct {
-	        uint32 low;
-	        uint32 high;
+            uint32 low;
+            uint32 high;
         };
     };
 } BitBoard_t, *PBitBoard;
@@ -132,8 +132,8 @@ typedef union ubitboard
 {
     uint64 bits;
     struct {
-	    uint32 low;
-	    uint32 high;
+        uint32 low;
+        uint32 high;
     };
 } ubitboard_t;
 
@@ -454,7 +454,7 @@ inline void bitboard::andnot(const bitboard &src_bits)
     v = ((v >> 1) & 0x55555555) | ((v & 0x55555555) << 1);
     // swap consecutive pairs
     v = ((v >> 2) & 0x33333333) | ((v & 0x33333333) << 2);
-    // swap nibbles ... 
+    // swap nibbles ...
     v = ((v >> 4) & 0x0F0F0F0F) | ((v & 0x0F0F0F0F) << 4);
     // swap bytes
     v = ((v >> 8) & 0x00FF00FF) | ((v & 0x00FF00FF) << 8);
@@ -574,7 +574,7 @@ inline void bitboard::mirror_h(void)
     v = ((v >> 1) & 0x55555555) | ((v & 0x55555555) << 1);
     // swap consecutive pairs
     v = ((v >> 2) & 0x33333333) | ((v & 0x33333333) << 2);
-    // swap nibbles ... 
+    // swap nibbles ...
     v = ((v >> 4) & 0x0F0F0F0F) | ((v & 0x0F0F0F0F) << 4);
 
     -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=

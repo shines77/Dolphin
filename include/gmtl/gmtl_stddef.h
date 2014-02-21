@@ -110,7 +110,7 @@ namespace internal {
 
 /** Label for data that may be accessed from different threads, and that may eventually become wrapped
     in a formal atomic type.
-    
+
     Note that no problems have yet been observed relating to the definition currently being empty,
     even if at least "volatile" would seem to be in order to avoid data sometimes temporarily hiding
     in a register (although "volatile" as a "poor man's atomic" lacks several other features of a proper
@@ -120,7 +120,7 @@ namespace internal {
     both as a way to have the compiler help enforce use of the label and to quickly rule out
     one potential issue.
 
-    Note however that, with some architecture/compiler combinations, e.g. on Itanium, "volatile" 
+    Note however that, with some architecture/compiler combinations, e.g. on Itanium, "volatile"
     also has non-portable memory semantics that are needlessly expensive for "relaxed" operations.
 
     Note that this must only be applied to data that will not change bit patterns when cast to/from
@@ -145,9 +145,9 @@ inline void poison_pointer( T* ) {/*do nothing*/}
 #endif /* !TBB_USE_ASSERT */
 
 //! Cast pointer from U* to T.
-/** This method should be used sparingly as a last resort for dealing with 
+/** This method should be used sparingly as a last resort for dealing with
     situations that inherently break strict ISO C++ aliasing rules. */
-template<typename T, typename U> 
+template<typename T, typename U>
 inline T punned_cast( U* ptr ) {
     uintptr_t x = reinterpret_cast<uintptr_t>(ptr);
     return reinterpret_cast<T>(x);

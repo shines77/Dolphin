@@ -49,25 +49,25 @@ typedef unsigned int UINT;
  * Atomic operations that C can't guarantee us.  Useful for
  * resource counting etc..
  */
-#define ATOMIC_INIT(i)  { (i) } 
+#define ATOMIC_INIT(i)  { (i) }
 
 #if __GNUC__ || __SUNPRO_CC
 
 typedef struct _atomic_t __attribute__ aligned(ATOMIC_ALIGN_SIZE) {
     volatile INT counter;
-} atomic_t, *patomic_t; 
+} atomic_t, *patomic_t;
 
 #elif defined(__INTEL_COMPILER)||_MSC_VER >= 1300
 
 typedef __declspec(align(ATOMIC_ALIGN_SIZE)) struct _atomic_t {
     volatile INT counter;
-} atomic_t, *patomic_t; 
+} atomic_t, *patomic_t;
 
 #else
 
 typedef struct _atomic_t {
     volatile INT counter;
-} atomic_t, *patomic_t; 
+} atomic_t, *patomic_t;
 
 #endif
 

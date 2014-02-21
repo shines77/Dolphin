@@ -51,7 +51,7 @@ namespace gmtl {
 /** @ingroup timing */
 class stop_watch
 {
-public:    
+public:
     //! Construct an absolute timestamp initialized to zero.
     stop_watch() : startTime(0), endTime(0), elapsedTime(0), elapsedTimeTotal(0), bIsRunning(false) {};
     stop_watch(const stop_watch &src);
@@ -148,7 +148,7 @@ inline void stop_watch::restart(void)
 #elif __linux__
     struct timespec ts;
 #if GMTL_USE_ASSERT
-    int status = 
+    int status =
 #endif /* GMTL_USE_ASSERT */
         clock_gettime(CLOCK_REALTIME, &ts);
     _GMTL_ASSERT(status == 0, "CLOCK_REALTIME not supported");
@@ -157,7 +157,7 @@ inline void stop_watch::restart(void)
 #else /* generic Unix */
     struct timeval tv;
 #if GMTL_USE_ASSERT
-    int status = 
+    int status =
 #endif /* GMTL_USE_ASSERT */
         gettimeofday(&tv, NULL);
     _GMTL_ASSERT(status == 0, "gettimeofday failed");
@@ -183,7 +183,7 @@ inline void stop_watch::start(void)
 #elif __linux__
     struct timespec ts;
 #if GMTL_USE_ASSERT
-    int status = 
+    int status =
 #endif /* GMTL_USE_ASSERT */
         clock_gettime(CLOCK_REALTIME, &ts);
     _GMTL_ASSERT(status == 0, "CLOCK_REALTIME not supported");
@@ -192,7 +192,7 @@ inline void stop_watch::start(void)
 #else /* generic Unix */
     struct timeval tv;
 #if GMTL_USE_ASSERT
-    int status = 
+    int status =
 #endif /* GMTL_USE_ASSERT */
         gettimeofday(&tv, NULL);
     _GMTL_ASSERT(status == 0, "gettimeofday failed");
@@ -217,7 +217,7 @@ inline void stop_watch::stop(void)
 #elif __linux__
     struct timespec ts;
 #if GMTL_USE_ASSERT
-    int status = 
+    int status =
 #endif /* GMTL_USE_ASSERT */
         clock_gettime(CLOCK_REALTIME, &ts);
     _GMTL_ASSERT(status == 0, "CLOCK_REALTIME not supported");
@@ -225,7 +225,7 @@ inline void stop_watch::stop(void)
 #else /* generic Unix */
     struct timeval tv;
 #if GMTL_USE_ASSERT
-    int status = 
+    int status =
 #endif /* GMTL_USE_ASSERT */
         gettimeofday(&tv, NULL);
     _GMTL_ASSERT(status == 0, "gettimeofday failed");
@@ -260,7 +260,7 @@ inline int64_t stop_watch::now(void)
 #elif __linux__
     struct timespec ts;
 #if GMTL_USE_ASSERT
-    int status = 
+    int status =
 #endif /* GMTL_USE_ASSERT */
         clock_gettime(CLOCK_REALTIME, &ts);
     _GMTL_ASSERT(status == 0, "CLOCK_REALTIME not supported");
@@ -268,7 +268,7 @@ inline int64_t stop_watch::now(void)
 #else /* generic Unix */
     struct timeval tv;
 #if GMTL_USE_ASSERT
-    int status = 
+    int status =
 #endif /* GMTL_USE_ASSERT */
         gettimeofday(&tv, NULL);
     _GMTL_ASSERT(status == 0, "gettimeofday failed");
@@ -291,7 +291,7 @@ inline double stop_watch::nowf(void)
     int64_t time_usecs;
     struct timespec ts;
 #if GMTL_USE_ASSERT
-    int status = 
+    int status =
 #endif /* GMTL_USE_ASSERT */
         clock_gettime(CLOCK_REALTIME, &ts);
     _GMTL_ASSERT(status == 0, "CLOCK_REALTIME not supported");
@@ -301,7 +301,7 @@ inline double stop_watch::nowf(void)
     int64_t time_usecs;
     struct timeval tv;
 #if GMTL_USE_ASSERT
-    int status = 
+    int status =
 #endif /* GMTL_USE_ASSERT */
         gettimeofday(&tv, NULL);
     _GMTL_ASSERT(status == 0, "gettimeofday failed");

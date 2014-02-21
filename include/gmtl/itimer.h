@@ -90,7 +90,7 @@ public:
         //! Subtraction operator
         interval& operator-=( const interval& i ) { my_value -= i.my_value; return *this; }
     };
-    
+
     //! Construct an absolute timestamp initialized to zero.
     itimer() : my_count(0) {};
 
@@ -100,7 +100,7 @@ public:
 
     //! Return current time.
     static itimer       now();
-    
+
     //! Subtract two timestamps to get the time interval between
     friend interval operator-( const itimer& t1, const itimer& t0 );
 
@@ -137,7 +137,7 @@ inline itimer itimer::now() {
 #elif __linux__
     struct timespec ts;
 #if GMTL_USE_ASSERT
-    int status = 
+    int status =
 #endif /* GMTL_USE_ASSERT */
         clock_gettime( CLOCK_REALTIME, &ts );
     _GMTL_ASSERT( status==0, "CLOCK_REALTIME not supported" );
@@ -145,7 +145,7 @@ inline itimer itimer::now() {
 #else /* generic Unix */
     struct timeval tv;
 #if GMTL_USE_ASSERT
-    int status = 
+    int status =
 #endif /* GMTL_USE_ASSERT */
         gettimeofday(&tv, NULL);
     _GMTL_ASSERT( status==0, "gettimeofday failed" );

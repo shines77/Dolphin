@@ -69,7 +69,7 @@ hash_table::~hash_table( void )
 {
     free_hash();
 }
-   
+
 void hash_table::free_hash( void )
 {
     if (is_initialized()) {
@@ -163,8 +163,8 @@ void hash_table::init_hash_mask( bool b_clear, /* = true */
     bool is_first_bit;
     unsigned int scan_bit;
     unsigned int hash_tmp_low, hash_tmp_high;
-    const unsigned int max_pair_closeness = 10;		// 10
-    const unsigned int max_zero_closeness = 9;		// 9
+    const unsigned int max_pair_closeness = 10;     // 10
+    const unsigned int max_zero_closeness = 9;      // 9
     const int max_index = 130;
     unsigned int closeness;
     unsigned int rand_pair[max_index][2];
@@ -226,21 +226,21 @@ TRY_AGAIN2:
         index++;
     }
 
-	index = 0;
-	for (i = 0; i < BOARD_MAX_DISCS; ++i) {
-		g_hash_disc_mask[CHESS_BLACK][i].low  = 0;
-		g_hash_disc_mask[CHESS_BLACK][i].high = 0;
-		g_hash_disc_mask[CHESS_WHITE][i].low  = 0;
-		g_hash_disc_mask[CHESS_WHITE][i].high = 0;
-	}
-	for (i = 0; i < BOARD_MAX_DISCS; ++i) {
-		g_hash_disc_mask[CHESS_BLACK][i].low  = rand_pair[index][0];
-		g_hash_disc_mask[CHESS_BLACK][i].high = rand_pair[index][1];
-		index++;
-		g_hash_disc_mask[CHESS_WHITE][i].low  = rand_pair[index][0];
-		g_hash_disc_mask[CHESS_WHITE][i].high = rand_pair[index][1];
-		index++;
-	}
+    index = 0;
+    for (i = 0; i < BOARD_MAX_DISCS; ++i) {
+        g_hash_disc_mask[CHESS_BLACK][i].low  = 0;
+        g_hash_disc_mask[CHESS_BLACK][i].high = 0;
+        g_hash_disc_mask[CHESS_WHITE][i].low  = 0;
+        g_hash_disc_mask[CHESS_WHITE][i].high = 0;
+    }
+    for (i = 0; i < BOARD_MAX_DISCS; ++i) {
+        g_hash_disc_mask[CHESS_BLACK][i].low  = rand_pair[index][0];
+        g_hash_disc_mask[CHESS_BLACK][i].high = rand_pair[index][1];
+        index++;
+        g_hash_disc_mask[CHESS_WHITE][i].low  = rand_pair[index][0];
+        g_hash_disc_mask[CHESS_WHITE][i].high = rand_pair[index][1];
+        index++;
+    }
 
     for (i = 0; i < BOARD_MAX_DISCS; ++i) {
         g_hash_flip_value[i].low  = g_hash_disc_mask[CHESS_BLACK][i].low  ^ g_hash_disc_mask[CHESS_WHITE][i].low;
@@ -254,16 +254,16 @@ TRY_AGAIN2:
     g_hash_color_mask[CHESS_WHITE].high = rand_pair[index][1];
     index++;
 
-	g_hash_switch_side.low  = g_hash_color_mask[CHESS_BLACK].low  ^ g_hash_color_mask[CHESS_WHITE].low;
-	g_hash_switch_side.high = g_hash_color_mask[CHESS_BLACK].high ^ g_hash_color_mask[CHESS_WHITE].high;
+    g_hash_switch_side.low  = g_hash_color_mask[CHESS_BLACK].low  ^ g_hash_color_mask[CHESS_WHITE].low;
+    g_hash_switch_side.high = g_hash_color_mask[CHESS_BLACK].high ^ g_hash_color_mask[CHESS_WHITE].high;
 
     // put the disc hash values
-	for (i = 0; i < BOARD_MAX_DISCS; ++i) {
-		g_hash_put_value[CHESS_BLACK][i].low  = g_hash_disc_mask[CHESS_BLACK][i].low  ^ g_hash_switch_side.low;
-		g_hash_put_value[CHESS_BLACK][i].high = g_hash_disc_mask[CHESS_BLACK][i].high ^ g_hash_switch_side.high;
-		g_hash_put_value[CHESS_WHITE][i].low  = g_hash_disc_mask[CHESS_WHITE][i].low  ^ g_hash_switch_side.low;
-		g_hash_put_value[CHESS_WHITE][i].high = g_hash_disc_mask[CHESS_WHITE][i].high ^ g_hash_switch_side.high;
-	}
+    for (i = 0; i < BOARD_MAX_DISCS; ++i) {
+        g_hash_put_value[CHESS_BLACK][i].low  = g_hash_disc_mask[CHESS_BLACK][i].low  ^ g_hash_switch_side.low;
+        g_hash_put_value[CHESS_BLACK][i].high = g_hash_disc_mask[CHESS_BLACK][i].high ^ g_hash_switch_side.high;
+        g_hash_put_value[CHESS_WHITE][i].low  = g_hash_disc_mask[CHESS_WHITE][i].low  ^ g_hash_switch_side.low;
+        g_hash_put_value[CHESS_WHITE][i].high = g_hash_disc_mask[CHESS_WHITE][i].high ^ g_hash_switch_side.high;
+    }
 
     // disc row hash values
     for (i = 0; i < BOARD_ROWS; ++i) {
