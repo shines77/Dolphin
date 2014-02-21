@@ -284,7 +284,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\dolphin\bitboard_test.cpp"
+				RelativePath="..\..\..\..\src\dolphin\bitboard_filps.cpp"
 				>
 			</File>
 			<File
@@ -322,7 +322,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\include\dolphin\bitboard_test.h"
+				RelativePath="..\..\..\..\include\dolphin\bitboard_flips.h"
 				>
 			</File>
 			<File
