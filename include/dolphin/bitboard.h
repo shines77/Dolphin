@@ -204,7 +204,7 @@ public:
     static inline unsigned int reverse32(unsigned int val);
 
     static inline unsigned int popcount(const BitBoard &b);
-    static inline unsigned int _FASTCALL(2) non_iterative_popcount(unsigned int n1, unsigned int n2);
+    static inline unsigned int __FASTCALL(2) non_iterative_popcount(unsigned int n1, unsigned int n2);
     static inline unsigned int iterative_popcount(BitBoard b);
 
     static inline void init_bitboard(void);
@@ -807,7 +807,7 @@ inline unsigned int bitboard::popcount(const BitBoard &b)
   This is done using some bitfiddling tricks.
 */
 
-inline unsigned int _FASTCALL(2) bitboard::non_iterative_popcount(unsigned int n1, unsigned int n2)
+inline unsigned int __FASTCALL(2) bitboard::non_iterative_popcount(unsigned int n1, unsigned int n2)
 {
     n1 = n1 - ((n1 >> 1) & 0x55555555UL);
     n2 = n2 - ((n2 >> 1) & 0x55555555UL);

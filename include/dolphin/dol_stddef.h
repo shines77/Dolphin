@@ -138,12 +138,12 @@
 
 /* Define function attributes directive when available */
 #if __GNUC__ >= 3
-#define _FASTCALL(num)      __attribute__((regparm(num)))
+#define __FASTCALL(num)         __attribute__((regparm(num)))
 #else
 #if defined (_MSC_VER) || defined(__BORLANDC__)
-#define _FASTCALL(num)      __fastcall
+#define __FASTCALL(num)         __fastcall
 #else
-#define _FASTCALL(num)
+#define __FASTCALL(num)
 #endif
 #endif
 

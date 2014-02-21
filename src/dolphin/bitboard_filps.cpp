@@ -29,7 +29,7 @@
 #include <dolphin/bitboard.h>
 #include <dolphin/bitboard_flips.h>
 
-#if defined(WRAPPER_INTO_NAMESPACE_DOLPHIN) && (WRAPPER_INTO_NAMESPACE_DOLPHIN != 0)
+#if defined(WRAPPED_INTO_NAMESPACE_DOLPHIN) && (WRAPPED_INTO_NAMESPACE_DOLPHIN != 0)
 namespace dolphin {
 #endif
 
@@ -39,92 +39,92 @@ ALIGN_PREFIX(64) static unsigned int opp_flip_mask[8][64] ALIGN_SUFFIX(64);
 void init_flip_mask(void)
 {
     int i, j, k;
-    unsigned int mask_bit, scan_bit, l_bit, r_bit;
+    unsigned int scan_bit, move_bit, l_bit, r_bit;
     unsigned int opp_mask, mask, mask_l, mask_r;
     unsigned int mask_left[8], mask_right[8];
     int d_count, l_count, r_count;
-    scan_bit = 1;
+    move_bit = 1;
     mask_left[0]  = 0;
     mask_right[0] = 0xFE;
     for (i = 1; i < 8; i++) {
-        mask_left[i]  = mask_left[i - 1] | scan_bit;
+        mask_left[i]  = mask_left[i - 1] | move_bit;
         mask_right[i] = (mask_right[i - 1] << 1) & 0xFF;
-        scan_bit <<= 1;
+        move_bit <<= 1;
     }
 
-    scan_bit = 1;
+    move_bit = 1;
     for (i = 0; i < 8; i++) {
         // 遍历opp_bits时, 只需要用到中间的6个bit, 最边上的各1个bit无用
         for (mask = 0; mask < 64; mask++) {
             // opp_mask范围为: (00000010B - 01111110B) (二进制), 即2~126
             opp_mask = mask << 1;
-            if ((opp_mask & scan_bit) == (scan_bit + 0x80000000UL)) {
+            if ((opp_mask & move_bit) == (move_bit + 0x80000000UL)) {
                 opp_flip_mask[i][mask] = 0;
             }
             else {
                 // left direction
                 mask_l = opp_mask & mask_left[i];
-                mask_bit = scan_bit >> 1;
+                scan_bit = move_bit >> 1;
                 d_count = 0;
                 for (j = i-1; j >= 0; j--) {
-                    if ((mask_bit & mask_l) == 0)
+                    if ((scan_bit & mask_l) == 0)
                         break;
-                    mask_bit >>= 1;
+                    scan_bit >>= 1;
                     d_count++;
                 }
                 if (d_count == 0)
                     mask_l = 0;
                 else
-                    mask_l = mask_bit & mask_left[i];
+                    mask_l = scan_bit & mask_left[i];
 
                 // right direction
                 mask_r = opp_mask & mask_right[i];
-                mask_bit = scan_bit << 1;
+                scan_bit = move_bit << 1;
                 d_count = 0;
                 for (j = i+1; j < 8; j++) {
-                    if ((mask_bit & mask_r) == 0)
+                    if ((scan_bit & mask_r) == 0)
                         break;
-                    mask_bit <<= 1;
+                    scan_bit <<= 1;
                     d_count++;
                 }
                 if (d_count == 0)
                     mask_r = 0;
                 else
-                    mask_r = mask_bit & mask_right[i];
+                    mask_r = scan_bit & mask_right[i];
 
                 opp_flip_mask[i][mask] = mask_l | mask_r;
             }
         }
-        scan_bit <<= 1;
+        move_bit <<= 1;
     }
 
     for (i = 0; i < 8; i++)
         for (opp_mask = 0; opp_mask < 256; opp_mask++)
             my_flip_mask[i][opp_mask] = 0;
 
-    scan_bit = 1;
+    move_bit = 1;
     for (i = 0; i < 8; i++) {
         // left dir
         j = i - 1;
         l_count = 0;
-        l_bit = scan_bit;
+        l_bit = move_bit;
         do {
             l_bit = (l_bit >> 1) & mask_left[i];
             if (l_count == 0 || j < 0)
                 mask_l = 0;
             else
-                mask_l = (scan_bit - 1) - ((l_bit << 1) - 1);
+                mask_l = (move_bit - 1) - ((l_bit << 1) - 1);
 
             // right dir
             k = i + 1;
             r_count = 0;
-            r_bit = scan_bit;
+            r_bit = move_bit;
             do {
                 r_bit = (r_bit << 1) & mask_right[i];
                 if (r_count == 0 || k >= 8)
                     mask_r = 0;
                 else
-                    mask_r = (r_bit - 1) - scan_bit - (scan_bit - 1);
+                    mask_r = (r_bit - 1) - move_bit - (move_bit - 1);
 
                 mask = (mask_l & mask_left[i]) | (mask_r & mask_right[i]);
 
@@ -144,331 +144,332 @@ void init_flip_mask(void)
             j--;
         } while (j >= 0);
 
-        scan_bit <<= 1;
+        move_bit <<= 1;
     }
 }
 
-int bitboard_getflips_a1(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_a1(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_b1(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_b1(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_c1(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_c1(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_d1(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_d1(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_e1(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_e1(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_f1(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_f1(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_g1(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_g1(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_h1(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_h1(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_a2(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_a2(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_b2(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_b2(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_c2(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_c2(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_d2(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_d2(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_e2(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_e2(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_f2(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_f2(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_g2(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_g2(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_h2(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_h2(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_a3(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_a3(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_b3(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_b3(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_c3(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_c3(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_d3(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_d3(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_e3(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_e3(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_f3(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_f3(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_g3(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_g3(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_h3(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_h3(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_a4(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_a4(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_b4(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_b4(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_c4(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_c4(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_d4(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_d4(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_e4(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_e4(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_f4(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_f4(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_g4(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_g4(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_h4(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_h4(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_a5(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_a5(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_b5(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_b5(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_c5(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_c5(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_d5(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_d5(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_e5(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_e5(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_f5(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_f5(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_g5(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_g5(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_h5(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_h5(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_a6(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_a6(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_b6(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_b6(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_c6(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_c6(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_d6(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_d6(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_e6(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_e6(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_f6(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_f6(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_g6(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_g6(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_h6(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_h6(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_a7(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_a7(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_b7(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_b7(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_c7(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_c7(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_d7(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_d7(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_e7(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_e7(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_f7(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_f7(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_g7(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_g7(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_h7(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_h7(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_a8(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_a8(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_b8(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_b8(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_c8(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_c8(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_d8(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_d8(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_e8(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_e8(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_f8(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_f8(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_g8(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_g8(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int bitboard_getflips_h8(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
+BB_FLIP_FUNC bitboard_getflips_h8(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits)
 {
     return 0;
 }
 
-int (*bitboard_getflips[64])(const bitboard &, const bitboard &, bitboard &) = {
+//int (__FASTCALL(2) * const bitboard_getflips[64])(const bitboard &, const bitboard &, bitboard &) = {
+BB_FLIP_FUNC_TYPE(bitboard_getflips[64]) = {
 
     bitboard_getflips_a1,
     bitboard_getflips_b1,
@@ -544,6 +545,6 @@ int (*bitboard_getflips[64])(const bitboard &, const bitboard &, bitboard &) = {
 
 };
 
-#if defined(WRAPPER_INTO_NAMESPACE_DOLPHIN) && (WRAPPER_INTO_NAMESPACE_DOLPHIN != 0)
+#if defined(WRAPPED_INTO_NAMESPACE_DOLPHIN) && (WRAPPED_INTO_NAMESPACE_DOLPHIN != 0)
 }  // namespace dolphin
 #endif
