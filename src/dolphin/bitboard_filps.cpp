@@ -29,7 +29,7 @@
 #include <dolphin/bitboard.h>
 #include <dolphin/bitboard_flips.h>
 
-#if defined(WRAPPED_INTO_NAMESPACE_DOLPHIN) && (WRAPPED_INTO_NAMESPACE_DOLPHIN != 0)
+#if defined(WRAPPED_INTO_NAMESPACE) && (WRAPPED_INTO_NAMESPACE != 0)
 namespace dolphin {
 #endif
 
@@ -469,7 +469,7 @@ BB_FLIP_FUNC bitboard_getflips_h8(const bitboard &my_bits, const bitboard &opp_b
 }
 
 //int (__FASTCALL(2) * const bitboard_getflips[64])(const bitboard &, const bitboard &, bitboard &) = {
-BB_FLIP_FUNC_TYPE(bitboard_getflips[64]) = {
+bitboard_getflips_func_t bitboard_getflips[64] = {
 
     bitboard_getflips_a1,
     bitboard_getflips_b1,
@@ -545,6 +545,6 @@ BB_FLIP_FUNC_TYPE(bitboard_getflips[64]) = {
 
 };
 
-#if defined(WRAPPED_INTO_NAMESPACE_DOLPHIN) && (WRAPPED_INTO_NAMESPACE_DOLPHIN != 0)
+#if defined(WRAPPED_INTO_NAMESPACE) && (WRAPPED_INTO_NAMESPACE != 0)
 }  // namespace dolphin
 #endif

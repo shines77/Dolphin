@@ -38,17 +38,19 @@
 #include <dolphin/board.h>
 #include <dolphin/bitboard.h>
 
-#define WRAPPED_INTO_NAMESPACE_DOLPHIN      1
+#define WRAPPED_INTO_NAMESPACE      1
 
 #define BB_FLIP_FUNC                static int __FASTCALL(2)
 #define BB_FLIP_FUNC_TYPE(func)     int (__FASTCALL(2) * const (func))(const bitboard &, const bitboard &, bitboard &)
 
-#if defined(WRAPPED_INTO_NAMESPACE_DOLPHIN) && (WRAPPED_INTO_NAMESPACE_DOLPHIN != 0)
+#if defined(WRAPPED_INTO_NAMESPACE) && (WRAPPED_INTO_NAMESPACE != 0)
 
 namespace dolphin {
 
-//extern int (*bitboard_getflips[64])(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits);
-extern BB_FLIP_FUNC_TYPE(bitboard_getflips[64]);
+typedef BB_FLIP_FUNC_TYPE(bitboard_getflips_func_t);
+
+//extern int (__FASTCALL(2) * const bitboard_getflips[64])(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits);
+extern bitboard_getflips_func_t bitboard_getflips[64];
 
 extern void init_flip_mask(void);
 
@@ -62,7 +64,10 @@ using namespace dolphin;
 extern "C" {
 #endif
 
-extern int (*bitboard_getflips[64])(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits);
+typedef BB_FLIP_FUNC_TYPE(bitboard_getflips_func);
+
+//extern int (__FASTCALL(2) * const bitboard_getflips[64])(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits);
+extern bitboard_getflips_func_t bitboard_getflips[64];
 
 extern void init_flip_mask(void);
 
@@ -70,6 +75,6 @@ extern void init_flip_mask(void);
 }
 #endif
 
-#endif  /* !WRAPPED_INTO_NAMESPACE_DOLPHIN */
+#endif  /* !WRAPPED_INTO_NAMESPACE */
 
 #endif  /* _DOL_BITBOARD_FLIPS_H_ */
