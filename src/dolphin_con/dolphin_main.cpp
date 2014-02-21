@@ -354,6 +354,8 @@ int _tmain(int argc, _TCHAR *argv[])
     task_scheduler task_scheduler(task_scheduler::MTL_AUTOMATIC);
     task_scheduler.initialize(4);
 
+    dolphin::init_flip_mask();
+
     bitboard::init_bitboard();
     bitboard bb1, bb2, bb3;
     bb2.init(1, 1);

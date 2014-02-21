@@ -39,108 +39,129 @@ ALIGN_PREFIX(64) static unsigned int opp_flip_mask[8][64] ALIGN_SUFFIX(64);
 void init_flip_mask(void)
 {
     int i, j, k;
-    unsigned int scan_bit, move_bit, l_bit, r_bit;
-    unsigned int opp_mask, mask, mask_l, mask_r;
-    unsigned int mask_left[8], mask_right[8];
-    int d_count, l_count, r_count;
+    unsigned int scan_bits, move_bit, left_my_bit, right_my_bit;
+    unsigned int my_bits, opp_bits, my_mask, opp_mask;
+    unsigned int left_my_contigs, right_my_contigs;
+    unsigned int left_opp_bits, right_opp_bits, left_opp_contigs, right_opp_contigs;
+    unsigned int left_contiguous_mask[8], right_contiguous_mask[8];
+    int contig_count, left_count, right_count;
+
+    // 左和右方向定义使用常规黑白棋棋盘的定义, 即左上角位置为A1, 右上角位置为A8, 左下角为H1, 右下角为H8
+    // 为了讨论方便, 我们把任意一条直线(横, 竖, 斜线)的棋子都映射到A1-A8的8个棋子上, 下同
+
+    // 先得到从move_bit(第0-7位)位置开始搜索的左方向和右方向上连续棋子的mask bits
     move_bit = 1;
-    mask_left[0]  = 0;
-    mask_right[0] = 0xFE;
+    // 从A1位置向左搜索的连续旗子的mask bits为0
+    left_contiguous_mask[0]  = 0;
+    // 从A2位置向右搜索的连续旗子的mask bits为0xFE(111111110B, 二进制)
+    right_contiguous_mask[0] = 0xFE;
     for (i = 1; i < 8; i++) {
-        mask_left[i]  = mask_left[i - 1] | move_bit;
-        mask_right[i] = (mask_right[i - 1] << 1) & 0xFF;
+        // 类推到A2以及A8位置的左方向
+        left_contiguous_mask[i]  = left_contiguous_mask[i - 1] | move_bit;
+        // 类推到A2以及A8位置的右方向
+        right_contiguous_mask[i] = (right_contiguous_mask[i - 1] << 1) & 0xFF;
         move_bit <<= 1;
     }
 
     move_bit = 1;
+    // 循环move_bit(0-7)
     for (i = 0; i < 8; i++) {
         // 遍历opp_bits时, 只需要用到中间的6个bit, 最边上的各1个bit无用
-        for (mask = 0; mask < 64; mask++) {
-            // opp_mask范围为: (00000010B - 01111110B) (二进制), 即2~126
-            opp_mask = mask << 1;
-            if ((opp_mask & move_bit) == (move_bit + 0x80000000UL)) {
-                opp_flip_mask[i][mask] = 0;
+        for (opp_mask = 0; opp_mask < 64; opp_mask++) {
+            // opp_bits范围为: (00000010B - 01111110B) (二进制), 即2~126
+            opp_bits = opp_mask << 1;
+            // 下棋位置出现对手的棋子时(一般情况下, 不应该出现这种情况), opp_flip_mask值为0
+            if ((opp_bits & move_bit) == move_bit && (move_bit != 0)) {
+                opp_flip_mask[i][opp_mask] = 0;
             }
             else {
-                // left direction
-                mask_l = opp_mask & mask_left[i];
-                scan_bit = move_bit >> 1;
-                d_count = 0;
+                // 搜索当前位置的左方向
+                left_opp_bits = opp_bits & left_contiguous_mask[i];
+                scan_bits = move_bit >> 1;
+                // 计算左方向上连续的棋子数
+                contig_count = 0;
                 for (j = i-1; j >= 0; j--) {
-                    if ((scan_bit & mask_l) == 0)
+                    if ((scan_bits & left_opp_bits) == 0)
                         break;
-                    scan_bit >>= 1;
-                    d_count++;
+                    scan_bits >>= 1;
+                    contig_count++;
                 }
-                if (d_count == 0)
-                    mask_l = 0;
+                // 根据左方向上连续的棋子数得到左方向的连续棋子bits
+                if (contig_count == 0)
+                    left_opp_contigs = 0;
                 else
-                    mask_l = scan_bit & mask_left[i];
+                    left_opp_contigs = scan_bits & left_contiguous_mask[i];
 
-                // right direction
-                mask_r = opp_mask & mask_right[i];
-                scan_bit = move_bit << 1;
-                d_count = 0;
+                // 搜索当前位置的右方向
+                right_opp_bits = opp_bits & right_contiguous_mask[i];
+                scan_bits = move_bit << 1;
+                // 计算右方向上连续的棋子数
+                contig_count = 0;
                 for (j = i+1; j < 8; j++) {
-                    if ((scan_bit & mask_r) == 0)
+                    if ((scan_bits & right_opp_bits) == 0)
                         break;
-                    scan_bit <<= 1;
-                    d_count++;
+                    scan_bits <<= 1;
+                    contig_count++;
                 }
-                if (d_count == 0)
-                    mask_r = 0;
+                // 根据右方向上连续的棋子数得到右方向的连续棋子bits
+                if (contig_count == 0)
+                    right_opp_contigs = 0;
                 else
-                    mask_r = scan_bit & mask_right[i];
+                    right_opp_contigs = scan_bits & right_contiguous_mask[i];
 
-                opp_flip_mask[i][mask] = mask_l | mask_r;
+                // 合并左, 右方向上的连续棋子bits
+                opp_flip_mask[i][opp_mask] = left_opp_contigs | right_opp_contigs;
             }
         }
         move_bit <<= 1;
     }
 
-    for (i = 0; i < 8; i++)
-        for (opp_mask = 0; opp_mask < 256; opp_mask++)
-            my_flip_mask[i][opp_mask] = 0;
+    // my_flip_mask初始化
+    for (i = 0; i < 8; i++) {
+        for (my_bits = 0; my_bits < 256; my_bits++)
+            my_flip_mask[i][my_bits] = 0;
+    }
 
     move_bit = 1;
+    // 循环move_bit(0-7)
     for (i = 0; i < 8; i++) {
         // left dir
         j = i - 1;
-        l_count = 0;
-        l_bit = move_bit;
+        left_count = 0;
+        left_my_bit = move_bit;
         do {
-            l_bit = (l_bit >> 1) & mask_left[i];
-            if (l_count == 0 || j < 0)
-                mask_l = 0;
+            left_my_bit = (left_my_bit >> 1) & left_contiguous_mask[i];
+            if (left_count == 0 || j < 0)
+                left_my_contigs = 0;
             else
-                mask_l = (move_bit - 1) - ((l_bit << 1) - 1);
+                left_my_contigs = (move_bit - 1) - ((left_my_bit << 1) - 1);
 
             // right dir
             k = i + 1;
-            r_count = 0;
-            r_bit = move_bit;
+            right_count = 0;
+            right_my_bit = move_bit;
             do {
-                r_bit = (r_bit << 1) & mask_right[i];
-                if (r_count == 0 || k >= 8)
-                    mask_r = 0;
+                right_my_bit = (right_my_bit << 1) & right_contiguous_mask[i];
+                if (right_count == 0 || k >= 8)
+                    right_my_contigs = 0;
                 else
-                    mask_r = (r_bit - 1) - move_bit - (move_bit - 1);
+                    right_my_contigs = (right_my_bit - 1) - move_bit - (move_bit - 1);
 
-                mask = (mask_l & mask_left[i]) | (mask_r & mask_right[i]);
+                // my_mask = right_my_bit - now_bit - (left_my_bit << 1);
+                my_mask = (left_my_contigs & left_contiguous_mask[i]) | (right_my_contigs & right_contiguous_mask[i]);
 
-                // mask = r_bit - now_bit - (l_bit << 1);
-                opp_mask = l_bit | r_bit;
-                my_flip_mask[i][opp_mask] = mask;
-                if (l_count == 0)
-                    my_flip_mask[i][r_bit] = mask;
-                if (r_count == 0)
-                    my_flip_mask[i][l_bit] = mask;
+                my_bits = left_my_bit | right_my_bit;
+                my_flip_mask[i][my_bits] = my_mask;
+                if (left_count == 0)
+                    my_flip_mask[i][right_my_bit] = my_mask;
+                if (right_count == 0)
+                    my_flip_mask[i][left_my_bit] = my_mask;
 
-                r_count++;
+                right_count++;
                 k++;
             } while (k < 8);
 
-            l_count++;
+            left_count++;
             j--;
         } while (j >= 0);
 

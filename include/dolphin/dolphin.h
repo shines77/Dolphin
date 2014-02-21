@@ -17,5 +17,6 @@
 #include <dolphin/hash_mask.h>
 #include <dolphin/hash_table.h>
 #include <dolphin/search_engine.h>
+#include <dolphin/bitboard_flips.h>
 
 #endif  /* _DOLPHIN_H_ */
