@@ -78,15 +78,16 @@ void init_flip_mask(void)
                 // 搜索当前位置的左方向
                 left_opp_bits = opp_bits & left_contiguous_mask[i];
                 scan_bits = move_bit >> 1;
-                // 计算左方向上连续的棋子数
+                // 搜索左方向上连续的棋子
                 contig_count = 0;
                 for (j = i-1; j >= 0; j--) {
                     if ((scan_bits & left_opp_bits) == 0)
                         break;
+                    // 左方向连续棋子的下一个bit
                     scan_bits >>= 1;
                     contig_count++;
                 }
-                // 根据左方向上连续的棋子数得到左方向的连续棋子bits
+                // 根据左方向上连续的棋子数得到左方向连续棋子的下一个bit(即scan_bit)
                 if (contig_count == 0)
                     left_opp_contigs = 0;
                 else
@@ -95,15 +96,16 @@ void init_flip_mask(void)
                 // 搜索当前位置的右方向
                 right_opp_bits = opp_bits & right_contiguous_mask[i];
                 scan_bits = move_bit << 1;
-                // 计算右方向上连续的棋子数
+                // 搜索右方向上连续的棋子
                 contig_count = 0;
                 for (j = i+1; j < 8; j++) {
                     if ((scan_bits & right_opp_bits) == 0)
                         break;
+                    // 右方向连续棋子的下一个bit
                     scan_bits <<= 1;
                     contig_count++;
                 }
-                // 根据右方向上连续的棋子数得到右方向的连续棋子bits
+                // 根据右方向上连续的棋子得到右方向连续棋子的下一个bit(即scan_bit)
                 if (contig_count == 0)
                     right_opp_contigs = 0;
                 else
@@ -147,7 +149,7 @@ void init_flip_mask(void)
                 else
                     right_my_contigs = (right_my_bit - 1) - move_bit - (move_bit - 1);
 
-                // my_mask = right_my_bit - now_bit - (left_my_bit << 1);
+                // my_mask = right_my_bit - move_bit - (left_my_bit << 1);
                 my_mask = (left_my_contigs & left_contiguous_mask[i]) | (right_my_contigs & right_contiguous_mask[i]);
 
                 my_bits = left_my_bit | right_my_bit;

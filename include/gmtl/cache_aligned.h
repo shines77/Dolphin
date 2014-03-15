@@ -44,7 +44,7 @@
 
 #define ALIGN_SIGN_SIZE             sizeof(void *)
 
-#define IS_POWER_OF_2(x)            ((!(x)) && (((x) & (x - 1)) == 0))
+#define IS_POWER_OF_2(x)            (((x != 0)) && (((x) & (x - 1)) == 0))
 
 namespace gmtl {
 

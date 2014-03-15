@@ -12,10 +12,14 @@
 #include <objbase.h>
 #include <gmtl/gmtl.h>
 #include <dolphin/dolphin.h>
+#include <dolphin/cl_runner.h>
 #include <mmsystem.h>
 
 #include "ms1b.h"
 #include "dolphin_main.h"
+
+//#include <dolphin_con/platform/icd_test_log.h>
+#include <platform/icd_test_log.h>
 
 #ifdef _DEBUG
 #define DEBUG_CLIENTBLOCK   new( _CLIENT_BLOCK, __FILE__, __LINE__)
@@ -30,7 +34,7 @@
 #define new DEBUG_CLIENTBLOCK
 #endif
 
-#define ReadTSC( x )            \
+#define ReadTSC(x)              \
     __asm cpuid                 \
     __asm rdtsc                 \
     __asm mov dword ptr x, eax  \
@@ -47,7 +51,7 @@
     REPEAT_100(x) REPEAT_100(x) REPEAT_100(x) REPEAT_100(x) REPEAT_100(x)
 #define FACTOR          ((double)LOOP_COUNT*1000.0)
 
-#define CLOCKSPERINSTRUCTION(start,end) ((double)end-(double)start)/(FACTOR)
+#define CLOCKSPERINSTRUCTION(start, end)    ((double)end - (double)start) / (FACTOR)
 
 using namespace gmtl;
 using namespace dolphin;
@@ -239,6 +243,22 @@ int _tmain(int argc, _TCHAR *argv[])
     //ms1b_main();
 
     //ms1b2_main(0, NULL);
+
+    //test_icd_initialize_app_log();
+    //test_icd_initialize_stub_log();
+
+    cl_runner cl_runner;
+    int clError = (int)cl_runner.init_cl();
+    if (clError == CL_SUCCESS) {
+        clError = cl_runner.execute("vector_add_gpu.cl");
+        if (clError == CL_SUCCESS) {
+            //
+        }
+    }
+    printf("\n");
+
+    //test_icd_close_app_log();
+    //test_icd_close_stub_log();
 
 #if 0
     int m, n, p, p1, p2;

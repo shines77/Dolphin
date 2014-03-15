@@ -292,6 +292,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\..\src\dolphin\cl_runner.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\..\src\dolphin\hash_mask.cpp"
 				>
 			</File>
@@ -331,6 +335,10 @@
 			</File>
 			<File
 				RelativePath="..\..\..\..\include\dolphin\board.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\include\dolphin\cl_runner.h"
 				>
 			</File>
 			<File
