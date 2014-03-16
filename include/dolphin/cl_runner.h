@@ -6,10 +6,8 @@
 #pragma once
 #endif
 
-#include <gmtl/gmtl.h>
-//#include <gmtl/stop_watch.h>
-
 #include <dolphin/dol_stddef.h>
+#include <gmtl/stop_watch.h>
 #ifdef __APPLE__
 #include <OpenCL/opencl.h>
 #else
@@ -40,8 +38,6 @@ public:
 
     cl_int  compile(const char *filename);
     cl_int  execute(const char *filename);
-    cl_int  clLoadProgramSource(const char *filename,
-        const char **source, size_t *length);
 
     double  test();
 
@@ -51,6 +47,10 @@ public:
     double  getTotalMillisec();
     double  getTotalMillisec2();
     double  getIORead();
+
+protected:
+    cl_int  clLoadProgramSource(const char *filename,
+        const char **source, size_t *length);
 
 private:
     bool m_bInitCL;

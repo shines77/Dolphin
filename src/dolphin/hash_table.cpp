@@ -73,7 +73,7 @@ hash_table::~hash_table( void )
 void hash_table::free_hash( void )
 {
     if (is_initialized()) {
-        _DOL_ASSERT((m_hash_table == NULL),
+        DOL_ASSERT((m_hash_table == NULL),
             "@ chess_hash_table::free_hash(): m_hash_table == NULL.");
         if (is_valid())
             m_hash_memory.free_cache(true);
@@ -132,7 +132,7 @@ hash_table::pointer hash_table::init_hash_entries( entry_type hash_entries )
     size_type nAllocSize = m_hash_entries * sizeof(internal::hash_entry_t);
     m_hash_table = (hash_table::pointer)
         m_hash_memory.mem_malloc(nAllocSize, cache_aligned::USE_CURRENT_ALIGN_SIZE);
-    _DOL_ASSERT((m_hash_table != NULL), "m_hash_table is NULL, hash table malloc failure.");
+    DOL_ASSERT((m_hash_table != NULL), "m_hash_table is NULL, hash table malloc failure.");
     if (m_hash_table == NULL) {
         m_hash_bits = 0;
         m_hash_entries = 0;

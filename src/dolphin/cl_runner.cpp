@@ -100,6 +100,10 @@ bool cl_runner::release(bool bForce /* = false */)
         m_clContext = NULL;
     }
 
+    if (m_clDeviceId) {
+        clReleaseDevice(m_clDeviceId);
+        m_clDeviceId = NULL;
+    }
     return true;
 }
 
@@ -248,8 +252,14 @@ cl_int cl_runner::init_cl()
         }
     }
 
-    if (num_devices > 0)
+    if (num_devices > 0) {
         m_clDeviceId = devices[0];
+        for (i = 1; i < num_devices; ++i) {
+            cl_device_id deviceId = devices[i];
+            if (deviceId)
+                clReleaseDevice(deviceId);
+        }
+    }
 
     // Create the Command-queue
     m_clCmdQueue = clCreateCommandQueue(m_clContext, m_clDeviceId, 0, &err_num);
@@ -345,6 +355,8 @@ cl_int cl_runner::execute(const char *filename)
     std::ifstream ifs;
     source_need_free = true;
     err_num = clLoadProgramSource(filename, (const char **)&source_content, (size_t *)&src_length);
+    if (err_num != CL_SUCCESS || src_length == 0 || source_content == NULL)
+        return err_num;
 #else
     std::ifstream ifs(filename, std::ios_base::binary);
     if (!ifs.good())
@@ -375,13 +387,13 @@ cl_int cl_runner::execute(const char *filename)
         }
     }
     ifs.close();
-    _DOL_ASSERT(err_num == CL_SUCCESS);
+    DOL_ASSERT(err_num == CL_SUCCESS);
     if (err_num != CL_SUCCESS || m_clProgram == NULL)
         return err_num;
 
     // Build the program
     err_num = clBuildProgram(m_clProgram, 1, &m_clDeviceId, NULL, NULL, NULL);   // 编译cl程序
-    _DOL_ASSERT(err_num == CL_SUCCESS);
+    DOL_ASSERT(err_num == CL_SUCCESS);
     if (err_num != CL_SUCCESS)
         return err_num;
 
@@ -436,11 +448,11 @@ cl_int cl_runner::execute(const char *filename)
 
     // Extracting the kernel
 #if defined(USE_CL_FLOAT) && (USE_CL_FLOAT != 0)
-    m_clKernel = clCreateKernel(m_clProgram, "vector_add_gpu_float", &err_num);   // 这个引号中的字符串要对应cl文件中的kernel函数
+    m_clKernel = clCreateKernel(m_clProgram, "vector_add_float", &err_num);   // 这个引号中的字符串要对应cl文件中的kernel函数
 #else
-    m_clKernel = clCreateKernel(m_clProgram, "vector_add_gpu_double", &err_num);   // 这个引号中的字符串要对应cl文件中的kernel函数
+    m_clKernel = clCreateKernel(m_clProgram, "vector_add_double", &err_num);   // 这个引号中的字符串要对应cl文件中的kernel函数
 #endif
-    _DOL_ASSERT(err_num == CL_SUCCESS);
+    DOL_ASSERT(err_num == CL_SUCCESS);
     if (err_num != CL_SUCCESS)
         return err_num;
 
@@ -454,15 +466,15 @@ cl_int cl_runner::execute(const char *filename)
             return err_num;
 
         // Set work-item dimensions
-        size_t work_size = DATA_SIZE;
-        size_t global_work_size[2];
-        global_work_size[0] = DATA_SIZE;
+        size_t globalWorkSize[2];
+        size_t localWorkSize[2] = { 0 };
+        globalWorkSize[0] = DATA_SIZE;
+        globalWorkSize[1] = DATA_SIZE;
 
         sw1.start();
 
         // Execute kernel
-        //err_num = clEnqueueNDRangeKernel(m_clCmdQueue, m_clKernel, 1, NULL, &work_size, NULL, 0, NULL, NULL);
-        err_num = clEnqueueNDRangeKernel(m_clCmdQueue, m_clKernel, 1, NULL, global_work_size, NULL, 0, NULL, NULL);
+        err_num = clEnqueueNDRangeKernel(m_clCmdQueue, m_clKernel, 1, NULL, globalWorkSize, NULL, 0, NULL, NULL);
 
         sw1.stop();
         if (err_num != CL_SUCCESS) {
@@ -482,9 +494,10 @@ cl_int cl_runner::execute(const char *filename)
 
             if (err_num == CL_SUCCESS) {
                 bool correct = true;
+                CL_FLOAT_T diff;
                 for (int i = 0; i < DATA_SIZE; ++i) {
-                    CL_FLOAT_T diff = a[i] + b[i] - ret[i];
-                    if (fabs(a[i] + b[i] - ret[i]) > 0.0001) {
+                    diff = a[i] + b[i] - ret[i];
+                    if (fabs(diff) > 0.0001) {
                         correct = false;
                         break;
                     }
@@ -507,6 +520,8 @@ cl_int cl_runner::execute(const char *filename)
         clReleaseMemObject(cl_b);
     if (cl_ret)
         clReleaseMemObject(cl_ret);
+    if (cl_num)
+        clReleaseMemObject(cl_num);
 
     if (m_clKernel) {
         clReleaseKernel(m_clKernel);
