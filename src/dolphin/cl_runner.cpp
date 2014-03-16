@@ -11,6 +11,19 @@ using namespace std;
 
 #define DOL_TRACE(X)  std::cerr << X ;
 
+/* use float or double ? */
+#define USE_CL_FLOAT    1
+
+#ifdef CL_FLOAT_T
+#undef CL_FLOAT_T
+#endif
+
+#if defined(USE_CL_FLOAT) && (USE_CL_FLOAT != 0)
+#define CL_FLOAT_T      cl_float
+#else
+#define CL_FLOAT_T      cl_double
+#endif
+
 //
 // OpenCL 教學（一）
 //
@@ -47,8 +60,6 @@ using namespace std;
 ******************************************************************************/
 
 namespace dolphin {
-
-size_t global_work_size[16];
 
 cl_runner::cl_runner()
 : m_bInitCL(false)
@@ -138,6 +149,7 @@ cl_int cl_runner::init_cl()
             }
             m_clPlatformId = platformIds[i];
             if (!strcmp(pbuf, "Advanced Micro Devices, Inc.")) {
+                printf("Find platform: %s\n\n", pbuf);
                 break;
             }
         }
@@ -250,11 +262,51 @@ cl_int cl_runner::init_cl()
     return CL_SUCCESS;
 }
 
+cl_int cl_runner::clLoadProgramSource(const char *filename, const char **source, size_t *length)
+{
+    cl_int err_num = CL_SUCCESS;
+    char *src_content = NULL;
+    size_t src_length = 0;
+    if (filename == NULL) {
+        err_num = CL_INVALID_VALUE;
+        if (length)
+            *length = src_length;
+        return err_num;
+    }
+
+    std::ifstream ifs(filename, std::ios_base::binary);
+    if (!ifs.good()) {
+        err_num = CL_OUT_OF_RESOURCES;
+        goto CL_LOAD_PROGRAM_SOURCE_EXIT;
+    }
+
+    // get file length
+    ifs.seekg(0, std::ios_base::end);
+    src_length = ifs.tellg();
+    ifs.seekg(0, std::ios_base::beg);
+
+    if (source != NULL) {
+        // read program source content
+        src_content = (char *)malloc((src_length + 1) * sizeof(char));
+        ifs.read(&src_content[0], src_length);
+        src_content[src_length] = '\0';
+    }
+
+    ifs.close();
+
+CL_LOAD_PROGRAM_SOURCE_EXIT:
+    if (source)
+        *source = src_content;
+    if (length)
+        *length = src_length;
+    return err_num;
+}
+
 #if 0
     // 在GPU上，逻辑就会有一些不同。我们使每个线程计算一个元素的方法来代替cpu程序中的循环计算。每个线程的index与要计算的向量的index相同。
-    __kernel void vector_add_gpu(__global const float *fIn1,
-                                 __global const float *fIn2,
-                                 __global float *fOut,
+    __kernel void vector_add_gpu(__global const float *src_a,
+                                 __global const float *src_b,
+                                 __global float *out,
                                  const int nNum)
     {
         /**
@@ -269,7 +321,7 @@ cl_int cl_runner::init_cl()
          * 如果在，work-item就会执行相应的计算
          */
         if (idx < nNum) {
-            fOut[idx] = fIn1[idx] + fIn2[idx];
+            out[idx] = src_a[idx] + src_b[idx];
         }
     }
 #endif
@@ -285,6 +337,15 @@ cl_int cl_runner::execute(const char *filename)
     // Error code
     cl_int err_num = CL_SUCCESS;
 
+    char *source_content = NULL;
+    size_t src_length = 0;
+    bool source_need_free = false;
+
+#if 1
+    std::ifstream ifs;
+    source_need_free = true;
+    err_num = clLoadProgramSource(filename, (const char **)&source_content, (size_t *)&src_length);
+#else
     std::ifstream ifs(filename, std::ios_base::binary);
     if (!ifs.good())
         return -1;
@@ -300,12 +361,20 @@ cl_int cl_runner::execute(const char *filename)
     data[length] = 0;
 
     // create and build program
-    const char *source_content = &data[0];
-    size_t src_size = length;
+    source_content = &data[0];
+    src_length = length;
+#endif
 
     // Create the program
     err_num = CL_SUCCESS;
-    m_clProgram = clCreateProgramWithSource(m_clContext, 1, (const char **)&source_content, &src_size, &err_num);  // 加载文件内容
+    m_clProgram = clCreateProgramWithSource(m_clContext, 1, (const char **)&source_content, &src_length, &err_num);  // 加载文件内容
+    if (source_need_free) {
+        if (source_content != NULL) {
+            free(source_content);
+            source_content = NULL;
+        }
+    }
+    ifs.close();
     _DOL_ASSERT(err_num == CL_SUCCESS);
     if (err_num != CL_SUCCESS || m_clProgram == NULL)
         return err_num;
@@ -346,24 +415,31 @@ cl_int cl_runner::execute(const char *filename)
         build_log = NULL;
     }
 
+    // set seed for rand()
+    srand(1314UL);
+
     const int DATA_SIZE = 1048576;
-    std::vector<float> a(DATA_SIZE), b(DATA_SIZE), ret(DATA_SIZE);
+    std::vector<CL_FLOAT_T> a(DATA_SIZE), b(DATA_SIZE), ret(DATA_SIZE);
     for (int i = 0; i < DATA_SIZE; ++i) {
-        a[i] = std::rand() / (float)RAND_MAX;
-        b[i] = std::rand() / (float)RAND_MAX;
-        ret[i] = 0.0;
+        a[i]    = std::rand() / (CL_FLOAT_T)RAND_MAX;
+        b[i]    = std::rand() / (CL_FLOAT_T)RAND_MAX;
+        ret[i]  = 0.0;
     }
 
     // Allocate the buffer memory objects
-    cl_mem cl_a   = clCreateBuffer(m_clContext, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(cl_float) * DATA_SIZE, &a[0], NULL);
-    cl_mem cl_b   = clCreateBuffer(m_clContext, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(cl_float) * DATA_SIZE, &b[0], NULL);
-    cl_mem cl_ret = clCreateBuffer(m_clContext, CL_MEM_WRITE_ONLY, sizeof(cl_float) * DATA_SIZE, NULL, NULL);
+    cl_mem cl_a   = clCreateBuffer(m_clContext, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(CL_FLOAT_T) * DATA_SIZE, &a[0], NULL);
+    cl_mem cl_b   = clCreateBuffer(m_clContext, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(CL_FLOAT_T) * DATA_SIZE, &b[0], NULL);
+    cl_mem cl_ret = clCreateBuffer(m_clContext, CL_MEM_READ_WRITE, sizeof(CL_FLOAT_T) * DATA_SIZE, NULL, NULL);
     cl_mem cl_num = clCreateBuffer(m_clContext, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(cl_int), (void *)&DATA_SIZE, NULL);
 
     // 创建两个Kernel对应两个函数
 
     // Extracting the kernel
-    m_clKernel = clCreateKernel(m_clProgram, "vector_add_gpu", &err_num);   // 这个引号中的字符串要对应cl文件中的kernel函数
+#if defined(USE_CL_FLOAT) && (USE_CL_FLOAT != 0)
+    m_clKernel = clCreateKernel(m_clProgram, "vector_add_gpu_float", &err_num);   // 这个引号中的字符串要对应cl文件中的kernel函数
+#else
+    m_clKernel = clCreateKernel(m_clProgram, "vector_add_gpu_double", &err_num);   // 这个引号中的字符串要对应cl文件中的kernel函数
+#endif
     _DOL_ASSERT(err_num == CL_SUCCESS);
     if (err_num != CL_SUCCESS)
         return err_num;
@@ -379,11 +455,16 @@ cl_int cl_runner::execute(const char *filename)
 
         // Set work-item dimensions
         size_t work_size = DATA_SIZE;
+        size_t global_work_size[2];
         global_work_size[0] = DATA_SIZE;
+
+        sw1.start();
 
         // Execute kernel
         //err_num = clEnqueueNDRangeKernel(m_clCmdQueue, m_clKernel, 1, NULL, &work_size, NULL, 0, NULL, NULL);
         err_num = clEnqueueNDRangeKernel(m_clCmdQueue, m_clKernel, 1, NULL, global_work_size, NULL, 0, NULL, NULL);
+
+        sw1.stop();
         if (err_num != CL_SUCCESS) {
             if (err_num == CL_INVALID_KERNEL_ARGS)
                 DOL_TRACE("Invalid kernel args \n");
@@ -392,7 +473,9 @@ cl_int cl_runner::execute(const char *filename)
 
         // Read output array
         if (err_num == CL_SUCCESS) {
-            err_num = clEnqueueReadBuffer(m_clCmdQueue, cl_ret, CL_TRUE, 0, sizeof(float) * DATA_SIZE, &ret[0], 0, NULL, NULL);
+            sw3.start();
+            err_num = clEnqueueReadBuffer(m_clCmdQueue, cl_ret, CL_TRUE, 0, sizeof(CL_FLOAT_T) * DATA_SIZE, &ret[0], 0, NULL, NULL);
+            sw3.stop();
             if (err_num != CL_SUCCESS) {
                 //return err_num;
             }
@@ -400,7 +483,7 @@ cl_int cl_runner::execute(const char *filename)
             if (err_num == CL_SUCCESS) {
                 bool correct = true;
                 for (int i = 0; i < DATA_SIZE; ++i) {
-                    float diff = a[i] + b[i] - ret[i];
+                    CL_FLOAT_T diff = a[i] + b[i] - ret[i];
                     if (fabs(a[i] + b[i] - ret[i]) > 0.0001) {
                         correct = false;
                         break;
@@ -436,6 +519,57 @@ cl_int cl_runner::execute(const char *filename)
     }
 
     return err_num;
+}
+
+double cl_runner::test()
+{
+    // set seed for rand()
+    srand(1314UL);
+
+    const int DATA_SIZE = 1048576;
+    std::vector<CL_FLOAT_T> a(DATA_SIZE), b(DATA_SIZE), ret(DATA_SIZE), ret2(DATA_SIZE);
+    for (int i = 0; i < DATA_SIZE; ++i) {
+        a[i]    = std::rand() / (CL_FLOAT_T)RAND_MAX;
+        b[i]    = std::rand() / (CL_FLOAT_T)RAND_MAX;
+        ret[i]  = 0.0;
+    }
+
+    sw2.start();
+    for (int i = 0; i < DATA_SIZE; ++i)
+        ret[i] = a[i] + b[i];
+    sw2.stop();
+
+    sw4.start();
+    for (int i = 0; i < DATA_SIZE; ++i)
+        ret2[i] = ret[i];
+    sw4.stop();
+
+    return sw2.getMillisec();
+}
+
+double cl_runner::getSeconds()
+{
+    return sw1.getSeconds();
+}
+
+double cl_runner::getMillisec()
+{
+    return sw1.getMillisec();
+}
+
+double cl_runner::getTotalMillisec()
+{
+    return sw1.getTotalMillisec();
+}
+
+double cl_runner::getTotalMillisec2()
+{
+    return sw4.getMillisec();
+}
+
+double cl_runner::getIORead()
+{
+    return sw3.getMillisec();
 }
 
 }  // namespace dolphin

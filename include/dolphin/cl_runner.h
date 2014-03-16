@@ -6,6 +6,9 @@
 #pragma once
 #endif
 
+#include <gmtl/gmtl.h>
+//#include <gmtl/stop_watch.h>
+
 #include <dolphin/dol_stddef.h>
 #ifdef __APPLE__
 #include <OpenCL/opencl.h>
@@ -13,6 +16,8 @@
 #include <CL/cl.h>
 //#include <CL/opencl.h>
 #endif
+
+using namespace gmtl;
 
 //
 // OpenCLÊ¹ÓÃGPUÂË²¨
@@ -35,6 +40,17 @@ public:
 
     cl_int  compile(const char *filename);
     cl_int  execute(const char *filename);
+    cl_int  clLoadProgramSource(const char *filename,
+        const char **source, size_t *length);
+
+    double  test();
+
+    double  getSeconds();
+    double  getMillisec();
+
+    double  getTotalMillisec();
+    double  getTotalMillisec2();
+    double  getIORead();
 
 private:
     bool m_bInitCL;
@@ -45,7 +61,9 @@ private:
     cl_command_queue    m_clCmdQueue;
     cl_program          m_clProgram;
 
-    cl_kernel m_clKernel, m_clKernel1;
+    cl_kernel           m_clKernel, m_clKernel1;
+
+    stop_watch          sw1, sw2, sw3, sw4;
 };
 
 }  // namespace dolphin

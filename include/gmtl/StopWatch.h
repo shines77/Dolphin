@@ -101,7 +101,7 @@ private:
     bool     bIsRunning;
 };
 
-StopWatch::StopWatch(const StopWatch &src)
+inline StopWatch::StopWatch(const StopWatch &src)
 {
     startTime           = src.startTime;
     endTime             = src.endTime;

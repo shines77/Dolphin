@@ -247,12 +247,24 @@ int _tmain(int argc, _TCHAR *argv[])
     //test_icd_initialize_app_log();
     //test_icd_initialize_stub_log();
 
-    cl_runner cl_runner;
-    int clError = (int)cl_runner.init_cl();
+    cl_runner clRunner;
+    double usedTime_sw1, usedTime_sw2;
+    //usedTime_sw2 = clRunner.test();
+    int clError = (int)clRunner.init_cl();
     if (clError == CL_SUCCESS) {
-        clError = cl_runner.execute("vector_add_gpu.cl");
+        clError = clRunner.execute("vector_add_gpu.cl");
+        usedTime_sw2 = clRunner.test();
+        printf("\n");
         if (clError == CL_SUCCESS) {
-            //
+            usedTime_sw1 = clRunner.getMillisec();
+            printf("clRunner.getMillisec() = %0.6f ms.\n", usedTime_sw1);
+            printf("clRunner.getIORead()   = %0.6f ms.\n", clRunner.getIORead());
+            printf("clRunner.test()        = %0.6f ms.\n", usedTime_sw2);
+            printf("clRunner.getIOCopy()   = %0.6f ms.\n", clRunner.getTotalMillisec2());
+            if (usedTime_sw1 != 0.0)
+                printf("clRunner.speed_up()    = %0.3f X\n", usedTime_sw2 / usedTime_sw1);
+            else
+                printf("clRunner.speed_up()    = ¡Þ X\n", usedTime_sw2 / usedTime_sw1);
         }
     }
     printf("\n");
