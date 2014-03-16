@@ -10,8 +10,14 @@
 extern "C" {
 #endif
 
+typedef unsigned (* ms1b_func)(unsigned);
+typedef unsigned (__fastcall * ms1b2_func)(unsigned);
+
+unsigned ms1b_test2(ms1b_func f);
+unsigned ms1b2_test(ms1b2_func f);
+
 // some declear
-int ms1b_main(void);
+int ms1b_main(int argc, char* argv[]);
 
 int ms1b2_main(int argc, char* argv[]);
 

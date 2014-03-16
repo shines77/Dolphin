@@ -39,19 +39,19 @@ public:
     cl_int  compile(const char *filename);
     cl_int  execute(const char *filename);
 
-    double  test();
+    double  native_test();
 
     double  getSeconds();
     double  getMillisec();
-
     double  getTotalMillisec();
-    double  getTotalMillisec2();
-    double  getIORead();
+
+    double  getMillisec_Native();
+    double  getMillisec_Native_CopyData();
+    double  getMillisec_Kernel_ReadBuffer();
 
 protected:
     cl_int  clLoadProgramSource(const char *filename,
         const char **source, size_t *length);
-
 private:
     bool m_bInitCL;
 
@@ -63,7 +63,8 @@ private:
 
     cl_kernel           m_clKernel, m_clKernel1;
 
-    stop_watch          sw1, sw2, sw3, sw4;
+    stop_watch          sw_kernel, sw_kernel_readBuffer;
+    stop_watch          sw_native, sw_native_copyData;
 };
 
 }  // namespace dolphin

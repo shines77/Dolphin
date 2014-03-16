@@ -91,6 +91,7 @@ bool cl_runner::release(bool bForce /* = false */)
         clReleaseProgram(m_clProgram);
         m_clProgram = NULL;
     }
+
     if (m_clCmdQueue) {
         clReleaseCommandQueue(m_clCmdQueue);
         m_clCmdQueue = NULL;
@@ -261,7 +262,7 @@ cl_int cl_runner::init_cl()
         }
     }
 
-    // Create the Command-queue
+    // Create the command-queue
     m_clCmdQueue = clCreateCommandQueue(m_clContext, m_clDeviceId, 0, &err_num);
     if (err_num != CL_SUCCESS || m_clCmdQueue == NULL) {
         DOL_TRACE("Error creating command queue \n");
@@ -310,6 +311,11 @@ CL_LOAD_PROGRAM_SOURCE_EXIT:
     if (length)
         *length = src_length;
     return err_num;
+}
+
+cl_int cl_runner::compile( const char *filename )
+{
+    return CL_SUCCESS;
 }
 
 #if 0
@@ -471,12 +477,12 @@ cl_int cl_runner::execute(const char *filename)
         globalWorkSize[0] = DATA_SIZE;
         globalWorkSize[1] = DATA_SIZE;
 
-        sw1.start();
+        sw_kernel.start();
 
         // Execute kernel
         err_num = clEnqueueNDRangeKernel(m_clCmdQueue, m_clKernel, 1, NULL, globalWorkSize, NULL, 0, NULL, NULL);
 
-        sw1.stop();
+        sw_kernel.stop();
         if (err_num != CL_SUCCESS) {
             if (err_num == CL_INVALID_KERNEL_ARGS)
                 DOL_TRACE("Invalid kernel args \n");
@@ -485,9 +491,9 @@ cl_int cl_runner::execute(const char *filename)
 
         // Read output array
         if (err_num == CL_SUCCESS) {
-            sw3.start();
+            sw_kernel_readBuffer.start();
             err_num = clEnqueueReadBuffer(m_clCmdQueue, cl_ret, CL_TRUE, 0, sizeof(CL_FLOAT_T) * DATA_SIZE, &ret[0], 0, NULL, NULL);
-            sw3.stop();
+            sw_kernel_readBuffer.stop();
             if (err_num != CL_SUCCESS) {
                 //return err_num;
             }
@@ -536,7 +542,7 @@ cl_int cl_runner::execute(const char *filename)
     return err_num;
 }
 
-double cl_runner::test()
+double cl_runner::native_test()
 {
     // set seed for rand()
     srand(1314UL);
@@ -549,42 +555,49 @@ double cl_runner::test()
         ret[i]  = 0.0;
     }
 
-    sw2.start();
-    for (int i = 0; i < DATA_SIZE; ++i)
+    sw_native.start();
+    for (int i = 0; i < DATA_SIZE; ++i) {
         ret[i] = a[i] + b[i];
-    sw2.stop();
+    }
+    sw_native.stop();
 
-    sw4.start();
-    for (int i = 0; i < DATA_SIZE; ++i)
+    sw_native_copyData.start();
+    for (int i = 0; i < DATA_SIZE; ++i) {
         ret2[i] = ret[i];
-    sw4.stop();
+    }
+    sw_native_copyData.stop();
 
-    return sw2.getMillisec();
+    return sw_native.getMillisec();
 }
 
 double cl_runner::getSeconds()
 {
-    return sw1.getSeconds();
+    return sw_kernel.getSeconds();
 }
 
 double cl_runner::getMillisec()
 {
-    return sw1.getMillisec();
+    return sw_kernel.getMillisec();
 }
 
 double cl_runner::getTotalMillisec()
 {
-    return sw1.getTotalMillisec();
+    return sw_kernel.getTotalMillisec();
 }
 
-double cl_runner::getTotalMillisec2()
+double cl_runner::getMillisec_Native()
 {
-    return sw4.getMillisec();
+    return sw_native.getMillisec();
 }
 
-double cl_runner::getIORead()
+double cl_runner::getMillisec_Native_CopyData()
 {
-    return sw3.getMillisec();
+    return sw_native_copyData.getMillisec();
+}
+
+double cl_runner::getMillisec_Kernel_ReadBuffer()
+{
+    return sw_kernel_readBuffer.getMillisec();
 }
 
 }  // namespace dolphin

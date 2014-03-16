@@ -1,8 +1,8 @@
 
-#include <windows.h>
 #include <iostream>
 #include <cmath>
 #include <cassert>
+#include <windows.h>
 
 #include "ms1b.h"
 
@@ -13,7 +13,8 @@ const unsigned times = 1000000;
 #else
 const unsigned times = 10000000;
 #endif
-__int64 freq;
+
+static __int64 s_qpc_freq = 0;
 
 //-----------------------------------------------------------------------------
 
@@ -343,25 +344,27 @@ unsigned __fastcall NearestPowerOf2_7( unsigned n )
 
 //-----------------------------------------------------------------------------
 
-typedef unsigned (__fastcall * fun)(unsigned);
-
-unsigned test(fun f)
+unsigned ms1b2_test(ms1b2_func f)
 {
     __int64 before;
     __int64 after;
 
-    srand(345678);
+    srand(345678UL);
 
-    QueryPerformanceCounter ((LARGE_INTEGER*) &before);
+    QueryPerformanceCounter((LARGE_INTEGER *)&before);
 
     for (int i=0; i<times; i++) {
         f(rand());
     }
 
-    QueryPerformanceCounter ((LARGE_INTEGER*) &after);
+    QueryPerformanceCounter((LARGE_INTEGER *)&after);
 
     __int64 diff = after - before;
-    __int64 milliseconds = diff * 1000 / freq;
+    __int64 milliseconds;
+    if (s_qpc_freq != 0)
+        milliseconds = diff * 1000 / s_qpc_freq;
+    else
+        milliseconds = 0;
     return (unsigned) milliseconds;
 }
 
@@ -369,11 +372,11 @@ unsigned test(fun f)
 
 int ms1b2_main(int argc, char* argv[])
 {
-    srand(345678);
+    srand(345678UL);
 
-    QueryPerformanceFrequency((LARGE_INTEGER*) &freq);
+    QueryPerformanceFrequency((LARGE_INTEGER *)&s_qpc_freq);
 
-    for (int i=0; i<123456; i++) {
+    for (int i = 0; i < 123456; i++) {
         unsigned n = rand();
         assert(! (NearestPowerOf2(n) == NearestPowerOf2_1(n) == NearestPowerOf2_2(n)
             == NearestPowerOf2_3(n) == NearestPowerOf2_4(n) == NearestPowerOf2_5(n) == NearestPowerOf2_6(n) ));
@@ -381,36 +384,36 @@ int ms1b2_main(int argc, char* argv[])
 
     std::cout << std::endl;
 
-    unsigned k  = test(NearestPowerOf2);
-    std::cout << "compare     " << k  << "\tms" << std::endl;
+    unsigned k  = ms1b2_test(NearestPowerOf2);
+    std::cout << "compare:      " << k  << " ms" << std::endl;
     std::cout.flush();
 
-    unsigned k1 = test(NearestPowerOf2_1);
-    std::cout << "saturation  " << k1 << "\tms" << std::endl;
+    unsigned k1 = ms1b2_test(NearestPowerOf2_1);
+    std::cout << "saturation:   " << k1 << " ms" << std::endl;
     std::cout.flush();
 
-    unsigned k2 = test(NearestPowerOf2_2);
-    std::cout << "fpu log2    " << k2 << "\tms" << std::endl;
+    unsigned k2 = ms1b2_test(NearestPowerOf2_2);
+    std::cout << "fpu log2:     " << k2 << " ms" << std::endl;
     std::cout.flush();
 
-    unsigned k3 = test(NearestPowerOf2_3);
-    std::cout << "recursion   " << k3 << "\tms" << std::endl;
+    unsigned k3 = ms1b2_test(NearestPowerOf2_3);
+    std::cout << "recursion:    " << k3 << " ms" << std::endl;
     std::cout.flush();
 
-    unsigned k4 = test(NearestPowerOf2_4);
-    std::cout << "float trick " << k4 << "\tms" << std::endl;
+    unsigned k4 = ms1b2_test(NearestPowerOf2_4);
+    std::cout << "float trick:  " << k4 << " ms" << std::endl;
     std::cout.flush();
 
-    unsigned k5 = test(NearestPowerOf2_5);
-    std::cout << "unrolled if " << k5 << "\tms" << std::endl;
+    unsigned k5 = ms1b2_test(NearestPowerOf2_5);
+    std::cout << "unrolled if:  " << k5 << " ms" << std::endl;
     std::cout.flush();
 
-    unsigned k6 = test(NearestPowerOf2_6);
-    std::cout << "asm bsr     " << k6 << "\tms" << std::endl;
+    unsigned k6 = ms1b2_test(NearestPowerOf2_6);
+    std::cout << "asm bsr:      " << k6 << " ms" << std::endl;
     std::cout.flush();
 
 //  unsigned k7 = test(NearestPowerOf2_7);
-//  std::cout << "            " << k7 << "\tms" << std::endl;
+//  std::cout << "              " << k7 << " ms" << std::endl;
 
 /*
     char c;
