@@ -13,6 +13,7 @@
 #include <gmtl/gmtl.h>
 #include <dolphin/dolphin.h>
 #include <dolphin/cl_runner.h>
+#include <dolphin/cl_helper.h>
 #include <mmsystem.h>
 
 #include "ms1b.h"
@@ -262,6 +263,24 @@ int _tmain(int argc, _TCHAR *argv[])
             else
                 printf("clRunner.speed_up()         = ¡Þ X\n", usedTime_sw2 / usedTime_sw1);
         }
+    }
+    printf("\n");
+
+    cl_helper clHelper;
+    clError = clHelper.run_native_matrix_mul(0, 0);
+    clError = clHelper.run_cl_cpu_matrix_mul("vector_add_gpu.cl", "vector_add_float", 1048576, 1048576);
+    if (clError == CL_SUCCESS) {
+        usedTime_sw1 = clHelper.getMillisec();
+        usedTime_sw2 = clHelper.getMillisec_Native();
+        printf("\n");
+        printf("clHelper.getMillisec()      = %0.6f ms.\n", usedTime_sw1);
+        printf("clHelper.kernel_ReadBuffer()= %0.6f ms.\n", clHelper.getMillisec_Kernel_ReadBuffer());
+        printf("clHelper.native_test()      = %0.6f ms.\n", usedTime_sw2);
+        printf("clHelper.native_CopyData()  = %0.6f ms.\n", clHelper.getMillisec_Native_CopyData());
+        if (usedTime_sw1 != 0.0)
+            printf("clHelper.speed_up()         = %0.3f X\n", usedTime_sw2 / usedTime_sw1);
+        else
+            printf("clHelper.speed_up()         = ¡Þ X\n",    usedTime_sw2 / usedTime_sw1);
     }
     printf("\n");
 

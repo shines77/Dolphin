@@ -6,14 +6,17 @@
 #pragma once
 #endif
 
-#include <dolphin/dol_stddef.h>
-#include <gmtl/stop_watch.h>
+#define CL_USE_DEPRECATED_OPENCL_1_1_APIS
+
 #ifdef __APPLE__
 #include <OpenCL/opencl.h>
 #else
 #include <CL/cl.h>
 //#include <CL/opencl.h>
 #endif
+
+#include <dolphin/dol_stddef.h>
+#include <gmtl/stop_watch.h>
 
 using namespace gmtl;
 
@@ -27,7 +30,6 @@ namespace dolphin {
 
 class cl_runner
 {
-    //
 public:
     cl_runner();
     ~cl_runner() { release(); };
@@ -53,7 +55,7 @@ protected:
     cl_int  clLoadProgramSource(const char *filename,
         const char **source, size_t *length);
 private:
-    bool m_bInitCL;
+    bool                m_bInitCL;
 
     cl_platform_id      m_clPlatformId;
     cl_device_id        m_clDeviceId;

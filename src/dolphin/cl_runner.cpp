@@ -105,6 +105,8 @@ bool cl_runner::release(bool bForce /* = false */)
         clReleaseDevice(m_clDeviceId);
         m_clDeviceId = NULL;
     }
+
+    m_bInitCL = false;
     return true;
 }
 
@@ -114,7 +116,7 @@ bool cl_runner::release(bool bForce /* = false */)
 cl_int cl_runner::init_cl()
 {
     if (m_bInitCL)
-        return false;
+        return CL_SUCCESS;
 
     // Error code
     cl_int err_num = CL_SUCCESS;
@@ -450,7 +452,7 @@ cl_int cl_runner::execute(const char *filename)
     cl_mem cl_ret = clCreateBuffer(m_clContext, CL_MEM_READ_WRITE, sizeof(CL_FLOAT_T) * DATA_SIZE, NULL, NULL);
     cl_mem cl_num = clCreateBuffer(m_clContext, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(cl_int), (void *)&DATA_SIZE, NULL);
 
-    // 创建两个Kernel对应两个函数
+    // 创建Kernel对应的函数
 
     // Extracting the kernel
 #if defined(USE_CL_FLOAT) && (USE_CL_FLOAT != 0)
