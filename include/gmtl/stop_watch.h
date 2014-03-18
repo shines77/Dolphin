@@ -56,7 +56,7 @@ public:
 
 public:
     //! Construct an absolute timestamp initialized to zero.
-    stop_watch() : startTime(0), stopTime(0), elapsedTime(0), elapsedTimeTotal(0), bIsRunning(false) {};
+    stop_watch() : bIsRunning(false), startTime(0), stopTime(0), elapsedTime(0), elapsedTimeTotal(0) {};
     stop_watch(const stop_watch &src);
 
     stop_watch &operator =(const stop_watch &t);
@@ -106,29 +106,29 @@ protected:
     static double       native_nowf();
 
 private:
+    bool        bIsRunning;
     timestamp_t startTime, stopTime;
     timestamp_t elapsedTime;
     timestamp_t elapsedTimeTotal;
-    bool        bIsRunning;
 };
 
 inline stop_watch::stop_watch(const stop_watch &src)
 {
+    bIsRunning          = src.bIsRunning;
     startTime           = src.startTime;
     stopTime            = src.stopTime;
     elapsedTime         = src.elapsedTime;
     elapsedTimeTotal    = src.elapsedTimeTotal;
-    bIsRunning          = src.bIsRunning;
 }
 
 ///*
 inline stop_watch &stop_watch::operator =(const stop_watch &t)
 {
+    bIsRunning          = t.bIsRunning;
     startTime           = t.startTime;
     stopTime            = t.stopTime;
     elapsedTime         = t.elapsedTime;
     elapsedTimeTotal    = t.elapsedTimeTotal;
-    bIsRunning          = t.bIsRunning;
     return *this;
 }
 //*/
