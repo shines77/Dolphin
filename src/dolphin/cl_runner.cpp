@@ -438,19 +438,19 @@ cl_int cl_runner::execute(const char *filename)
     // set seed for rand()
     srand(1314UL);
 
-    const int DATA_SIZE = 1048576;
+    const unsigned int DATA_SIZE = 1048576;
     std::vector<CL_FLOAT_T> a(DATA_SIZE), b(DATA_SIZE), ret(DATA_SIZE);
-    for (int i = 0; i < DATA_SIZE; ++i) {
+    for (unsigned int i = 0; i < DATA_SIZE; ++i) {
         a[i]    = std::rand() / (CL_FLOAT_T)RAND_MAX;
         b[i]    = std::rand() / (CL_FLOAT_T)RAND_MAX;
         ret[i]  = 0.0;
     }
 
     // Allocate the buffer memory objects
-    cl_mem cl_a   = clCreateBuffer(m_clContext, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(CL_FLOAT_T) * DATA_SIZE, &a[0], NULL);
-    cl_mem cl_b   = clCreateBuffer(m_clContext, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(CL_FLOAT_T) * DATA_SIZE, &b[0], NULL);
-    cl_mem cl_ret = clCreateBuffer(m_clContext, CL_MEM_READ_WRITE, sizeof(CL_FLOAT_T) * DATA_SIZE, NULL, NULL);
-    cl_mem cl_num = clCreateBuffer(m_clContext, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(cl_int), (void *)&DATA_SIZE, NULL);
+    cl_mem cl_a   = clCreateBuffer(m_clContext, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(CL_FLOAT_T) * DATA_SIZE, (void *)&a[0], NULL);
+    cl_mem cl_b   = clCreateBuffer(m_clContext, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(CL_FLOAT_T) * DATA_SIZE, (void *)&b[0], NULL);
+    cl_mem cl_ret = clCreateBuffer(m_clContext, CL_MEM_READ_WRITE,                       sizeof(CL_FLOAT_T) * DATA_SIZE, (void *)NULL, NULL);
+    cl_mem cl_num = clCreateBuffer(m_clContext, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(cl_uint),                (void *)&DATA_SIZE, NULL);
 
     // 创建Kernel对应的函数
 
@@ -469,7 +469,8 @@ cl_int cl_runner::execute(const char *filename)
         err_num  = clSetKernelArg(m_clKernel, 0, sizeof(cl_mem), &cl_a);
         err_num |= clSetKernelArg(m_clKernel, 1, sizeof(cl_mem), &cl_b);
         err_num |= clSetKernelArg(m_clKernel, 2, sizeof(cl_mem), &cl_ret);
-        err_num |= clSetKernelArg(m_clKernel, 3, sizeof(cl_mem), &cl_num);
+        //err_num |= clSetKernelArg(m_clKernel, 3, sizeof(cl_mem), &cl_num);
+        err_num |= clSetKernelArg(m_clKernel, 3, sizeof(cl_int), &DATA_SIZE);
         if (err_num != CL_SUCCESS)
             return err_num;
 
@@ -503,7 +504,7 @@ cl_int cl_runner::execute(const char *filename)
             if (err_num == CL_SUCCESS) {
                 bool correct = true;
                 CL_FLOAT_T diff;
-                for (int i = 0; i < DATA_SIZE; ++i) {
+                for (unsigned int i = 0; i < DATA_SIZE; ++i) {
                     diff = a[i] + b[i] - ret[i];
                     if (fabs(diff) > 0.0001) {
                         correct = false;

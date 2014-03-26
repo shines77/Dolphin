@@ -155,7 +155,7 @@ CL_LOAD_PROGRAM_SOURCE_EXIT:
 cl_int cl_helper::run_cl_vector_add(cl_runat_type device_type,
                                     const char *file_name,
                                     const char *func_name,
-                                    const int data_size)
+                                    const unsigned int data_size)
 {
     if (device_type == CL_DEVICE_TYPE_CPU)
         return run_cl_gpu_vector_add(device_type, file_name, func_name, data_size);
@@ -171,7 +171,7 @@ cl_int cl_helper::run_cl_vector_add(cl_runat_type device_type,
         return run_cl_gpu_vector_add(CL_DEVICE_TYPE_DEFAULT, file_name, func_name, data_size);
 }
 
-cl_int cl_helper::run_native_vector_add(const int data_size)
+cl_int cl_helper::run_native_vector_add(const unsigned int data_size)
 {
     return CL_SUCCESS;
 }
@@ -179,7 +179,7 @@ cl_int cl_helper::run_native_vector_add(const int data_size)
 cl_int cl_helper::run_cl_gpu_vector_add(cl_device_type device_type,
                                         const char *file_name,
                                         const char *func_name,
-                                        const int data_size)
+                                        const unsigned int data_size)
 {
     cl_int err = CL_SUCCESS;
     std::string src_content;
@@ -214,7 +214,7 @@ cl_int cl_helper::run_cl_gpu_vector_add(cl_device_type device_type,
         srand(1314UL);
 
         std::vector<CL_FLOAT_T> a(data_size), b(data_size), result(data_size);
-        for (int i = 0; i < data_size; ++i) {
+        for (unsigned int i = 0; i < data_size; ++i) {
             a[i]      = std::rand() / (CL_FLOAT_T)RAND_MAX;
             b[i]      = std::rand() / (CL_FLOAT_T)RAND_MAX;
             result[i] = 0.0;
@@ -224,14 +224,14 @@ cl_int cl_helper::run_cl_gpu_vector_add(cl_device_type device_type,
         cl::Buffer cl_a     (clContext, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(CL_FLOAT_T) * data_size, (void *)&a[0],         NULL);
         cl::Buffer cl_b     (clContext, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(CL_FLOAT_T) * data_size, (void *)&b[0],         NULL);
         cl::Buffer cl_result(clContext, CL_MEM_WRITE_ONLY,                       sizeof(CL_FLOAT_T) * data_size, (void *)NULL,          NULL);
-        cl::Buffer cl_num   (clContext, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(cl_int),                 (void *)&data_size,    NULL);
+        cl::Buffer cl_num   (clContext, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(cl_uint),                 (void *)&data_size,    NULL);
 
         // Set the args values
-        clKernel.setArg(0, sizeof(cl_mem), (void *)&cl_a);
-        clKernel.setArg(1, sizeof(cl_mem), (void *)&cl_b);
-        clKernel.setArg(2, sizeof(cl_mem), (void *)&cl_result);
+        clKernel.setArg(0, sizeof(cl_mem),  (void *)&cl_a);
+        clKernel.setArg(1, sizeof(cl_mem),  (void *)&cl_b);
+        clKernel.setArg(2, sizeof(cl_mem),  (void *)&cl_result);
         //clKernel.setArg(3, sizeof(cl_mem), (void *)&cl_num);
-        clKernel.setArg(3, sizeof(cl_int), (void *)&data_size);
+        clKernel.setArg(3, sizeof(cl_uint), (void *)&data_size);
 
         // Set work-item dimensions and execute kernel
         cl::Event clEvent;
@@ -254,7 +254,7 @@ cl_int cl_helper::run_cl_gpu_vector_add(cl_device_type device_type,
             sw_kernel_readBuffer.start();
             err = clCmdQueue.enqueueReadBuffer(cl_result, CL_TRUE, 0, sizeof(CL_FLOAT_T) * data_size, (void *)&result[0], NULL, NULL);
             sw_kernel_readBuffer.stop();
-            
+
             // Verify the result
             cl_int correct = vector_add_verify(err, a, b, result, data_size);
         }
@@ -277,13 +277,13 @@ cl_int cl_helper::vector_add_verify(cl_int err,
                                     std::vector<CL_FLOAT_T> &a,
                                     std::vector<CL_FLOAT_T> &b,
                                     std::vector<CL_FLOAT_T> &result,
-                                    const int data_size)
+                                    const unsigned int data_size)
 {
     cl_int is_correct = -1;
     if (err == CL_SUCCESS) {
         bool correct = true;
         CL_FLOAT_T diff;
-        for (int i = 0; i < data_size; ++i) {
+        for (unsigned int i = 0; i < data_size; ++i) {
             diff = a[i] + b[i] - result[i];
             if (fabs(diff) > 0.0001) {
                 correct = false;
@@ -306,7 +306,9 @@ cl_int cl_helper::vector_add_verify(cl_int err,
 cl_int cl_helper::run_cl_matrix_mul(cl_runat_type device_type,
                                     const char *file_name,
                                     const char *func_name,
-                                    const int m, const int p, const int n)
+                                    const unsigned int m,
+                                    const unsigned int p,
+                                    const unsigned int n)
 {
     if (device_type == CL_DEVICE_TYPE_CPU)
         return run_cl_gpu_matrix_mul(device_type, file_name, func_name, m, p, n);
@@ -330,7 +332,9 @@ cl_int cl_helper::run_native_matrix_mul(const int m, const int p, const int n)
 cl_int cl_helper::run_cl_gpu_matrix_mul(cl_device_type device_type,
                                         const char *file_name,
                                         const char *func_name,
-                                        const int m, const int p, const int n)
+                                        const unsigned int m,
+                                        const unsigned int p,
+                                        const unsigned int n)
 {
     cl_int err = CL_SUCCESS;
     std::string src_content;
@@ -365,7 +369,7 @@ cl_int cl_helper::run_cl_gpu_matrix_mul(cl_device_type device_type,
         srand(1314UL);
 
         std::vector<CL_FLOAT_T> C(m * n), A(m * p), B(p * n);
-        int i;
+        unsigned int i;
         for (i = 0; i < m * n; ++i)
             C[i] = 0.0;
 
@@ -376,25 +380,25 @@ cl_int cl_helper::run_cl_gpu_matrix_mul(cl_device_type device_type,
             B[i] = std::rand() / (CL_FLOAT_T)RAND_MAX;
 
         // Allocate the buffer memory objects
-        cl::Buffer cl_C (clContext, CL_MEM_READ_WRITE,                       sizeof(CL_FLOAT_T) * m * n,    (void *)NULL,      NULL);
+        cl::Buffer cl_C (clContext, CL_MEM_WRITE_ONLY,                       sizeof(CL_FLOAT_T) * m * n,    (void *)NULL,      NULL);
         cl::Buffer cl_A (clContext, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(CL_FLOAT_T) * m * p,    (void *)&A[0],     NULL);
         cl::Buffer cl_B (clContext, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(CL_FLOAT_T) * p * n,    (void *)&B[0],     NULL);
-        cl::Buffer cl_m (clContext, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(cl_int),                (void *)&m,        NULL);
-        cl::Buffer cl_p (clContext, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(cl_int),                (void *)&p,        NULL);
-        cl::Buffer cl_n (clContext, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(cl_int),                (void *)&n,        NULL);
+        cl::Buffer cl_m (clContext, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(cl_uint),               (void *)&m,        NULL);
+        cl::Buffer cl_p (clContext, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(cl_uint),               (void *)&p,        NULL);
+        cl::Buffer cl_n (clContext, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(cl_uint),               (void *)&n,        NULL);
 
         // Set the args values
         clKernel.setArg(0, sizeof(cl_mem), (void *)&cl_C);
         clKernel.setArg(1, sizeof(cl_mem), (void *)&cl_A);
         clKernel.setArg(2, sizeof(cl_mem), (void *)&cl_B);
-#if 1
+#if 0
         clKernel.setArg(3, sizeof(cl_mem), &cl_m);
         clKernel.setArg(4, sizeof(cl_mem), &cl_p);
         clKernel.setArg(5, sizeof(cl_mem), &cl_n);
 #else
-        clKernel.setArg(3, sizeof(cl_int), (void *)&m);
-        clKernel.setArg(4, sizeof(cl_int), (void *)&p);
-        clKernel.setArg(5, sizeof(cl_int), (void *)&n);
+        clKernel.setArg(3, sizeof(cl_uint), (void *)&m);
+        clKernel.setArg(4, sizeof(cl_uint), (void *)&p);
+        clKernel.setArg(5, sizeof(cl_uint), (void *)&n);
 #endif
 
         // Set work-item dimensions and execute kernel
@@ -444,14 +448,16 @@ cl_int cl_helper::matrix_mul_verify(const cl_int err,
                                     std::vector<CL_FLOAT_T> &A,
                                     std::vector<CL_FLOAT_T> &B,
                                     std::vector<CL_FLOAT_T> &C,
-                                    const int m, const int p, const int n)
+                                    const unsigned int m,
+                                    const unsigned int p,
+                                    const unsigned int n)
 {
     cl_int is_correct = -1;
     if (err == CL_SUCCESS) {
         bool correct = true;
         CL_FLOAT_T diff;
         std::vector<CL_FLOAT_T> _C(m * n);
-        int i;
+        unsigned int i;
         for (i = 0; i < m * n; ++i)
             _C[i] = 0.0;
         for (i = 0; i < m * n; ++i) {

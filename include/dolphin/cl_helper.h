@@ -67,34 +67,40 @@ public:
     cl_int  run_cl_matrix_mul(cl_runat_type device_type,
                 const char *file_name,
                 const char *func_name,
-                const int m, const int p, const int n);
+                const unsigned int m,
+                const unsigned int p,
+                const unsigned int n);
     cl_int  run_native_matrix_mul(const int m, const int p, const int n);
     cl_int  run_cl_gpu_matrix_mul(const cl_device_type device_type,
                 const char *file_name,
                 const char *func_name,
-                const int m, const int p, const int n);
+                const unsigned int m,
+                const unsigned int p,
+                const unsigned int n);
 
     cl_int  matrix_mul_verify(const cl_int err,
                 std::vector<CL_FLOAT_T> &A,
                 std::vector<CL_FLOAT_T> &B,
                 std::vector<CL_FLOAT_T> &C,
-                const int m, const int p, const int n);
+                const unsigned int m,
+                const unsigned int p,
+                const unsigned int n);
 
     cl_int  run_cl_vector_add(cl_runat_type device_type,
                 const char *file_name,
                 const char *func_name,
-                const int data_size);
-    cl_int  run_native_vector_add(const int data_size);
+                const unsigned int data_size);
+    cl_int  run_native_vector_add(const unsigned int data_size);
     cl_int  run_cl_gpu_vector_add(cl_device_type device_type,
                 const char *file_name,
                 const char *func_name,
-                const int data_size);
+                const unsigned int data_size);
 
     cl_int  vector_add_verify(const cl_int err,
                 std::vector<CL_FLOAT_T> &a,
                 std::vector<CL_FLOAT_T> &b,
                 std::vector<CL_FLOAT_T> &result,
-                const int data_size);
+                const unsigned int data_size);
 
     void    reset_stopwatches();
 
