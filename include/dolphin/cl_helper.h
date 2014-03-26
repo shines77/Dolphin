@@ -20,11 +20,38 @@
 
 #include <dolphin/dol_stddef.h>
 #include <gmtl/stop_watch.h>
+#include <string>
 
 //using namespace cl;
+using namespace std;
 using namespace gmtl;
 
+#define CL_DEVICE_TYPE_NATIVE       (1 << 15)
+
+/* use float or double ? */
+#define CL_HELPER_USE_FLOAT     1
+
+#ifdef CL_FLOAT_T
+#undef CL_FLOAT_T
+#endif
+
+#if defined(CL_HELPER_USE_FLOAT) && (CL_HELPER_USE_FLOAT != 0)
+#define CL_FLOAT_T      cl_float
+#else
+#define CL_FLOAT_T      cl_double
+#endif
+
 namespace dolphin {
+
+typedef enum cl_runat_type
+{
+    CL_RUNAT_DEFAULT        = CL_DEVICE_TYPE_DEFAULT,
+    CL_RUNAT_CPU            = CL_DEVICE_TYPE_CPU, 
+    CL_RUNAT_GPU            = CL_DEVICE_TYPE_GPU,
+    CL_RUNAT_ACCELERATOR    = CL_DEVICE_TYPE_ACCELERATOR,
+    CL_RUNAT_CUSTOM         = CL_DEVICE_TYPE_CUSTOM,
+    CL_RUNAT_NATIVE         = CL_DEVICE_TYPE_NATIVE
+} cl_runat_type;
 
 class cl_helper
 {
@@ -37,11 +64,39 @@ public:
     bool    release(bool bForce = false);
 
     bool    use_double();
-    cl_int  run_native_matrix_mul(int m, int n);
-    cl_int  run_cl_cpu_matrix_mul(const char *file_name,
-        const char *func_name, int m, int n);
-    cl_int  run_cl_gpu_matrix_mul(const char *file_name,
-        const char *func_name, int m, int n);
+    cl_int  run_cl_matrix_mul(cl_runat_type device_type,
+                const char *file_name,
+                const char *func_name,
+                const int m, const int p, const int n);
+    cl_int  run_native_matrix_mul(const int m, const int p, const int n);
+    cl_int  run_cl_gpu_matrix_mul(const cl_device_type device_type,
+                const char *file_name,
+                const char *func_name,
+                const int m, const int p, const int n);
+
+    cl_int  matrix_mul_verify(const cl_int err,
+                std::vector<CL_FLOAT_T> &A,
+                std::vector<CL_FLOAT_T> &B,
+                std::vector<CL_FLOAT_T> &C,
+                const int m, const int p, const int n);
+
+    cl_int  run_cl_vector_add(cl_runat_type device_type,
+                const char *file_name,
+                const char *func_name,
+                const int data_size);
+    cl_int  run_native_vector_add(const int data_size);
+    cl_int  run_cl_gpu_vector_add(cl_device_type device_type,
+                const char *file_name,
+                const char *func_name,
+                const int data_size);
+
+    cl_int  vector_add_verify(const cl_int err,
+                std::vector<CL_FLOAT_T> &a,
+                std::vector<CL_FLOAT_T> &b,
+                std::vector<CL_FLOAT_T> &result,
+                const int data_size);
+
+    void    reset_stopwatches();
 
     double  getSeconds();
     double  getMillisec();
@@ -52,8 +107,9 @@ public:
     double  getMillisec_Kernel_ReadBuffer();
 
 protected:
-    cl_int clLoadProgramSource(const char *file_name, const char **source, size_t *length);
-    
+    cl_int clLoadProgramSource(const char *file_name, const char **content, size_t *length);
+    cl_int clLoadProgramSource(const char *file_name, std::string &content, size_t &length);
+
 private:
     bool        m_bInitCL;
 

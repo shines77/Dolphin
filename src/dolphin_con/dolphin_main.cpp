@@ -3,7 +3,9 @@
    Use Visual Leak Detector(vld) for Visual C++,
    Homepage: http://vld.codeplex.com/
  **********************************************************/
+#ifdef _MSC_VER
 #include <vld.h>
+#endif
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -19,8 +21,7 @@
 #include "ms1b.h"
 #include "dolphin_main.h"
 
-//#include <dolphin_con/platform/icd_test_log.h>
-#include <platform/icd_test_log.h>
+//#include <platform/icd_test_log.h>
 
 #ifdef _DEBUG
 #define DEBUG_CLIENTBLOCK   new(_CLIENT_BLOCK, __FILE__, __LINE__)
@@ -50,9 +51,9 @@
 #define REPEAT_100(x)   REPEAT_25(x) REPEAT_25(x) REPEAT_25(x) REPEAT_25(x)
 #define REPEAT_1000(x)  REPEAT_100(x) REPEAT_100(x) REPEAT_100(x) REPEAT_100(x) REPEAT_100(x) \
     REPEAT_100(x) REPEAT_100(x) REPEAT_100(x) REPEAT_100(x) REPEAT_100(x)
-#define FACTOR          ((double)LOOP_COUNT*1000.0)
+#define FACTOR          ((double)LOOP_COUNT * 1000.0)
 
-#define CLOCKSPERINSTRUCTION(start, end)    ((double)end - (double)start) / (FACTOR)
+#define CLOCKSPERINSTRUCTION(start, end)    (((double)end - (double)start) / (FACTOR))
 
 using namespace gmtl;
 using namespace dolphin;
@@ -299,7 +300,7 @@ int _tmain(int argc, _TCHAR *argv[])
 
     cl_runner clRunner;
     double usedTime_sw1 = 0.0, usedTime_sw2 = 0.0;
-#ifndef _DEBUG
+#if defined(_DEBUG) || 1
     //usedTime_sw2 = clRunner.test();
     int clError = (int)clRunner.init_cl();
     if (clError == CL_SUCCESS) {
@@ -308,6 +309,7 @@ int _tmain(int argc, _TCHAR *argv[])
         printf("\n");
         if (clError == CL_SUCCESS) {
             usedTime_sw1 = clRunner.getMillisec();
+            printf("cl kernel: vector_add_gpu.cl\n\n");
             printf("clRunner.getMillisec()      = %0.6f ms.\n", usedTime_sw1);
             printf("clRunner.kernel_ReadBuffer()= %0.6f ms.\n", clRunner.getMillisec_Kernel_ReadBuffer());
             printf("clRunner.native_test()      = %0.6f ms.\n", usedTime_sw2);
@@ -321,23 +323,46 @@ int _tmain(int argc, _TCHAR *argv[])
     printf("\n");
 
     cl_helper clHelper;
-    clError = clHelper.run_native_matrix_mul(0, 0);
+    clError = clHelper.run_native_vector_add(1048576);
     if (clHelper.use_double())
-        clError = clHelper.run_cl_cpu_matrix_mul("vector_add_gpu.cl", "vector_add_double", 1048576, 1048576);
+        clError = clHelper.run_cl_vector_add(CL_RUNAT_DEFAULT, "vector_add_gpu.cl", "vector_add_double", 1048576);
     else
-        clError = clHelper.run_cl_cpu_matrix_mul("vector_add_gpu.cl", "vector_add_float", 1048576, 1048576);
+        clError = clHelper.run_cl_vector_add(CL_RUNAT_DEFAULT, "vector_add_gpu.cl", "vector_add_float", 1048576);
     if (clError == CL_SUCCESS) {
         usedTime_sw1 = clHelper.getMillisec();
         usedTime_sw2 = clHelper.getMillisec_Native();
         printf("\n");
-        printf("clHelper.getMillisec()      = %0.6f ms.\n", usedTime_sw1);
-        printf("clHelper.kernel_ReadBuffer()= %0.6f ms.\n", clHelper.getMillisec_Kernel_ReadBuffer());
-        printf("clHelper.native_test()      = %0.6f ms.\n", usedTime_sw2);
-        printf("clHelper.native_CopyData()  = %0.6f ms.\n", clHelper.getMillisec_Native_CopyData());
+        printf("cl kernel: vector_add_gpu.cl\n\n");
+        printf("clHelper.getMillisec()       = %0.6f ms.\n", usedTime_sw1);
+        printf("clHelper.kernel_ReadBuffer() = %0.6f ms.\n", clHelper.getMillisec_Kernel_ReadBuffer());
+        printf("clHelper.native_test()       = %0.6f ms.\n", usedTime_sw2);
+        printf("clHelper.native_CopyData()   = %0.6f ms.\n", clHelper.getMillisec_Native_CopyData());
         if (usedTime_sw1 != 0.0)
-            printf("clHelper.speed_up()         = %0.3f X\n", usedTime_sw2 / usedTime_sw1);
+            printf("clHelper.speed_up()          = %0.3f X\n", usedTime_sw2 / usedTime_sw1);
         else
-            printf("clHelper.speed_up()         = ¡Þ X\n",    usedTime_sw2 / usedTime_sw1);
+            printf("clHelper.speed_up()          = ¡Þ X\n",    usedTime_sw2 / usedTime_sw1);
+    }
+    printf("\n");
+
+    clHelper.reset_stopwatches();
+    clError = clHelper.run_native_matrix_mul(1024, 1024, 1024);
+    if (clHelper.use_double())
+        clError = clHelper.run_cl_matrix_mul(CL_RUNAT_DEFAULT, "matrix_mul_gpu.cl", "matrix_mul_double", 1024, 1024, 1024);
+    else
+        clError = clHelper.run_cl_matrix_mul(CL_RUNAT_DEFAULT, "matrix_mul_gpu.cl", "matrix_mul_float", 1024, 1024, 1024);
+    if (clError == CL_SUCCESS) {
+        usedTime_sw1 = clHelper.getMillisec();
+        usedTime_sw2 = clHelper.getMillisec_Native();
+        printf("\n");
+        printf("cl kernel: matrix_mul_gpu.cl\n\n");
+        printf("clHelper.getMillisec()       = %0.6f ms.\n", usedTime_sw1);
+        printf("clHelper.kernel_ReadBuffer() = %0.6f ms.\n", clHelper.getMillisec_Kernel_ReadBuffer());
+        printf("clHelper.native_test()       = %0.6f ms.\n", usedTime_sw2);
+        printf("clHelper.native_CopyData()   = %0.6f ms.\n", clHelper.getMillisec_Native_CopyData());
+        if (usedTime_sw1 != 0.0)
+            printf("clHelper.speed_up()          = %0.3f X\n", usedTime_sw2 / usedTime_sw1);
+        else
+            printf("clHelper.speed_up()          = ¡Þ X\n",    usedTime_sw2 / usedTime_sw1);
     }
     printf("\n");
 #endif
