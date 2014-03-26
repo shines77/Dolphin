@@ -315,7 +315,7 @@ CL_LOAD_PROGRAM_SOURCE_EXIT:
     return err_num;
 }
 
-cl_int cl_runner::compile( const char *filename )
+cl_int cl_runner::compile(const char *filename)
 {
     return CL_SUCCESS;
 }

@@ -50,6 +50,15 @@ bool cl_helper::release(bool bForce /* = false */)
     return true;
 }
 
+bool cl_helper::use_double()
+{
+#if defined(USE_CL_FLOAT) && (USE_CL_FLOAT != 0)
+    return false;
+#else
+    return true;
+#endif
+}
+
 cl_int cl_helper::init_cl()
 {
     if (m_bInitCL)
@@ -174,7 +183,7 @@ cl_int cl_helper::run_cl_cpu_matrix_mul(const char *file_name,
             NULL,                       // event_wait_list
             //&clEvent                    // event
             NULL                        // event
-            );
+           );
 
         //clEvent.wait();
         sw_kernel.stop();

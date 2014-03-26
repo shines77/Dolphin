@@ -44,7 +44,12 @@
 
 #define ALIGN_SIGN_SIZE             sizeof(void *)
 
-#define IS_POWER_OF_2(x)            (((x != 0)) && (((x) & (x - 1)) == 0))
+/* unsigned int v; */
+/* f = (v & (v - 1)) == 0; */
+/* f = v && !(v & (v - 1)); */
+#define GMTL_IS_POWER_2(V)          ((V) && (!((uint32_t)(V) & ((uint32_t)(V) - 1))))
+
+#define IS_POWER_OF_2(x)            ((((x) != 0)) && (((x) & ((x) - 1)) == 0))
 
 namespace gmtl {
 
@@ -111,7 +116,7 @@ public:
     inline void *   get_data_ptr(void) const  { return m_pvData;  };
     inline void *   get_alloc_ptr(void) const { return m_pvAlloc; };
 
-    void *          mem_malloc (size_t size, int align_size = USE_CURRENT_ALIGN_SIZE, bool force_realloc = false);
+    void *          mem_alloc  (size_t size, int align_size = USE_CURRENT_ALIGN_SIZE, bool force_realloc = false);
     void *          mem_realloc(size_t size, int align_size = USE_CURRENT_ALIGN_SIZE);
     bool            copy       (const cache_aligned &src, bool _is_inited = false);     // full copy, include struct and data
     void            clone      (const cache_aligned &src, bool _is_inited = false);     // only copy struct, not copy data

@@ -36,6 +36,7 @@ public:
     cl_int  init_cl();
     bool    release(bool bForce = false);
 
+    bool    use_double();
     cl_int  run_native_matrix_mul(int m, int n);
     cl_int  run_cl_cpu_matrix_mul(const char *file_name,
         const char *func_name, int m, int n);

@@ -23,7 +23,7 @@
 #include <platform/icd_test_log.h>
 
 #ifdef _DEBUG
-#define DEBUG_CLIENTBLOCK   new( _CLIENT_BLOCK, __FILE__, __LINE__)
+#define DEBUG_CLIENTBLOCK   new(_CLIENT_BLOCK, __FILE__, __LINE__)
 #else
 #define DEBUG_CLIENTBLOCK
 #endif
@@ -114,6 +114,21 @@ int GetMaxCommonDivide(unsigned m, unsigned n)
     }
 
     return m;
+}
+
+int fibonacci(int n)
+{
+#if 1
+    if (n >= 2)
+        return fibonacci(n - 1) + fibonacci(n - 2);
+    else
+        return n;
+#else
+    if (n < 2)
+        return n;
+    else
+        return fibonacci(n - 1) + fibonacci(n - 2);
+#endif
 }
 
 //
@@ -223,6 +238,27 @@ int gcd_stein_fast(unsigned m, unsigned n)
     return m << s;
 }
 
+typedef struct accept_pair {
+    bool is_accept_state;
+    bool is_strict_end;
+    //char app_name[0];
+    char *app_name;
+} accept_pair;
+
+void test_alexia()
+{
+    char *s = "Alexia";
+    accept_pair *ap;
+    //ap = (accept_pair*)malloc(sizeof(accept_pair) + sizeof(s));
+    ap = (accept_pair*)malloc(sizeof(accept_pair) + strlen(s) + 1);
+    ap->app_name = (char *)((char *)ap + sizeof(accept_pair));
+    strcpy(ap->app_name, s);
+
+    printf("app name: %s\n\n", ap->app_name);
+
+    free(ap);
+}
+
 // _tmain() 必须包含 tchar.h, main()的Unicode版本
 int _tmain(int argc, _TCHAR *argv[])
 {
@@ -241,11 +277,29 @@ int _tmain(int argc, _TCHAR *argv[])
     gcd = GetMaxCommonDivide(7, 5);
     printf("GCD(7, 5) = %d\n\n", gcd);
 
+#if 1
+#ifndef _DEBUG
+    const int n = 40;
+    int fib;
+    stop_watch sw;
+    sw.start();
+    fib = fibonacci(n);
+    sw.stop();
+    printf("fibonacci(%d) = %d\n", n, fib);
+    printf("UsedTime = %0.3f ms\n\n", sw.getMillisec());
+#endif
+#endif
+
     //ms1b_main(0, NULL);
     //ms1b2_main(0, NULL);
 
+#ifdef _DEBUG
+    test_alexia();
+#endif
+
     cl_runner clRunner;
-    double usedTime_sw1, usedTime_sw2;
+    double usedTime_sw1 = 0.0, usedTime_sw2 = 0.0;
+#ifndef _DEBUG
     //usedTime_sw2 = clRunner.test();
     int clError = (int)clRunner.init_cl();
     if (clError == CL_SUCCESS) {
@@ -268,7 +322,10 @@ int _tmain(int argc, _TCHAR *argv[])
 
     cl_helper clHelper;
     clError = clHelper.run_native_matrix_mul(0, 0);
-    clError = clHelper.run_cl_cpu_matrix_mul("vector_add_gpu.cl", "vector_add_float", 1048576, 1048576);
+    if (clHelper.use_double())
+        clError = clHelper.run_cl_cpu_matrix_mul("vector_add_gpu.cl", "vector_add_double", 1048576, 1048576);
+    else
+        clError = clHelper.run_cl_cpu_matrix_mul("vector_add_gpu.cl", "vector_add_float", 1048576, 1048576);
     if (clError == CL_SUCCESS) {
         usedTime_sw1 = clHelper.getMillisec();
         usedTime_sw2 = clHelper.getMillisec_Native();
@@ -283,6 +340,7 @@ int _tmain(int argc, _TCHAR *argv[])
             printf("clHelper.speed_up()         = ∞ X\n",    usedTime_sw2 / usedTime_sw1);
     }
     printf("\n");
+#endif
 
 #if 0
     int m, n, p, p1, p2;
@@ -385,7 +443,7 @@ int _tmain(int argc, _TCHAR *argv[])
 
     cache_aligned cache_align, c1, c2;
     cache_align.set_align_size(32);
-    cache_align.mem_malloc(31 + 24);
+    cache_align.mem_alloc(31 + 24);
     c1 = c2 = cache_align;
     //c1 = c2 = 2;
 
@@ -469,7 +527,7 @@ int _tmain(int argc, _TCHAR *argv[])
     printf("\n");
 
     hash_table hash_table_;
-    hash_table_.setup_hash(22);
+    hash_table_.setup_hash_bits(22);
     void *pHashTable = (void *)hash_table_.get_hash_table_ptr();
 
     printf("pHashTable(ptr)\t = 0x%08X\n", pHashTable);
@@ -479,12 +537,12 @@ int _tmain(int argc, _TCHAR *argv[])
            hash_table_.get_hash_entries(),
            hash_table_.get_hash_sizes(),
            hash_table_.get_hash_sizes()
-          );
+         );
     printf("\n");
     printf("alloc_ptr\t = 0x%08X,\ndata_ptr\t = 0x%08X\n",
            (void *)hash_table_.get_alloc_ptr(),
            (void *)hash_table_.get_data_ptr()
-          );
+         );
     printf("\n");
     hash_table_.free_hash();
 

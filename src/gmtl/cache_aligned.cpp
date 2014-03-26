@@ -80,7 +80,7 @@ cache_aligned::cache_aligned(void)
 cache_aligned::cache_aligned(size_t size)
 {
     init_cache(DEFAILT_CACHE_ALIGN_SIZE, true);
-    mem_malloc(size);
+    mem_alloc(size);
 }
 
 cache_aligned::cache_aligned(size_t size,
@@ -88,7 +88,7 @@ cache_aligned::cache_aligned(size_t size,
                              bool auto_delete /*= false */)
 {
     init_cache(align_size, auto_delete);
-    mem_malloc(size);
+    mem_alloc(size);
 }
 
 cache_aligned::cache_aligned(const cache_aligned &src, bool copy_data /*= true */)
@@ -163,7 +163,7 @@ bool cache_aligned::copy(const cache_aligned &src, bool _is_inited /*= false */)
     if (!_is_inited)
         free_cache(true);
     init_cache(src.get_align_size(), src.get_auto_delete());
-    mem_malloc(src.get_size());
+    mem_alloc(src.get_size());
     return (copy_data(src) != NULL);
 }
 
@@ -173,7 +173,7 @@ void cache_aligned::clone(const cache_aligned &src, bool _is_inited /*= false */
     if (!_is_inited)
         free_cache(true);
     init_cache(src.get_align_size(), src.get_auto_delete());
-    mem_malloc(src.get_size());
+    mem_alloc(src.get_size());
 }
 
 // only copy data
@@ -187,7 +187,7 @@ int cache_aligned::_std_align_size(int align_size)
     if (align_size < 0)
         align_size = -align_size;
     align_size = _next_power_of_2(align_size);
-    _ASSERT(IS_POWER_OF_2(align_size));
+    _ASSERT(GMTL_IS_POWER_2(align_size));
 
     align_size = (align_size > sizeof(unsigned int)) ? align_size : sizeof(unsigned int);
     _ASSERT(align_size > 0);
@@ -224,7 +224,7 @@ int cache_aligned::set_align_size(int align_size, bool force_realloc /*= false *
     return align_size;
 }
 
-void *cache_aligned::mem_malloc(size_t size,
+void *cache_aligned::mem_alloc(size_t size,
                                 int align_size, /*= -1 */
                                 bool force_realloc /*= false */)
 {
