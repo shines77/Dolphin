@@ -119,7 +119,7 @@ int GetMaxCommonDivide(unsigned m, unsigned n)
 
 int fibonacci(int n)
 {
-#if 1
+#if 0
     if (n >= 2)
         return fibonacci(n - 1) + fibonacci(n - 2);
     else
@@ -278,7 +278,7 @@ int _tmain(int argc, _TCHAR *argv[])
     gcd = GetMaxCommonDivide(7, 5);
     printf("GCD(7, 5) = %d\n\n", gcd);
 
-#if 1
+#if 0
 #ifndef _DEBUG
     const int n = 40;
     int fib;
@@ -300,24 +300,31 @@ int _tmain(int argc, _TCHAR *argv[])
 
     cl_runner clRunner;
     double usedTime_sw1 = 0.0, usedTime_sw2 = 0.0;
+    double usedTime_sw2a = 0.0, usedTime_sw2b = 0.0;
+    double usedTime_sw_copyData1 = 0.0, usedTime_sw_copyData2 = 0.0;
 #if defined(_DEBUG) || 1
     //usedTime_sw2 = clRunner.test();
     int clError = (int)clRunner.init_cl();
     if (clError == CL_SUCCESS) {
         clError = clRunner.execute("vector_add_gpu.cl");
-        usedTime_sw2 = clRunner.native_test();
+        usedTime_sw2a = clRunner.native_test1();
+        usedTime_sw_copyData1 = clRunner.getMillisec_Native_CopyData();
+        usedTime_sw2b = clRunner.native_test2();
+        usedTime_sw_copyData2 = clRunner.getMillisec_Native_CopyData();
         printf("\n");
         if (clError == CL_SUCCESS) {
             usedTime_sw1 = clRunner.getMillisec();
             printf("cl kernel: vector_add_gpu.cl\n\n");
             printf("clRunner.getMillisec()      = %0.6f ms.\n", usedTime_sw1);
             printf("clRunner.kernel_ReadBuffer()= %0.6f ms.\n", clRunner.getMillisec_Kernel_ReadBuffer());
-            printf("clRunner.native_test()      = %0.6f ms.\n", usedTime_sw2);
-            printf("clRunner.native_CopyData()  = %0.6f ms.\n", clRunner.getMillisec_Native_CopyData());
+            printf("clRunner.native_test1()     = %0.6f ms.\n", usedTime_sw2a);
+            printf("clRunner.native_CopyData1() = %0.6f ms.\n", usedTime_sw_copyData1);
+            printf("clRunner.native_test2()     = %0.6f ms.\n", usedTime_sw2b);
+            printf("clRunner.native_CopyData2() = %0.6f ms.\n", usedTime_sw_copyData2);
             if (usedTime_sw1 != 0.0)
-                printf("clRunner.speed_up()         = %0.3f X\n", usedTime_sw2 / usedTime_sw1);
+                printf("clRunner.speed_up()         = %0.3f X\n", usedTime_sw2b / usedTime_sw1);
             else
-                printf("clRunner.speed_up()         = ¡Þ X\n", usedTime_sw2 / usedTime_sw1);
+                printf("clRunner.speed_up()         = ¡Þ X\n", usedTime_sw2b / usedTime_sw1);
         }
     }
     printf("\n");
@@ -335,15 +342,18 @@ int _tmain(int argc, _TCHAR *argv[])
         printf("cl kernel: vector_add_gpu.cl\n\n");
         printf("clHelper.getMillisec()       = %0.6f ms.\n", usedTime_sw1);
         printf("clHelper.kernel_ReadBuffer() = %0.6f ms.\n", clHelper.getMillisec_Kernel_ReadBuffer());
+        /*
         printf("clHelper.native_test()       = %0.6f ms.\n", usedTime_sw2);
         printf("clHelper.native_CopyData()   = %0.6f ms.\n", clHelper.getMillisec_Native_CopyData());
         if (usedTime_sw1 != 0.0)
             printf("clHelper.speed_up()          = %0.3f X\n", usedTime_sw2 / usedTime_sw1);
         else
             printf("clHelper.speed_up()          = ¡Þ X\n",    usedTime_sw2 / usedTime_sw1);
+        //*/
     }
     printf("\n");
 
+    /*
     clHelper.reset_stopwatches();
     clError = clHelper.run_native_matrix_mul(1024, 1024, 1024);
     if (clHelper.use_double())
@@ -365,6 +375,7 @@ int _tmain(int argc, _TCHAR *argv[])
             printf("clHelper.speed_up()          = ¡Þ X\n",    usedTime_sw2 / usedTime_sw1);
     }
     printf("\n");
+    //*/
 #endif
 
 #if 0

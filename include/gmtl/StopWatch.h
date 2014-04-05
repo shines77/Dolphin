@@ -33,10 +33,15 @@
 #pragma once
 #endif
 
-#include <gmtl/gmtl_stddef.h>
-#include <windows.h>
+//#include <gmtl/gmtl_stddef.h>
+#ifdef _MSC_VER
+#include <gmtl/vs/stdint.h>
+#else
+#include <stdint.h>
+#endif
 
-#if _WIN32||_WIN64
+#if _WIN32 || _WIN64
+#include <windows.h>
 #include <gmtl/machine/windows_api.h>
 #include <time.h>
 #elif __linux__

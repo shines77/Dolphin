@@ -12,7 +12,7 @@ using namespace std;
 #define DOL_TRACE(X)  std::cerr << X ;
 
 /* use float or double ? */
-#define USE_CL_FLOAT    1
+#define USE_CL_FLOAT    0
 
 #ifdef CL_FLOAT_T
 #undef CL_FLOAT_T
@@ -436,7 +436,7 @@ cl_int cl_runner::execute(const char *filename)
     }
 
     // set seed for rand()
-    srand(1314UL);
+    srand(5201314UL);
 
     const unsigned int DATA_SIZE = 1048576;
     std::vector<CL_FLOAT_T> a(DATA_SIZE), b(DATA_SIZE), ret(DATA_SIZE);
@@ -545,16 +545,16 @@ cl_int cl_runner::execute(const char *filename)
     return err_num;
 }
 
-double cl_runner::native_test()
+double cl_runner::native_test1()
 {
     // set seed for rand()
-    srand(1314UL);
+    srand(5201314UL);
 
     const int DATA_SIZE = 1048576;
     std::vector<CL_FLOAT_T> a(DATA_SIZE), b(DATA_SIZE), ret(DATA_SIZE), ret2(DATA_SIZE);
     for (int i = 0; i < DATA_SIZE; ++i) {
-        a[i]    = std::rand() / (CL_FLOAT_T)RAND_MAX;
-        b[i]    = std::rand() / (CL_FLOAT_T)RAND_MAX;
+        a[i]    = (std::rand() / (CL_FLOAT_T)RAND_MAX) * (CL_FLOAT_T)2.0 - (CL_FLOAT_T)1.0;
+        b[i]    = (std::rand() / (CL_FLOAT_T)RAND_MAX) * (CL_FLOAT_T)2.0 - (CL_FLOAT_T)1.0;
         ret[i]  = 0.0;
     }
 
@@ -569,6 +569,46 @@ double cl_runner::native_test()
         ret2[i] = ret[i];
     }
     sw_native_copyData.stop();
+
+    return sw_native.getMillisec();
+}
+
+double cl_runner::native_test2()
+{
+    // set seed for rand()
+    srand(5201314UL);
+
+    const int DATA_SIZE = 1048576;
+    CL_FLOAT_T *a, *b, *ret, *ret2;
+    a    = (CL_FLOAT_T *)malloc(sizeof(CL_FLOAT_T) * DATA_SIZE);
+    b    = (CL_FLOAT_T *)malloc(sizeof(CL_FLOAT_T) * DATA_SIZE);
+    ret  = (CL_FLOAT_T *)malloc(sizeof(CL_FLOAT_T) * DATA_SIZE);
+    ret2 = (CL_FLOAT_T *)malloc(sizeof(CL_FLOAT_T) * DATA_SIZE);
+    for (int i = 0; i < DATA_SIZE; ++i) {
+        a[i]    = (std::rand() / (CL_FLOAT_T)RAND_MAX) * (CL_FLOAT_T)2.0 - (CL_FLOAT_T)1.0;
+        b[i]    = (std::rand() / (CL_FLOAT_T)RAND_MAX) * (CL_FLOAT_T)2.0 - (CL_FLOAT_T)1.0;
+        ret[i]  = 0.0;
+    }
+
+    sw_native.start();
+    for (int i = 0; i < DATA_SIZE; ++i) {
+        if (fabs(a[i]) > 0.05)
+            ret[i] += a[i] * b[i];
+        else
+            i += 1024;
+    }
+    sw_native.stop();
+
+    sw_native_copyData.start();
+    for (int i = 0; i < DATA_SIZE; ++i) {
+        ret2[i] = ret[i];
+    }
+    sw_native_copyData.stop();
+
+    if (a) free(a);
+    if (b) free(b);
+    if (ret) free(ret);
+    if (ret2) free(ret2);
 
     return sw_native.getMillisec();
 }

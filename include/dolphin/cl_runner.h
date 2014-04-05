@@ -41,7 +41,8 @@ public:
     cl_int  compile(const char *filename);
     cl_int  execute(const char *filename);
 
-    double  native_test();
+    double  native_test1();
+    double  native_test2();
 
     double  getSeconds();
     double  getMillisec();

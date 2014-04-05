@@ -211,7 +211,7 @@ cl_int cl_helper::run_cl_gpu_vector_add(cl_device_type device_type,
         cl::Kernel clKernel(clProgram, func_name, &err);
 
         // Set seed for rand()
-        srand(1314UL);
+        srand(5201314UL);
 
         std::vector<CL_FLOAT_T> a(data_size), b(data_size), result(data_size);
         for (unsigned int i = 0; i < data_size; ++i) {
@@ -366,7 +366,7 @@ cl_int cl_helper::run_cl_gpu_matrix_mul(cl_device_type device_type,
         cl::Kernel clKernel(clProgram, func_name, &err);
 
         // Set seed for rand()
-        srand(1314UL);
+        srand(5201314UL);
 
         std::vector<CL_FLOAT_T> C(m * n), A(m * p), B(p * n);
         unsigned int i;
