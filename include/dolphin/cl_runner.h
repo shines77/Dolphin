@@ -20,6 +20,10 @@
 
 using namespace gmtl;
 
+#ifndef FIXED_SRAND_SEED
+#define FIXED_SRAND_SEED            (2014UL)
+#endif
+
 //
 // OpenCLÊ¹ÓÃGPUÂË²¨
 //
@@ -41,8 +45,8 @@ public:
     cl_int  compile(const char *filename);
     cl_int  execute(const char *filename);
 
-    double  native_test1();
-    double  native_test2();
+    double  native_vector_add_test();
+    double  native_vector_mult_test();
 
     double  getSeconds();
     double  getMillisec();

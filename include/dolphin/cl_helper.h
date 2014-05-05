@@ -11,10 +11,8 @@
 //#define __NO_STD_STRING
 
 #ifdef __APPLE__
-//#include <OpenCL/opencl.h>
 #include <OpenCL/opencl.hpp>
 #else
-//#include <CL/cl.h>
 #include <CL/cl.hpp>
 #endif
 
@@ -26,19 +24,27 @@
 using namespace std;
 using namespace gmtl;
 
+#ifndef FIXED_SRAND_SEED
+#define FIXED_SRAND_SEED            (2014UL)
+#endif
+
+#if !defined(CL_VERSION_1_1) && !defined(CL_VERSION_1_2)
+#define CL_DEVICE_TYPE_CUSTOM       (1 << 4)
+#endif
+
 #define CL_DEVICE_TYPE_NATIVE       (1 << 15)
 
-/* use float or double ? */
-#define CL_HELPER_USE_FLOAT     1
+/* use double or float ? */
+#define CL_HELPER_USE_DOUBLE        0
 
 #ifdef CL_FLOAT_T
 #undef CL_FLOAT_T
 #endif
 
-#if defined(CL_HELPER_USE_FLOAT) && (CL_HELPER_USE_FLOAT != 0)
-#define CL_FLOAT_T      cl_float
-#else
+#if defined(CL_HELPER_USE_DOUBLE) && (CL_HELPER_USE_DOUBLE != 0)
 #define CL_FLOAT_T      cl_double
+#else
+#define CL_FLOAT_T      cl_float
 #endif
 
 namespace dolphin {
@@ -64,19 +70,36 @@ public:
     bool    release(bool bForce = false);
 
     bool    use_double();
-    cl_int  run_cl_matrix_mul(cl_runat_type device_type,
+
+    cl_int  run_vector_add(cl_runat_type device_type,
+                const char *file_name,
+                const char *func_name,
+                const unsigned int data_size);
+    cl_int  run_cl_vector_add(cl_device_type device_type,
+                const char *file_name,
+                const char *func_name,
+                const unsigned int data_size);
+    cl_int  run_native_vector_add(const unsigned int data_size);
+
+    cl_int  vector_add_verify(const cl_int err,
+                std::vector<CL_FLOAT_T> &a,
+                std::vector<CL_FLOAT_T> &b,
+                std::vector<CL_FLOAT_T> &result,
+                const unsigned int data_size);
+
+    cl_int  run_matrix_mul(cl_runat_type device_type,
+                const char *file_name,
+                const char *func_name,
+                const unsigned int m,
+                const unsigned int p,
+                const unsigned int n);
+    cl_int  run_cl_matrix_mul(const cl_device_type device_type,
                 const char *file_name,
                 const char *func_name,
                 const unsigned int m,
                 const unsigned int p,
                 const unsigned int n);
     cl_int  run_native_matrix_mul(const int m, const int p, const int n);
-    cl_int  run_cl_gpu_matrix_mul(const cl_device_type device_type,
-                const char *file_name,
-                const char *func_name,
-                const unsigned int m,
-                const unsigned int p,
-                const unsigned int n);
 
     cl_int  matrix_mul_verify(const cl_int err,
                 std::vector<CL_FLOAT_T> &A,
@@ -85,22 +108,6 @@ public:
                 const unsigned int m,
                 const unsigned int p,
                 const unsigned int n);
-
-    cl_int  run_cl_vector_add(cl_runat_type device_type,
-                const char *file_name,
-                const char *func_name,
-                const unsigned int data_size);
-    cl_int  run_native_vector_add(const unsigned int data_size);
-    cl_int  run_cl_gpu_vector_add(cl_device_type device_type,
-                const char *file_name,
-                const char *func_name,
-                const unsigned int data_size);
-
-    cl_int  vector_add_verify(const cl_int err,
-                std::vector<CL_FLOAT_T> &a,
-                std::vector<CL_FLOAT_T> &b,
-                std::vector<CL_FLOAT_T> &result,
-                const unsigned int data_size);
 
     void    reset_stopwatches();
 

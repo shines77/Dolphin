@@ -17,6 +17,7 @@
 #include <dolphin/cl_runner.h>
 #include <dolphin/cl_helper.h>
 #include <mmsystem.h>
+#include <math.h>
 
 #include "ms1b.h"
 #include "dolphin_main.h"
@@ -260,6 +261,676 @@ void test_alexia()
     free(ap);
 }
 
+/*
+enum eNumberIndex {
+    INVALID_SPECIAL_NUM = -1,
+    NORMAL_NUM_INDEX = 0,
+    FIRST_SPECIAL_NUM_FIXED_INDEX = 1,
+    IS_SPECIAL_NUM = 2
+};
+//*/
+
+#define USE_STL_STRING                  0
+
+#define DISPLAY_RESULT_TO_SCREEN        0
+#define FIZZ_USE_STOPWATCH              1
+
+#if !defined(DISPLAY_RESULT_TO_SCREEN) || (DISPLAY_RESULT_TO_SCREEN == 0)
+#undef  FIZZ_USE_STOPWATCH
+#define FIZZ_USE_STOPWATCH              0
+#endif
+
+#define INVALID_SPECIAL_NUM             (-1)
+#define NORMAL_NUM_INDEX                0
+#define FIRST_SPECIAL_NUM_FIXED_INDEX   1
+#define IS_SPECIAL_NUM                  2
+
+#define STRING_ADDR_ALIGNMENT           16UL
+
+typedef unsigned int index_mask_t;
+
+static double s_SolveTotalTime = 0.0;
+
+/// <comment>
+///
+/// 最难面试的IT公司之ThoughtWorks代码挑战——FizzBuzzWhizz游戏
+///
+/// From: http://www.cnblogs.com/lanxuezaipiao/p/3705313.html
+///
+/// </comment>
+
+void FizzBuzzWhizz(const int max_number, const unsigned int max_word_type,
+                   const string word_list[], int special_num_list[],
+                   char **out_sayword_result)
+{
+    int num;
+    unsigned int integer_base10_length;
+    unsigned int digital, max_digital;
+    unsigned int index;
+    unsigned int mask, cur_mask, max_mask;
+    int special_num;
+    int first_special_num;
+
+    int left_num, right_num;
+    int left_start_num, right_start_num;
+    int left_num_step, right_num_step;
+    int right_max_num;
+
+    index_mask_t *sayword_index_list;
+
+    const int integer_base10[] = {
+        1, 10, 100, 1000, 10000, 100000, 1000000,
+        10000000, 100000000, 1000000000, INT_MAX
+    };
+
+#if defined(FIZZ_USE_STOPWATCH) && (FIZZ_USE_STOPWATCH != 0)
+    stop_watch sw;
+    sw.start();
+#endif  /* FIZZ_USE_STOPWATCH */
+
+    integer_base10_length = _countof(integer_base10) - 1;
+#if 0
+    // 最大数的数字位数(数字最大长度), 
+    max_digital = (int)floor(log((double)max_number) / log(10.0) + 0.001) + 1;
+#else
+    // 最大数的数字位数(数字最大长度), 可以用log函数求, 但这里我们用查表法, 因为这个表我们后面也要用的
+    max_digital = 0;
+    for (index = 0; index < integer_base10_length; ++index) {
+        if (max_number >= integer_base10[index] && max_number < integer_base10[index + 1]) {
+            max_digital = index + 1;
+            break;
+        }
+    }
+#endif
+
+    unsigned int max_words_length = 1;
+    for (index = 0; index < max_word_type; ++index)
+        max_words_length += word_list[index].length();
+    if (max_digital > max_words_length)
+        max_words_length = (max_digital + STRING_ADDR_ALIGNMENT - 1) & (~STRING_ADDR_ALIGNMENT);
+    else
+        max_words_length = (max_words_length + STRING_ADDR_ALIGNMENT - 1) & (~STRING_ADDR_ALIGNMENT);
+
+    // 最大mask(bit掩模)值, = 2^(max_word_type) = 2^3 = 8
+    max_mask = 1 << max_word_type;
+
+    // 求出mask对应的特殊报数字符串, 共max_mask种(2^3 = 8种)
+#if defined(USE_STL_STRING) && (USE_STL_STRING != 0)
+    string sayword;
+    std::vector<string> sayword_list;
+
+    sayword_list.reserve(max_mask);
+    //sayword_list.resize(max_mask);
+    for (mask = 0; mask < max_mask; ++mask) {
+        sayword = "";
+        cur_mask = mask;
+        for (index = 0; index < max_word_type; ++index) {
+            if ((cur_mask & 1) != 0)
+                sayword += word_list[index];
+            cur_mask >>= 1;
+        }
+        sayword_list.push_back(sayword);
+        //sayword_list[mask] = sayword;
+    }
+#else
+    char *sayword_list, *cur_sayword_list;
+    sayword_list = (char *)_aligned_malloc(max_mask * max_words_length * sizeof(char), STRING_ADDR_ALIGNMENT);
+    if (sayword_list == NULL) {
+        printf("Error: alloc string array [sayword_list] out of memory\n\n");
+        return;
+    }
+    for (mask = 0; mask < max_mask; ++mask) {
+        cur_sayword_list = sayword_list + mask * max_words_length;
+        cur_sayword_list[0] = '\0';
+        cur_mask = mask;
+        for (index = 0; index < max_word_type; ++index) {
+            if ((cur_mask & 1) != 0)
+                //sayword += word_list[index];
+                strcat(cur_sayword_list, word_list[index].c_str());
+            cur_mask >>= 1;
+        }
+        //strcpy(cur_sayword_list, sayword.c_str());
+    }
+#endif
+
+    // 分配sayword_index_list内存
+    sayword_index_list = (index_mask_t *)malloc((max_number + 1) * sizeof(index_mask_t));
+    if (sayword_index_list == NULL) {
+        printf("Error: alloc array [sayword_index_list] out of memory\n\n");
+        return;
+    }
+
+    // 所有sayword_index_list的默认值均为NORMAL_NUM_INDEX(0), 即默认是非特殊报数
+    for (num = 0; num <= max_number; ++num) {
+        sayword_index_list[num] = NORMAL_NUM_INDEX;
+    }
+
+    // 计算(合并)和设置所有特殊数的mask值
+    for (index = 0; index < max_word_type; ++index) {
+        // 取一个特殊数
+        special_num = special_num_list[index];
+        // 如果特殊数不在[1, 9]范围内, 则认为是无效特殊数, 跳过
+        if (special_num >= 1 && special_num <= 9) {
+            // 该特殊数的mask值
+            mask = 1 << index;
+            for (num = special_num; num <= max_number; num += special_num)
+                sayword_index_list[num] |= (index_mask_t)mask;
+        }
+        else {
+            special_num_list[index] = INVALID_SPECIAL_NUM;
+        }
+    }
+
+    // 根据规则5, 设置所有所报数字包含了第一个特殊数(first)的数, 先筛选所有个位数包含first的数,
+    // 再筛选所有十位数包含first的数, 依此类推, 百位, 千位..., 直接达到max_number
+    // FIRST_SPECIAL_NUM_FIXED_INDEX的值固定为1, 因为第一个特殊数(仅第一个)的mask就是1
+
+    // 第一个特殊数
+    first_special_num = special_num_list[0];
+
+    if (first_special_num != INVALID_SPECIAL_NUM) {
+
+        // 筛选所有个,十,百,千,万,十万,百万位数等包含first_special_num的数
+        for (digital = 0; digital < max_digital; ++digital) {
+            right_start_num = first_special_num * integer_base10[digital];
+            right_max_num = right_start_num + integer_base10[digital];
+            // 右边的步长横为1
+            right_num_step = 1;
+            // 这里(right_start_num + 0)虽然已经是first_special_num的倍数, 但是因为还要进行左边(高位)的循环, 所以不能省略
+            // 右边循环(该个,十,百,千,万位的右边, 即低位循环)
+            for (right_num = right_start_num + 0; (right_num < right_max_num && right_num <= max_number); right_num += right_num_step) {
+                sayword_index_list[right_num] = FIRST_SPECIAL_NUM_FIXED_INDEX;
+
+                if (digital < integer_base10_length) {
+                    left_num_step = integer_base10[digital + 1];
+                    left_start_num = right_num + left_num_step;
+                    // 左边循环(该个,十,百,千,万位的左边, 即高位循环)
+                    for (left_num = left_start_num; left_num <= max_number; left_num += left_num_step)
+                        sayword_index_list[left_num] = FIRST_SPECIAL_NUM_FIXED_INDEX;
+                }
+            }
+        }
+
+    }
+
+#if defined(DISPLAY_RESULT_TO_SCREEN) && (DISPLAY_RESULT_TO_SCREEN != 0)
+
+#if defined(FIZZ_USE_STOPWATCH) && (FIZZ_USE_STOPWATCH != 0)
+    sw.stop();
+#endif  /* FIZZ_USE_STOPWATCH */
+
+    // 如果想显示快一点, 可以用前面一段代码(题目默认的显示效果),
+    // 后面的代码有显示对应的num, 理论上会慢一点(如果追求绝对速度的话)
+#if 1  /* 显示结果的样式 */
+    // 输出结果
+    printf("FizzBuzzWhizz ReportNumber List:\n\nmax_number = %d\n\n", max_number);
+    for (num = 1; num <= max_number; ++num) {
+        index = sayword_index_list[num];
+        // 如果不是特殊数, 则直接输出该数, 否则输出index(mask值)对应的字符串
+#if defined(USE_STL_STRING) && (USE_STL_STRING != 0)
+        if (index == NORMAL_NUM_INDEX)
+            printf("%d\n", num);
+        else
+            printf("%s\n", sayword_list[index].c_str());
+#else
+        if (index == NORMAL_NUM_INDEX)
+            printf("%d\n", num);
+        else
+            printf("%s\n", &sayword_list[index * max_words_length]);
+#endif  /* USE_STL_STRING */
+    }
+    printf("\n");
+#else   /* !显示结果的样式 */
+    // 输出结果
+    printf("FizzBuzzWhizz ReportNumber List:\n\nmax_number = %d\n\n", max_number);
+    for (num = 1; num <= max_number; ++num) {
+        index = sayword_index_list[num];
+        // 如果不是特殊数, 则直接输出该数, 否则输出index(mask值)对应的字符串
+#if defined(USE_STL_STRING) && (USE_STL_STRING != 0)
+        if (index == NORMAL_NUM_INDEX)
+            printf("num = %-8d Sayword is: %d\n", num, num);
+        else
+            printf("num = %-8d Sayword is: %s\n", num, sayword_list[index].c_str());
+#else
+        if (index == NORMAL_NUM_INDEX)
+            printf("num = %-8d Sayword is: %d\n", num, num);
+        else
+            printf("num = %-8d Sayword is: %s\n", num, &sayword_list[index * max_words_length]);
+#endif  /* USE_STL_STRING */
+    }
+    printf("\n");
+#endif  /* 显示结果的样式 */
+
+#if defined(FIZZ_USE_STOPWATCH) && (FIZZ_USE_STOPWATCH != 0)
+    printf("elapsed time: %0.3f ms\n\n", sw.getMillisec());
+#endif  /* FIZZ_USE_STOPWATCH */
+
+#else  /* !DISPLAY_RESULT_TO_SCREEN */
+
+#if defined(USE_STL_STRING) && (USE_STL_STRING != 0)
+    char buffer[32];
+
+    // 如果不输出到屏幕, 则输出到字符串数组
+    std::vector<string> sayword_result;
+    sayword_result.resize(max_number + 1);
+    for (num = 1; num <= max_number; ++num) {
+        index = sayword_index_list[num];
+        // 如果不是特殊数, 则直接输出该数, 否则输出index(mask值)对应的字符串
+        if (index == NORMAL_NUM_INDEX) {
+            if (_itoa(num, buffer, 10))
+            //    sayword_result.push_back(buffer);
+                sayword_result[num] = buffer;
+        }
+        else {
+            //sayword_result.push_back(sayword_list[index].c_str());
+            //sayword_result[num] = sayword_list[index].c_str();
+            sayword_result[num] = sayword_list[index];
+        }
+    }
+#else
+    //char buffer[32];
+
+    // 如果不输出到屏幕, 则输出到字符串数组
+    char *sayword_result, *cur_sayword_result;
+    index_mask_t *cur_sayword_index_list;
+    sayword_result = (char *)_aligned_malloc((max_number + 1) * max_words_length * sizeof(char), STRING_ADDR_ALIGNMENT);
+    if (sayword_result == NULL) {
+        printf("Error: alloc string array [sayword_result] out of memory\n");
+        return;
+    }
+    cur_sayword_result = sayword_result + max_words_length;
+    cur_sayword_index_list = &sayword_index_list[1];
+    for (num = 1; num <= max_number; ++num) {
+        //index = sayword_index_list[num];
+        index = *cur_sayword_index_list++;
+        // 如果不是特殊数, 则直接输出该数, 否则输出index(mask值)对应的字符串
+        if (index == NORMAL_NUM_INDEX) {
+            _itoa(num, cur_sayword_result, 10);
+            //if (_itoa(num, buffer, 10))
+                //strcpy(&sayword_result[num * max_words_length], buffer);
+            //    strcpy(cur_sayword_result, buffer);
+        }
+        else {
+            //strcpy(&sayword_result[num * max_words_length], sayword_list[index].c_str());
+            //strcpy(cur_sayword_result, sayword_list[index].c_str());
+            strcpy(cur_sayword_result, &sayword_list[index * max_words_length]);
+        }
+        cur_sayword_result += max_words_length;
+    }
+
+    if (out_sayword_result != NULL) {
+        *out_sayword_result = sayword_result;
+    }
+    else {
+        if (sayword_result)
+            _aligned_free(sayword_result);
+    }
+#endif
+
+#if defined(FIZZ_USE_STOPWATCH) && (FIZZ_USE_STOPWATCH != 0)
+    sw.stop();
+    //printf("elapsed time: %0.3f ms\n\n", sw.getMillisec());
+
+    s_SolveTotalTime += sw.getMillisec();
+#endif  /* FIZZ_USE_STOPWATCH */
+
+#if defined(USE_STL_STRING) && (USE_STL_STRING != 0)
+    if (out_sayword_result != NULL) {
+        // 输出结果
+        printf("FizzBuzzWhizz ReportNumber List:\n\nmax_number = %d\n\n", max_number);
+        for (num = 1; num <= max_number; ++num) {
+            index = sayword_index_list[num];
+            // 如果不是特殊数, 则直接输出该数, 否则输出index(mask值)对应的字符串
+            if (index == NORMAL_NUM_INDEX)
+                printf("%d\n", num);
+            else
+                printf("%s\n", sayword_list[index].c_str());
+        }
+        printf("\n");
+    }
+#endif  /* USE_STL_STRING */
+
+#endif  /* DISPLAY_RESULT_TO_SCREEN */
+
+    // 释放内存
+#if !defined(USE_STL_STRING) || (USE_STL_STRING == 0)
+    if (sayword_list)
+        _aligned_free(sayword_list);
+#endif
+    if (sayword_index_list)
+        free(sayword_index_list);
+}
+
+void FizzBuzzWhizz_Test(const int max_number)
+{
+    stop_watch sw;
+    int special_num_list[] = { 3, 5, 7 };
+    string word_list[] = { "Fizz", "Buzz", "Whizz" };
+    char *sayword_result = NULL;
+
+    // 最大word类型
+    unsigned int max_word_type = _countof(word_list);
+
+    int max_words_length = 1;
+    for (unsigned int index = 0; index < max_word_type; ++index)
+        max_words_length += word_list[index].length();
+
+    max_words_length = (max_words_length + STRING_ADDR_ALIGNMENT - 1) & (~STRING_ADDR_ALIGNMENT);
+
+#if defined(DISPLAY_RESULT_TO_SCREEN) && (DISPLAY_RESULT_TO_SCREEN != 0)
+
+    FizzBuzzWhizz(max_number, max_word_type, word_list, special_num_list, NULL);
+
+#else  /* !DISPLAY_RESULT_TO_SCREEN */
+
+#if defined(USE_STL_STRING) && (USE_STL_STRING != 0)
+
+    sw.start();
+    for (int i = 0; i < 10000; ++i) {
+        FizzBuzzWhizz(max_number, max_word_type, word_list, special_num_list, NULL);
+    }
+    sw.stop();
+
+    FizzBuzzWhizz(max_number, max_word_type, word_list, special_num_list, &sayword_result);
+
+#if defined(FIZZ_USE_STOPWATCH) && (FIZZ_USE_STOPWATCH != 0)
+    printf("Solve Elapsed Time: %0.3f ms\n\n", s_SolveTotalTime);
+#endif  /* FIZZ_USE_STOPWATCH */
+    printf("Total Elapsed Time: %0.3f ms\n\n", sw.getMillisec());
+
+#else  /* !USE_STL_STRING */
+
+    sw.start();
+    for (int i = 0; i < 10000; ++i) {
+        FizzBuzzWhizz(max_number, max_word_type, word_list, special_num_list, &sayword_result);
+        if (sayword_result) {
+            _aligned_free(sayword_result);
+            sayword_result = NULL;
+        }
+    }
+    sw.stop();
+
+    FizzBuzzWhizz(max_number, max_word_type, word_list, special_num_list, &sayword_result);
+
+    if (sayword_result != NULL) {
+        // 输出结果
+        printf("FizzBuzzWhizz ReportNumber List:\n\nmax_number = %d\n\n", max_number);
+        for (int num = 1; num <= max_number; ++num) {
+            printf("%s\n", &sayword_result[num * max_words_length]);
+        }
+        printf("\n");
+    }
+
+#if defined(FIZZ_USE_STOPWATCH) && (FIZZ_USE_STOPWATCH != 0)
+    printf("Solve Elapsed Time: %0.3f ms\n\n", s_SolveTotalTime);
+#endif  /* FIZZ_USE_STOPWATCH */
+    printf("Total Elapsed Time: %0.3f ms\n\n", sw.getMillisec());
+
+    if (sayword_result) {
+        _aligned_free(sayword_result);
+        sayword_result = NULL;
+    }
+#endif  /* USE_STL_STRING */
+
+#endif  /* DISPLAY_RESULT_TO_SCREEN */
+}
+
+void FizzBuzzWhizz_v2(const int max_number)
+{
+    int max_word_type, max_mask;
+    int num, cur_num, index;
+    int mask, cur_mask;
+
+    string sayword;
+    std::vector<string> sayword_list;
+    unsigned int *sayword_index_list;
+
+    int special_num_list[] = { 3, 5, 7 };
+    string word_list[] = { "Fizz", "Buzz", "Whizz" };
+
+    max_word_type = _countof(word_list);
+    max_mask = 1 << max_word_type;
+
+    sayword_index_list = (unsigned int *)malloc((max_number + 1) * sizeof(unsigned int));
+    if (sayword_index_list == NULL) {
+        printf("Error: alloc array [sayword_index_list] out of memory\n\n");
+        return;
+    }
+
+    sayword_list.clear();
+
+    // get the list of multiple times special numbers sayword
+    for (mask = 0; mask < max_mask; ++mask) {
+        sayword = "";
+        cur_mask = mask;
+        for (index = 0; index < max_word_type; ++index) {
+            if ((cur_mask & 1) != 0)
+                sayword += word_list[index];
+            cur_mask >>= 1;
+        }
+        sayword_list.push_back(sayword);
+    }
+
+    // set all index to the default value: NORMAL_NUM_INDEX
+    for (num = 1; num <= max_number; ++num) {
+        sayword_index_list[num] = NORMAL_NUM_INDEX;
+    }
+
+    // get the index by num, if is the first special number, index fixed equal 1 (FIRST_SPECIAL_NUM_FIXED_INDEX)
+    for (index = 1; index < max_word_type; ++index) {
+        cur_num = special_num_list[index];
+        // another special number
+        mask = 1 << index;
+        for (num = cur_num; num <= max_number; num += cur_num)
+            sayword_index_list[num] |= mask;
+    }
+
+    // first special number
+    cur_num = special_num_list[0];
+    for (num = cur_num; num <= max_number; num += cur_num)
+        sayword_index_list[num] = FIRST_SPECIAL_NUM_FIXED_INDEX;
+
+    printf("FizzBuzzWhizz Sayword List:\n\nmax_number = %d\n\n", max_number);
+    for (num = 1; num <= max_number; ++num) {
+        index = sayword_index_list[num];
+        if (index == NORMAL_NUM_INDEX)
+            printf("num = %d,\tSayword is: %d\n", num, num);
+        else
+            printf("num = %d,\tSayword is: %s\n", num, sayword_list[index].c_str());
+    }
+    printf("\n");
+
+    if (sayword_index_list)
+        free(sayword_index_list);
+}
+
+int get_type_index(int num)
+{
+    int index = 0;
+    return index;
+}
+
+void FizzBuzzWhizz_v1(const int max_number)
+{
+    int i;
+    int max_type, max_mask, max_digital;
+    int num, index, flag = 0;
+    int mask, cur_mask, cur_num;
+    int first_special_num;
+
+    int integer_base10[] = {
+        1, 10, 100, 1000, 10000, 100000, 1000000,
+        10000000, 100000000, 1000000000, INT_MAX
+    };
+
+    int special_num[] = { 3, 5, 7 };
+    string word_list[] = { "Fizz", "Buzz", "Whizz" };
+
+    std::vector<string> sayword_list;
+    string sayword;
+    unsigned int *sayword_index_list, *flag_list;
+    unsigned int *sayword_mask_list;
+    int num_flags[10];
+    char buf[32] = { 0 };
+
+    max_type = _countof(word_list);
+    max_mask = 1 << max_type;
+    max_digital = (int)floor(log((double)max_number) / log(10.0) + 0.001) + 1;
+    first_special_num = special_num[0];
+
+    sayword_index_list = (unsigned int *)malloc((max_number + 1) * sizeof(unsigned int));
+    if (sayword_index_list == NULL) {
+        printf("Error: alloc array [sayword_index_list] out of memory\n\n");
+        return;
+    }
+
+    sayword_mask_list = (unsigned int *)malloc((max_number + 1) * sizeof(unsigned int));
+    if (sayword_mask_list == NULL) {
+        printf("Error: alloc array [sayword_mask_list] out of memory\n\n");
+        return;
+    }
+
+    flag_list = (unsigned int *)malloc(max_digital * sizeof(unsigned int));
+    if (flag_list == NULL) {
+        printf("Error: alloc array [flag_list] out of memory\n\n");
+        return;
+    }
+
+    sayword_list.clear();
+
+    // get the number's flag, if is first special number that flag is 2,
+    // if is special number that flag is 1, otherwise flag is 0
+    for (num = 0; num < 10; ++num) {
+        num_flags[num] = 0;
+        for (index = 0; index < max_type; ++index) {
+            if (num == special_num[index]) {
+                num_flags[num] = IS_SPECIAL_NUM + (index == 0) ? 1 : 0;
+                break;
+            }
+        }
+    }
+
+    /*
+    // get the list of say number only
+    for (num = 0; num < max_number; ++num) {
+        if (_itoa(num, buf, 10)) {
+        //if (itoa_s(num, buf, _countof(buf), 10)) {
+            word = buf;
+            sayword_list.push_back(word);
+        }
+    }
+    //*/
+
+    // for first special number
+    //sayword_list.push_back(word_list[0]);
+
+    // get the list of multiple special numbers sayword
+    for (mask = 0; mask < max_mask; ++mask) {
+        sayword = "";
+        cur_mask = mask;
+        for (i = 0; i < max_type; ++i) {
+            if ((cur_mask & 1) != 0)
+                sayword += word_list[i];
+            cur_mask >>= 1;
+        }
+        sayword_list.push_back(sayword);
+    }
+
+    // set all the index to default value: NORMAL_NUM_INDEX
+    for (num = 1; num <= max_number; ++num) {
+        sayword_index_list[num] = NORMAL_NUM_INDEX;
+    }
+
+    for (index = 0; index < max_type; ++index) {
+        cur_num = special_num[index];
+        if (index == 0) {
+            // FIRST_SPECIAL_NUM_FIXED_INDEX
+            for (num = cur_num; num <= max_number; num += cur_num)
+                sayword_index_list[num] = FIRST_SPECIAL_NUM_FIXED_INDEX;
+        }
+        else {
+            // IS_SPECIAL_NUM
+            mask = 1 << index;
+            for (num = cur_num; num <= max_number; num += cur_num)
+                sayword_index_list[num] |= mask;
+        }
+    }
+
+#if 0
+    /*
+    for (i = 0; i < 10; ++i) {
+        for (j = 0; j < 10; ++j) {
+            num = i * 10 + j;
+            flag_1 = num_flags[i];
+            flag_2 = num_flags[j];
+            if (flag_1 == FIRST_SPECIAL_NUM_FIXED_INDEX || flag_2 == FIRST_SPECIAL_NUM_FIXED_INDEX) {
+                sayword_index_list[num] = max_number + 1;
+                break;
+            }
+            else if (flag_1 == NORMAL_NUM_INDEX && flag_2 == NORMAL_NUM_INDEX) {
+                sayword_index_list[num] = num;
+            }
+            else {
+                sayword_index_list[num] = max_number + get_type_index(num);
+            }
+        }
+    }
+    //*/
+
+    int digital;
+    int digital_cnt = 0;
+    bool is_first_special_num;
+    bool is_normal_num;
+    for (num = 1; num < max_number; ++num) {
+        if (num == integer_base10[digital_cnt])
+            digital_cnt++;
+        is_first_special_num = false;
+        is_normal_num = true;
+        for (index = 0; index < digital_cnt; ++index) {
+            digital = num / integer_base10[digital_cnt - index - 1];
+            flag = num_flags[digital];
+            if (digital == first_special_num) {
+                sayword_index_list[num] = max_number + 1;
+                is_first_special_num = true;
+                break;
+            }
+            else if (flag == FIRST_SPECIAL_NUM_FIXED_INDEX) {
+                sayword_index_list[num] = max_number + 1;
+                is_first_special_num = true;
+                break;
+            }
+            else if (flag == IS_SPECIAL_NUM) {
+                is_normal_num = false;
+            }
+            flag_list[index] = flag;
+        }
+        if (!is_first_special_num) {
+            sayword_index_list[num] = max_number + 1;
+            break;
+        }
+
+        flag_list[i] = 0;
+    }
+#endif
+
+    printf("FizzBuzzWhizz Sayword List: max_number = %d\n\n", max_number);
+    for (num = 1; num <= max_number; ++num) {
+        index = sayword_index_list[num];
+        if (index == NORMAL_NUM_INDEX)
+            printf("num = %d,\tSayword is: %d\n", num, num);
+        else
+            printf("num = %d,\tSayword is: %s\n", num, sayword_list[index].c_str());
+    }
+    printf("\n");
+
+    if (sayword_index_list)
+        free(sayword_index_list);
+    if (sayword_mask_list)
+        free(sayword_mask_list);
+    if (flag_list)
+        free(flag_list);
+}
+
 // _tmain() 必须包含 tchar.h, main()的Unicode版本
 int _tmain(int argc, _TCHAR *argv[])
 {
@@ -294,10 +965,18 @@ int _tmain(int argc, _TCHAR *argv[])
     //ms1b_main(0, NULL);
     //ms1b2_main(0, NULL);
 
+    FizzBuzzWhizz_Test(100);
+
+    //FizzBuzzWhizz(100);
+
+    system("pause");
+    return 0;
+
 #ifdef _DEBUG
     test_alexia();
 #endif
 
+    printf("cl_runner start...\n\n");
     cl_runner clRunner;
     double usedTime_sw1 = 0.0, usedTime_sw2 = 0.0;
     double usedTime_sw2a = 0.0, usedTime_sw2b = 0.0;
@@ -307,34 +986,37 @@ int _tmain(int argc, _TCHAR *argv[])
     int clError = (int)clRunner.init_cl();
     if (clError == CL_SUCCESS) {
         clError = clRunner.execute("vector_add_gpu.cl");
-        usedTime_sw2a = clRunner.native_test1();
+        usedTime_sw2a = clRunner.native_vector_add_test();
         usedTime_sw_copyData1 = clRunner.getMillisec_Native_CopyData();
-        usedTime_sw2b = clRunner.native_test2();
+        usedTime_sw2b = clRunner.native_vector_mult_test();
         usedTime_sw_copyData2 = clRunner.getMillisec_Native_CopyData();
         printf("\n");
         if (clError == CL_SUCCESS) {
             usedTime_sw1 = clRunner.getMillisec();
             printf("cl kernel: vector_add_gpu.cl\n\n");
-            printf("clRunner.getMillisec()      = %0.6f ms.\n", usedTime_sw1);
-            printf("clRunner.kernel_ReadBuffer()= %0.6f ms.\n", clRunner.getMillisec_Kernel_ReadBuffer());
-            printf("clRunner.native_test1()     = %0.6f ms.\n", usedTime_sw2a);
-            printf("clRunner.native_CopyData1() = %0.6f ms.\n", usedTime_sw_copyData1);
-            printf("clRunner.native_test2()     = %0.6f ms.\n", usedTime_sw2b);
-            printf("clRunner.native_CopyData2() = %0.6f ms.\n", usedTime_sw_copyData2);
+            printf("clRunner.getMillisec()             = %0.6f ms.\n", usedTime_sw1);
+            printf("clRunner.kernel_ReadBuffer()       = %0.6f ms.\n", clRunner.getMillisec_Kernel_ReadBuffer());
+            printf("\n");
+            printf("clRunner.native_vector_add_test()  = %0.6f ms.\n", usedTime_sw2a);
+            printf("clRunner.native_copy_data1()       = %0.6f ms.\n", usedTime_sw_copyData1);
+            printf("clRunner.native_vector_mult_test() = %0.6f ms.\n", usedTime_sw2b);
+            printf("clRunner.native_copy_data2()       = %0.6f ms.\n", usedTime_sw_copyData2);
             if (usedTime_sw1 != 0.0)
-                printf("clRunner.speed_up()         = %0.3f X\n", usedTime_sw2b / usedTime_sw1);
+                printf("clRunner.speed_up()                = %0.3f X\n", usedTime_sw2b / usedTime_sw1);
             else
-                printf("clRunner.speed_up()         = ∞ X\n", usedTime_sw2b / usedTime_sw1);
+                printf("clRunner.speed_up()                = ∞ X\n", usedTime_sw2b / usedTime_sw1);
         }
     }
     printf("\n");
 
+    printf("cl_helper start...\n\n");
     cl_helper clHelper;
     clError = clHelper.run_native_vector_add(1048576);
+    // CL_RUNAT_DEFAULT, CL_RUNAT_GPU, CL_RUNAT_CPU
     if (clHelper.use_double())
-        clError = clHelper.run_cl_vector_add(CL_RUNAT_DEFAULT, "vector_add_gpu.cl", "vector_add_double", 1048576);
+        clError = clHelper.run_vector_add(CL_RUNAT_DEFAULT, "vector_add_gpu.cl", "vector_add_double", 1048576);
     else
-        clError = clHelper.run_cl_vector_add(CL_RUNAT_DEFAULT, "vector_add_gpu.cl", "vector_add_float", 1048576);
+        clError = clHelper.run_vector_add(CL_RUNAT_DEFAULT, "vector_add_gpu.cl", "vector_add_float", 1048576);
     if (clError == CL_SUCCESS) {
         usedTime_sw1 = clHelper.getMillisec();
         usedTime_sw2 = clHelper.getMillisec_Native();

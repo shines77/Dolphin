@@ -11,9 +11,14 @@
 #include <math.h>
 
 #pragma comment(lib, "OpenCL.lib")
+#if !defined(CL_VERSION_1_1) && !defined(CL_VERSION_1_2)
+#pragma comment(lib, "aticalcl.lib")
+#pragma comment(lib, "aticalrt.lib")
+#endif
+
 using namespace std;
 
-#define DOL_TRACE(X)  std::cerr << X ;
+#define DOL_TRACE(X)  std::cerr << X;
 
 //
 // Matrix Multiplication 2 (OpenCL)
@@ -40,10 +45,10 @@ bool cl_helper::release(bool bForce /* = false */)
 
 bool cl_helper::use_double()
 {
-#if defined(CL_HELPER_USE_FLOAT) && (CL_HELPER_USE_FLOAT != 0)
-    return false;
-#else
+#if defined(CL_HELPER_USE_DOUBLE) && (CL_HELPER_USE_DOUBLE != 0)
     return true;
+#else
+    return false;
 #endif
 }
 
@@ -152,23 +157,15 @@ CL_LOAD_PROGRAM_SOURCE_EXIT:
     return err;
 }
 
-cl_int cl_helper::run_cl_vector_add(cl_runat_type device_type,
-                                    const char *file_name,
-                                    const char *func_name,
-                                    const unsigned int data_size)
+cl_int cl_helper::run_vector_add(cl_runat_type device_type,
+                                 const char *file_name,
+                                 const char *func_name,
+                                 const unsigned int data_size)
 {
-    if (device_type == CL_DEVICE_TYPE_CPU)
-        return run_cl_gpu_vector_add(device_type, file_name, func_name, data_size);
-    else if (device_type == CL_DEVICE_TYPE_GPU)
-        return run_cl_gpu_vector_add(device_type, file_name, func_name, data_size);
-    else if (device_type == CL_DEVICE_TYPE_ACCELERATOR)
-        return run_cl_gpu_vector_add(device_type, file_name, func_name, data_size);
-    else if (device_type == CL_DEVICE_TYPE_CUSTOM)
-        return run_cl_gpu_vector_add(device_type, file_name, func_name, data_size);
-    else if (device_type == CL_DEVICE_TYPE_NATIVE)
+    if (device_type == CL_DEVICE_TYPE_NATIVE)
         return run_native_vector_add(data_size);
     else
-        return run_cl_gpu_vector_add(CL_DEVICE_TYPE_DEFAULT, file_name, func_name, data_size);
+        return run_cl_vector_add(device_type, file_name, func_name, data_size);
 }
 
 cl_int cl_helper::run_native_vector_add(const unsigned int data_size)
@@ -176,42 +173,45 @@ cl_int cl_helper::run_native_vector_add(const unsigned int data_size)
     return CL_SUCCESS;
 }
 
-cl_int cl_helper::run_cl_gpu_vector_add(cl_device_type device_type,
-                                        const char *file_name,
-                                        const char *func_name,
-                                        const unsigned int data_size)
+cl_int cl_helper::run_cl_vector_add(cl_device_type device_type,
+                                    const char *file_name,
+                                    const char *func_name,
+                                    const unsigned int data_size)
 {
     cl_int err = CL_SUCCESS;
     std::string src_content;
     size_t src_length = 0;
     try {
-        std::vector<cl::Platform> clPlatforms;
-        cl::Platform::get(&clPlatforms);
-        if (clPlatforms.size() == 0) {
+        std::vector<cl::Platform> platforms;
+        cl::Platform::get(&platforms);
+        if (platforms.size() == 0) {
             std::cout << "Platform size = 0" << std::endl;
             return -1;
         }
 
         cl_context_properties properties[] = {
-            CL_CONTEXT_PLATFORM, (cl_context_properties)(clPlatforms[0])(), 0
+            CL_CONTEXT_PLATFORM, (cl_context_properties)(platforms[0])(), 0
         };
-        // cl_device_type device_type;
         // device_type = CL_DEVICE_TYPE_DEFAULT;
         // device_type = CL_DEVICE_TYPE_CPU;
-        cl::Context clContext(device_type, properties);
+        //cl::Context clContext(device_type, &properties[0]);
+        cl::Context context(device_type, &properties[0], NULL, NULL, &err);
 
-        std::vector<cl::Device> clDevices = clContext.getInfo<CL_CONTEXT_DEVICES>();
+        std::vector<cl::Device> devices = context.getInfo<CL_CONTEXT_DEVICES>();
 
         err = clLoadProgramSource(file_name, src_content, src_length);
+        if (err != CL_SUCCESS) {
+            std::cerr << "cl_helper: clLoadProgramSource() failed. err_code = " << err << endl;
+        }
 
-        cl::Program::Sources clSource(1, std::make_pair(src_content.c_str(), src_length));
-        cl::Program clProgram = cl::Program(clContext, clSource);
-        clProgram.build(clDevices);
+        cl::Program::Sources source(1, std::make_pair(src_content.c_str(), src_length));
+        cl::Program program = cl::Program(context, source);
+        program.build(devices);
 
-        cl::Kernel clKernel(clProgram, func_name, &err);
+        cl::Kernel kernel(program, func_name, &err);
 
         // Set seed for rand()
-        srand(5201314UL);
+        srand(FIXED_SRAND_SEED);
 
         std::vector<CL_FLOAT_T> a(data_size), b(data_size), result(data_size);
         for (unsigned int i = 0; i < data_size; ++i) {
@@ -221,53 +221,53 @@ cl_int cl_helper::run_cl_gpu_vector_add(cl_device_type device_type,
         }
 
         // Allocate the buffer memory objects
-        cl::Buffer cl_a     (clContext, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(CL_FLOAT_T) * data_size, (void *)&a[0],         NULL);
-        cl::Buffer cl_b     (clContext, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(CL_FLOAT_T) * data_size, (void *)&b[0],         NULL);
-        cl::Buffer cl_result(clContext, CL_MEM_WRITE_ONLY,                       sizeof(CL_FLOAT_T) * data_size, (void *)NULL,          NULL);
-        cl::Buffer cl_num   (clContext, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(cl_uint),                 (void *)&data_size,    NULL);
+        cl::Buffer cl_a     (context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(CL_FLOAT_T) * data_size, (void *)&a[0],         NULL);
+        cl::Buffer cl_b     (context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(CL_FLOAT_T) * data_size, (void *)&b[0],         NULL);
+        cl::Buffer cl_result(context, CL_MEM_WRITE_ONLY,                       sizeof(CL_FLOAT_T) * data_size, (void *)NULL,          NULL);
+        cl::Buffer cl_num   (context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(cl_uint),                (void *)&data_size,    NULL);
 
         // Set the args values
-        clKernel.setArg(0, sizeof(cl_mem),  (void *)&cl_a);
-        clKernel.setArg(1, sizeof(cl_mem),  (void *)&cl_b);
-        clKernel.setArg(2, sizeof(cl_mem),  (void *)&cl_result);
+        kernel.setArg(0, sizeof(cl_mem),  (void *)&cl_a);
+        kernel.setArg(1, sizeof(cl_mem),  (void *)&cl_b);
+        kernel.setArg(2, sizeof(cl_mem),  (void *)&cl_result);
         //clKernel.setArg(3, sizeof(cl_mem), (void *)&cl_num);
-        clKernel.setArg(3, sizeof(cl_uint), (void *)&data_size);
+        kernel.setArg(3, sizeof(cl_uint), (void *)&data_size);
 
         // Set work-item dimensions and execute kernel
-        cl::Event clEvent;
-        cl::CommandQueue clCmdQueue(clContext, clDevices[0], 0, &err);
+        cl::Event event;
+        cl::CommandQueue cmdQueue(context, devices[0], 0, &err);
         sw_kernel.start();
-        err = clCmdQueue.enqueueNDRangeKernel(
-            clKernel,                   // kernel
+        err = cmdQueue.enqueueNDRangeKernel(
+            kernel,                   // kernel
             cl::NullRange,              // global_work_offset
             cl::NDRange(data_size),     // global_work_size
             cl::NullRange,              // local_work_size
             NULL,                       // event_wait_list
-            //&clEvent                    // event
+            //&event                    // event
             NULL                        // event
            );
 
-        //clEvent.wait();
+        //event.wait();
         sw_kernel.stop();
 
         if (err == CL_SUCCESS) {
             sw_kernel_readBuffer.start();
-            err = clCmdQueue.enqueueReadBuffer(cl_result, CL_TRUE, 0, sizeof(CL_FLOAT_T) * data_size, (void *)&result[0], NULL, NULL);
+            err = cmdQueue.enqueueReadBuffer(cl_result, CL_TRUE, 0, sizeof(CL_FLOAT_T) * data_size, (void *)&result[0], NULL, NULL);
             sw_kernel_readBuffer.stop();
 
             // Verify the result
             cl_int correct = vector_add_verify(err, a, b, result, data_size);
         }
     }
-    catch (cl::Error clErr) {
+    catch (cl::Error cl_err) {
         std::cerr
-            << "ERROR: "
-            << clErr.what()
+            << "cl_helper Error: "
+            << cl_err.what()
             << "("
-            << clErr.err()
+            << cl_err.err()
             << ")"
             << std::endl;
-        err = clErr.err();
+        err = cl_err.err();
     }
 
     return err;
@@ -292,36 +292,28 @@ cl_int cl_helper::vector_add_verify(cl_int err,
         }
 
         if (correct)
-            std::cout << "Data is correct" << endl;
+            std::cout << "cl_helper: Data is correct" << endl;
         else
-            std::cout << "Data is incorrect" << endl;
+            std::cout << "cl_helper: Data is incorrect" << endl;
         is_correct = correct;
     }
     else {
-        std::cerr << "Can't run kernel or read back data" << endl;
+        std::cerr << "cl_helper: Can't run kernel or read back data" << endl;
     }
     return is_correct;
 }
 
-cl_int cl_helper::run_cl_matrix_mul(cl_runat_type device_type,
-                                    const char *file_name,
-                                    const char *func_name,
-                                    const unsigned int m,
-                                    const unsigned int p,
-                                    const unsigned int n)
+cl_int cl_helper::run_matrix_mul(cl_runat_type device_type,
+                                 const char *file_name,
+                                 const char *func_name,
+                                 const unsigned int m,
+                                 const unsigned int p,
+                                 const unsigned int n)
 {
-    if (device_type == CL_DEVICE_TYPE_CPU)
-        return run_cl_gpu_matrix_mul(device_type, file_name, func_name, m, p, n);
-    else if (device_type == CL_DEVICE_TYPE_GPU)
-        return run_cl_gpu_matrix_mul(device_type, file_name, func_name, m, p, n);
-    else if (device_type == CL_DEVICE_TYPE_ACCELERATOR)
-        return run_cl_gpu_matrix_mul(device_type, file_name, func_name, m, p, n);
-    else if (device_type == CL_DEVICE_TYPE_CUSTOM)
-        return run_cl_gpu_matrix_mul(device_type, file_name, func_name, m, p, n);
-    else if (device_type == CL_DEVICE_TYPE_NATIVE)
+    if (device_type == CL_DEVICE_TYPE_NATIVE)
         return run_native_matrix_mul(m, p, n);
     else
-        return run_cl_gpu_matrix_mul(CL_DEVICE_TYPE_DEFAULT, file_name, func_name, m, p, n);
+        return run_cl_matrix_mul(device_type, file_name, func_name, m, p, n);
 }
 
 cl_int cl_helper::run_native_matrix_mul(const int m, const int p, const int n)
@@ -329,44 +321,45 @@ cl_int cl_helper::run_native_matrix_mul(const int m, const int p, const int n)
     return CL_SUCCESS;
 }
 
-cl_int cl_helper::run_cl_gpu_matrix_mul(cl_device_type device_type,
-                                        const char *file_name,
-                                        const char *func_name,
-                                        const unsigned int m,
-                                        const unsigned int p,
-                                        const unsigned int n)
+cl_int cl_helper::run_cl_matrix_mul(cl_device_type device_type,
+                                    const char *file_name,
+                                    const char *func_name,
+                                    const unsigned int m,
+                                    const unsigned int p,
+                                    const unsigned int n)
 {
     cl_int err = CL_SUCCESS;
     std::string src_content;
     size_t src_length = 0;
     try {
-        std::vector<cl::Platform> clPlatforms;
-        cl::Platform::get(&clPlatforms);
-        if (clPlatforms.size() == 0) {
+        std::vector<cl::Platform> platforms;
+        cl::Platform::get(&platforms);
+        if (platforms.size() == 0) {
             std::cout << "Platform size = 0" << std::endl;
             return -1;
         }
 
         cl_context_properties properties[] = {
-            CL_CONTEXT_PLATFORM, (cl_context_properties)(clPlatforms[0])(), 0
+            CL_CONTEXT_PLATFORM, (cl_context_properties)(platforms[0])(), 0
         };
         // cl_device_type device_type;
         // device_type = CL_DEVICE_TYPE_DEFAULT;
         // device_type = CL_DEVICE_TYPE_CPU;
-        cl::Context clContext(device_type, properties);
+        cl::Context context(device_type, properties);
 
-        std::vector<cl::Device> clDevices = clContext.getInfo<CL_CONTEXT_DEVICES>();
+        std::vector<cl::Device> devices = context.getInfo<CL_CONTEXT_DEVICES>();
 
         err = clLoadProgramSource(file_name, src_content, src_length);
 
-        cl::Program::Sources clSource(1, std::make_pair(src_content.c_str(), src_length));
-        cl::Program clProgram = cl::Program(clContext, clSource);
-        clProgram.build(clDevices);
 
-        cl::Kernel clKernel(clProgram, func_name, &err);
+        cl::Program::Sources source(1, std::make_pair(src_content.c_str(), src_length));
+        cl::Program program = cl::Program(context, source);
+        program.build(devices);
+
+        cl::Kernel kernel(program, func_name, &err);
 
         // Set seed for rand()
-        srand(5201314UL);
+        ::srand(FIXED_SRAND_SEED);
 
         std::vector<CL_FLOAT_T> C(m * n), A(m * p), B(p * n);
         unsigned int i;
@@ -380,62 +373,62 @@ cl_int cl_helper::run_cl_gpu_matrix_mul(cl_device_type device_type,
             B[i] = std::rand() / (CL_FLOAT_T)RAND_MAX;
 
         // Allocate the buffer memory objects
-        cl::Buffer cl_C (clContext, CL_MEM_WRITE_ONLY,                       sizeof(CL_FLOAT_T) * m * n,    (void *)NULL,      NULL);
-        cl::Buffer cl_A (clContext, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(CL_FLOAT_T) * m * p,    (void *)&A[0],     NULL);
-        cl::Buffer cl_B (clContext, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(CL_FLOAT_T) * p * n,    (void *)&B[0],     NULL);
-        cl::Buffer cl_m (clContext, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(cl_uint),               (void *)&m,        NULL);
-        cl::Buffer cl_p (clContext, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(cl_uint),               (void *)&p,        NULL);
-        cl::Buffer cl_n (clContext, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(cl_uint),               (void *)&n,        NULL);
+        cl::Buffer cl_C (context, CL_MEM_WRITE_ONLY,                       sizeof(CL_FLOAT_T) * m * n,    (void *)NULL,      NULL);
+        cl::Buffer cl_A (context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(CL_FLOAT_T) * m * p,    (void *)&A[0],     NULL);
+        cl::Buffer cl_B (context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(CL_FLOAT_T) * p * n,    (void *)&B[0],     NULL);
+        cl::Buffer cl_m (context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(cl_uint),               (void *)&m,        NULL);
+        cl::Buffer cl_p (context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(cl_uint),               (void *)&p,        NULL);
+        cl::Buffer cl_n (context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(cl_uint),               (void *)&n,        NULL);
 
         // Set the args values
-        clKernel.setArg(0, sizeof(cl_mem), (void *)&cl_C);
-        clKernel.setArg(1, sizeof(cl_mem), (void *)&cl_A);
-        clKernel.setArg(2, sizeof(cl_mem), (void *)&cl_B);
+        kernel.setArg(0, sizeof(cl_mem), (void *)&cl_C);
+        kernel.setArg(1, sizeof(cl_mem), (void *)&cl_A);
+        kernel.setArg(2, sizeof(cl_mem), (void *)&cl_B);
 #if 0
         clKernel.setArg(3, sizeof(cl_mem), &cl_m);
         clKernel.setArg(4, sizeof(cl_mem), &cl_p);
         clKernel.setArg(5, sizeof(cl_mem), &cl_n);
 #else
-        clKernel.setArg(3, sizeof(cl_uint), (void *)&m);
-        clKernel.setArg(4, sizeof(cl_uint), (void *)&p);
-        clKernel.setArg(5, sizeof(cl_uint), (void *)&n);
+        kernel.setArg(3, sizeof(cl_uint), (void *)&m);
+        kernel.setArg(4, sizeof(cl_uint), (void *)&p);
+        kernel.setArg(5, sizeof(cl_uint), (void *)&n);
 #endif
 
         // Set work-item dimensions and execute kernel
-        cl::Event clEvent;
-        cl::CommandQueue clCmdQueue(clContext, clDevices[0], 0, &err);
+        cl::Event event;
+        cl::CommandQueue cmdQueue(context, devices[0], 0, &err);
         sw_kernel.start();
-        err = clCmdQueue.enqueueNDRangeKernel(
-            clKernel,                   // kernel
+        err = cmdQueue.enqueueNDRangeKernel(
+            kernel,                     // kernel
             cl::NullRange,              // global_work_offset
             cl::NDRange(m, n),          // global_work_size
             cl::NDRange(16, 16),        // local_work_size
             NULL,                       // event_wait_list
-            &clEvent                    // event
+            &event                      // event
             //NULL                        // event
            );
 
-        clEvent.wait();
+        event.wait();
         sw_kernel.stop();
 
         if (err == CL_SUCCESS) {
             sw_kernel_readBuffer.start();
-            err = clCmdQueue.enqueueReadBuffer(cl_C, CL_TRUE, 0, sizeof(CL_FLOAT_T) * m * n, (void *)&C[0], NULL, NULL);
+            err = cmdQueue.enqueueReadBuffer(cl_C, CL_TRUE, 0, sizeof(CL_FLOAT_T) * m * n, (void *)&C[0], NULL, NULL);
             sw_kernel_readBuffer.stop();
             
             // Verify the result
             cl_int correct = matrix_mul_verify(err, A, B, C, m, p, n);
         }
     }
-    catch (cl::Error clErr) {
+    catch (cl::Error cl_err) {
         std::cerr
-            << "ERROR: "
-            << clErr.what()
+            << "cl_helper Error: "
+            << cl_err.what()
             << "("
-            << clErr.err()
+            << cl_err.err()
             << ")"
             << std::endl;
-        err = clErr.err();
+        err = cl_err.err();
     }
     catch (...) {
         std::cerr << "Unknown exception." << std::endl;

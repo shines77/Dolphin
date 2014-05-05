@@ -7,21 +7,47 @@
 #include <math.h>
 
 #pragma comment(lib, "OpenCL.lib")
+#if !defined(CL_VERSION_1_1) && !defined(CL_VERSION_1_2)
+#pragma comment(lib, "aticalcl.lib")
+#pragma comment(lib, "aticalrt.lib")
+#endif
+
 using namespace std;
 
-#define DOL_TRACE(X)  std::cerr << X ;
+//
+// 可变参数及可变参数宏的使用
+//
+// 参考: http://www.cnblogs.com/caosiyang/archive/2012/08/21/2648870.html
+// 参考: http://hi.baidu.com/dnboy/item/db70e731d79192352e20c4d8
+//
+#ifndef DOL_TRACE
+#if defined(__GNUC__)
+#ifndef __cplusplus
+#define DOL_TRACE(fmt, args...) printf(fmt, args)
+#else
+#define DOL_TRACE(fmt, ...)     printf(fmt, ##__VA_ARGS__)
+#endif
+#define DOL_TRACE1              DOL_TRACE
+#elif defined(_MSC_VER)
+#define DOL_TRACE(fmt, ...)     printf(fmt, __VA_ARGS__)
+#define DOL_TRACE1              DOL_TRACE
+#else
+#define DOL_TRACE(fmt)          std::cerr << fmt
+#define DOL_TRACE1(fmt, args)   std::cerr << fmt << args
+#endif
+#endif
 
-/* use float or double ? */
-#define USE_CL_FLOAT    0
+/* use double or float ? */
+#define USE_CL_DOUBLE   0
 
 #ifdef CL_FLOAT_T
 #undef CL_FLOAT_T
 #endif
 
-#if defined(USE_CL_FLOAT) && (USE_CL_FLOAT != 0)
-#define CL_FLOAT_T      cl_float
-#else
+#if defined(USE_CL_DOUBLE) && (USE_CL_DOUBLE != 0)
 #define CL_FLOAT_T      cl_double
+#else
+#define CL_FLOAT_T      cl_float
 #endif
 
 //
@@ -102,7 +128,9 @@ bool cl_runner::release(bool bForce /* = false */)
     }
 
     if (m_clDeviceId) {
+#if defined(CL_VERSION_1_1) || defined(CL_VERSION_1_2)
         clReleaseDevice(m_clDeviceId);
+#endif
         m_clDeviceId = NULL;
     }
 
@@ -128,7 +156,7 @@ cl_int cl_runner::init_cl()
     // CL_PLATFORM_NOT_FOUND_KHR    -1001
     err_num = clGetPlatformIDs(0, 0, &num_platforms);
     if (err_num != CL_SUCCESS) {
-        DOL_TRACE("Unable to get platforms \n");
+        DOL_TRACE("cl_runner: Unable to get platforms \n");
         //std::cerr << "Unable to get platforms" << endl;
         return err_num;
     }
@@ -141,7 +169,7 @@ cl_int cl_runner::init_cl()
     // err_num = clGetPlatformIDs(num_platforms, &m_clPlatformId, &num_platforms);
     err_num = clGetPlatformIDs(num_platforms, &platformIds[0], &num_platforms);
     if (err_num != CL_SUCCESS) {
-        DOL_TRACE("Error getting platform id \n");
+        DOL_TRACE("cl_runner: Error getting platform id \n");
         return err_num;
     }
 
@@ -156,10 +184,15 @@ cl_int cl_runner::init_cl()
             }
             m_clPlatformId = platformIds[i];
             if (!strcmp(pbuf, "Advanced Micro Devices, Inc.")) {
-                printf("Find platform: %s\n\n", pbuf);
+                printf("cl_runner: Find platform: %s\n\n", pbuf);
                 break;
             }
+            else
+                printf("cl_runner: Find unknown platform: %s\n\n", pbuf);
         }
+    }
+    else {
+        printf("cl_runner: num_platforms  = %d\n\n", num_platforms);
     }
     //m_clPlatformId = platformIds[0];
 
@@ -176,14 +209,14 @@ cl_int cl_runner::init_cl()
     //err_num = clGetDeviceIDs(m_clPlatformId, CL_DEVICE_TYPE_DEFAULT, MAX_COPROC_INSTANCES, deviceIDs, &num_devices);
     //m_clDeviceId = deviceIDs[0];
     if (err_num != CL_SUCCESS) {
-        DOL_TRACE("Error getting device ids \n");
+        DOL_TRACE("cl_runner: Error getting device ids \n");
         return err_num;
     }
 
     // Create the Context
     m_clContext = clCreateContext(0, 1, &m_clDeviceId, NULL, NULL, &err_num);
     if (err_num != CL_SUCCESS) {
-        DOL_TRACE("Error creating context \n");
+        DOL_TRACE("cl_runner: Error creating context \n");
         return err_num;
     }
 #else
@@ -201,12 +234,13 @@ cl_int cl_runner::init_cl()
     m_clContext = clCreateContextFromType(cps,
                     CL_DEVICE_TYPE_DEFAULT,
                     //CL_DEVICE_TYPE_ALL,
+                    //CL_DEVICE_TYPE_CPU,
                     //CL_DEVICE_TYPE_GPU,
                     NULL,
                     NULL,
                     &err_num);
     if (err_num != CL_SUCCESS) {
-        DOL_TRACE("Error creating context \n");
+        DOL_TRACE("cl_runner: Error creating context \n");
         return err_num;
     }
 #endif
@@ -221,7 +255,7 @@ cl_int cl_runner::init_cl()
     // Get number of contect devices - first step
     err_num = clGetContextInfo(m_clContext, CL_CONTEXT_DEVICES, 0, NULL, &cb_devices);
     if (err_num != CL_SUCCESS) {
-        DOL_TRACE("Error getting context info \n");
+        DOL_TRACE("cl_runner: Error getting context info \n");
         return err_num;
     }
 
@@ -234,7 +268,7 @@ cl_int cl_runner::init_cl()
     // Get number of contect devices - second step
     err_num = clGetContextInfo(m_clContext, CL_CONTEXT_DEVICES, cb_devices, &devices[0], 0);
     if (err_num != CL_SUCCESS) {
-        DOL_TRACE("Error getting context info \n");
+        DOL_TRACE("cl_runner: Error getting context info \n");
         return err_num;
     }
 
@@ -249,9 +283,9 @@ cl_int cl_runner::init_cl()
             // Get device name - second step
             err_num = clGetDeviceInfo(devices[i], CL_DEVICE_NAME, cb, &dev_name[0], 0);
             if (err_num == CL_SUCCESS)
-                std::cout << "Device Name: " << dev_name.c_str() << endl;
+                std::cout << "cl_runner: Device Name: " << dev_name.c_str() << endl;
             else
-                std::cout << "Device Name: unknown device name." << endl;
+                std::cout << "cl_runner: Device Name: unknown device name." << endl;
         }
     }
 
@@ -259,15 +293,20 @@ cl_int cl_runner::init_cl()
         m_clDeviceId = devices[0];
         for (i = 1; i < num_devices; ++i) {
             cl_device_id deviceId = devices[i];
+#if defined(CL_VERSION_1_1) || defined(CL_VERSION_1_2)
             if (deviceId)
                 clReleaseDevice(deviceId);
+#endif
         }
+    }
+    else {
+        DOL_TRACE1("cl_runner: num_devices = %d\n", num_devices);
     }
 
     // Create the command-queue
     m_clCmdQueue = clCreateCommandQueue(m_clContext, m_clDeviceId, 0, &err_num);
     if (err_num != CL_SUCCESS || m_clCmdQueue == NULL) {
-        DOL_TRACE("Error creating command queue \n");
+        DOL_TRACE("cl_runner: Error creating command queue \n");
         return err_num;
     }
 
@@ -363,12 +402,16 @@ cl_int cl_runner::execute(const char *filename)
     std::ifstream ifs;
     source_need_free = true;
     err_num = clLoadProgramSource(filename, (const char **)&source_content, (size_t *)&src_length);
-    if (err_num != CL_SUCCESS || src_length == 0 || source_content == NULL)
+    if (err_num != CL_SUCCESS || src_length == 0 || source_content == NULL) {
+        DOL_TRACE1("cl_runner: Error load program source. ErrCode = %d \n", err_num);
         return err_num;
+    }
 #else
     std::ifstream ifs(filename, std::ios_base::binary);
-    if (!ifs.good())
+    if (!ifs.good()) {
+        DOL_TRACE("cl_runner: Error load program source, open source file failed.\n");
         return -1;
+    }
 
     // get file length
     ifs.seekg(0, std::ios_base::end);
@@ -396,14 +439,18 @@ cl_int cl_runner::execute(const char *filename)
     }
     ifs.close();
     DOL_ASSERT(err_num == CL_SUCCESS);
-    if (err_num != CL_SUCCESS || m_clProgram == NULL)
+    if (err_num != CL_SUCCESS || m_clProgram == NULL) {
+        DOL_TRACE1("cl_runner: Error create program with source. ErrCode = %d \n", err_num);
         return err_num;
+    }
 
     // Build the program
     err_num = clBuildProgram(m_clProgram, 1, &m_clDeviceId, NULL, NULL, NULL);   // 编译cl程序
     DOL_ASSERT(err_num == CL_SUCCESS);
-    if (err_num != CL_SUCCESS)
+    if (err_num != CL_SUCCESS) {
+        DOL_TRACE1("cl_runner: Error build program. ErrCode = %d \n", err_num);
         return err_num;
+    }
 
     // Show the log
     char *build_log;
@@ -411,8 +458,10 @@ cl_int cl_runner::execute(const char *filename)
 
     // First call to know the proper size
     err_num = clGetProgramBuildInfo(m_clProgram, m_clDeviceId, CL_PROGRAM_BUILD_LOG, 0, NULL, &log_size);
-    if (err_num != CL_SUCCESS)
+    if (err_num != CL_SUCCESS) {
+        DOL_TRACE1("cl_runner: Error get program build info step 1. ErrCode = %d \n", err_num);
         return err_num;
+    }
 
     build_log = new char[log_size + 1]; // 编译CL的出错记录
     if (build_log == NULL)
@@ -421,8 +470,11 @@ cl_int cl_runner::execute(const char *filename)
     // Second call to get the log
     err_num = clGetProgramBuildInfo(m_clProgram, m_clDeviceId, CL_PROGRAM_BUILD_LOG, log_size, build_log, NULL);
     if (err_num != CL_SUCCESS) {
-        if (build_log)
+        if (build_log) {
             delete build_log;
+            build_log = NULL;
+        }
+        DOL_TRACE1("cl_runner: Error get program build info step 2. ErrCode = %d \n", err_num);
         return err_num;
     }
 
@@ -436,7 +488,7 @@ cl_int cl_runner::execute(const char *filename)
     }
 
     // set seed for rand()
-    srand(5201314UL);
+    ::srand(FIXED_SRAND_SEED);
 
     const unsigned int DATA_SIZE = 1048576;
     std::vector<CL_FLOAT_T> a(DATA_SIZE), b(DATA_SIZE), ret(DATA_SIZE);
@@ -455,14 +507,16 @@ cl_int cl_runner::execute(const char *filename)
     // 创建Kernel对应的函数
 
     // Extracting the kernel
-#if defined(USE_CL_FLOAT) && (USE_CL_FLOAT != 0)
-    m_clKernel = clCreateKernel(m_clProgram, "vector_add_float", &err_num);   // 这个引号中的字符串要对应cl文件中的kernel函数
+#if defined(USE_CL_DOUBLE) && (USE_CL_DOUBLE != 0)
+    m_clKernel = clCreateKernel(m_clProgram, "vector_add_double", &err_num);    // 这个引号中的字符串要对应cl文件中的kernel函数
 #else
-    m_clKernel = clCreateKernel(m_clProgram, "vector_add_double", &err_num);   // 这个引号中的字符串要对应cl文件中的kernel函数
+    m_clKernel = clCreateKernel(m_clProgram, "vector_add_float", &err_num);     // 这个引号中的字符串要对应cl文件中的kernel函数
 #endif
     DOL_ASSERT(err_num == CL_SUCCESS);
-    if (err_num != CL_SUCCESS)
+    if (err_num != CL_SUCCESS) {
+        DOL_TRACE1("cl_runner: Error create kernel. ErrCode = %d \n", err_num);
         return err_num;
+    }
 
     if (m_clKernel != NULL) {
         // Set the args values
@@ -470,7 +524,7 @@ cl_int cl_runner::execute(const char *filename)
         err_num |= clSetKernelArg(m_clKernel, 1, sizeof(cl_mem), &cl_b);
         err_num |= clSetKernelArg(m_clKernel, 2, sizeof(cl_mem), &cl_ret);
         //err_num |= clSetKernelArg(m_clKernel, 3, sizeof(cl_mem), &cl_num);
-        err_num |= clSetKernelArg(m_clKernel, 3, sizeof(cl_int), &DATA_SIZE);
+        err_num |= clSetKernelArg(m_clKernel, 3, sizeof(cl_uint), &DATA_SIZE);
         if (err_num != CL_SUCCESS)
             return err_num;
 
@@ -489,6 +543,8 @@ cl_int cl_runner::execute(const char *filename)
         if (err_num != CL_SUCCESS) {
             if (err_num == CL_INVALID_KERNEL_ARGS)
                 DOL_TRACE("Invalid kernel args \n");
+            else
+                DOL_TRACE1("cl_runner: Error enqueue NDRange kernel. ErrCode = %d \n", err_num);
             //return err_num;
         }
 
@@ -498,6 +554,7 @@ cl_int cl_runner::execute(const char *filename)
             err_num = clEnqueueReadBuffer(m_clCmdQueue, cl_ret, CL_TRUE, 0, sizeof(CL_FLOAT_T) * DATA_SIZE, &ret[0], 0, NULL, NULL);
             sw_kernel_readBuffer.stop();
             if (err_num != CL_SUCCESS) {
+                DOL_TRACE1("cl_runner: Error enqueue read buffer. ErrCode = %d \n", err_num);
                 //return err_num;
             }
 
@@ -513,12 +570,12 @@ cl_int cl_runner::execute(const char *filename)
                 }
 
                 if (correct)
-                    std::cout << "Data is correct" << endl;
+                    std::cout << "cl_runner: Data is correct" << endl;
                 else
-                    std::cout << "Data is incorrect" << endl;
+                    std::cout << "cl_runner: Data is incorrect" << endl;
             }
             else {
-                std::cerr << "Can't run kernel or read back data" << endl;
+                std::cerr << "cl_runner: Can't run kernel or read back data" << endl;
             }
         }
     }
@@ -545,10 +602,10 @@ cl_int cl_runner::execute(const char *filename)
     return err_num;
 }
 
-double cl_runner::native_test1()
+double cl_runner::native_vector_add_test()
 {
     // set seed for rand()
-    srand(5201314UL);
+    ::srand(FIXED_SRAND_SEED);
 
     const int DATA_SIZE = 1048576;
     std::vector<CL_FLOAT_T> a(DATA_SIZE), b(DATA_SIZE), ret(DATA_SIZE), ret2(DATA_SIZE);
@@ -573,10 +630,10 @@ double cl_runner::native_test1()
     return sw_native.getMillisec();
 }
 
-double cl_runner::native_test2()
+double cl_runner::native_vector_mult_test()
 {
     // set seed for rand()
-    srand(5201314UL);
+    ::srand(FIXED_SRAND_SEED);
 
     const int DATA_SIZE = 1048576;
     CL_FLOAT_T *a, *b, *ret, *ret2;
@@ -605,9 +662,9 @@ double cl_runner::native_test2()
     }
     sw_native_copyData.stop();
 
-    if (a) free(a);
-    if (b) free(b);
-    if (ret) free(ret);
+    if (a)    free(a);
+    if (b)    free(b);
+    if (ret)  free(ret);
     if (ret2) free(ret2);
 
     return sw_native.getMillisec();
