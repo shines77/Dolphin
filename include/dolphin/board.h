@@ -2,7 +2,7 @@
 #ifndef _DOL_BOARD_H_
 #define _DOL_BOARD_H_
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1020)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
 #endif
 
@@ -14,12 +14,12 @@ extern "C" {
 #define BOARD_SIDE                  8
 #define BOARD_ROWS                  BOARD_SIDE      // row      行
 #define BOARD_COLS                  BOARD_SIDE      // column   列
-#define BOARD_MAX_DISC              (BOARD_ROWS * BOARD_COLS)
+#define BOARD_MAX_DISCS             (BOARD_ROWS * BOARD_COLS)
 
 #define EX_BOARD_SIDE               10
 #define EX_BOARD_ROWS               EX_BOARD_SIDE   // row      行
 #define EX_BOARD_COLS               EX_BOARD_SIDE   // column   列
-#define EX_BOARD_MAX_DISC           (EX_BOARD_ROWS * EX_BOARD_COLS)
+#define EX_BOARD_MAX_DISCS          (EX_BOARD_ROWS * EX_BOARD_COLS)
 
 #define BOARD_ROW_MASKS             (1 << BOARD_COLS)
 

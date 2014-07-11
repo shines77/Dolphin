@@ -29,12 +29,12 @@
 #ifndef _GMTL_CONFIG_H_
 #define _GMTL_CONFIG_H_
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1020)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
 #endif
 
 /** This header is supposed to contain macro definitions and C style comments only.
-    The macros defined here are intended to control such aspects of TBB build as 
+    The macros defined here are intended to control such aspects of TBB build as
     - presence of compiler features
     - compilation modes
     - feature sets
@@ -52,7 +52,7 @@
     #define __GMTL_GCC_WARNING_SUPPRESSION_PRESENT 1
 #endif
 
-/* TODO: The following condition should be extended when new compilers/runtimes 
+/* TODO: The following condition should be extended when new compilers/runtimes
          with std::exception_ptr support appear. */
 #define __GMTL_EXCEPTION_PTR_PRESENT  ((_MSC_VER >= 1600 || (__GXX_EXPERIMENTAL_CXX0X__ && __GNUC__==4 && __GNUC_MINOR__>=4)) && !__INTEL_COMPILER)
 
@@ -85,7 +85,7 @@
 #ifndef IMTL_USE_ASSERT
 #ifdef MTL_DO_ASSERT
 #define IMTL_USE_ASSERT MTL_DO_ASSERT
-#else 
+#else
 #define IMTL_USE_ASSERT MTL_USE_DEBUG
 #endif /* MTL_DO_ASSERT */
 #endif /* MTL_USE_ASSERT */
@@ -93,7 +93,7 @@
 #ifndef MTL_USE_THREADING_TOOLS
 #ifdef MTL_DO_THREADING_TOOLS
 #define MTL_USE_THREADING_TOOLS MTL_DO_THREADING_TOOLS
-#else 
+#else
 #define MTL_USE_THREADING_TOOLS MTL_USE_DEBUG
 #endif /* MTL_DO_THREADING_TOOLS */
 #endif /* MTL_USE_THREADING_TOOLS */
@@ -101,7 +101,7 @@
 #ifndef MTL_USE_PERFORMANCE_WARNINGS
 #ifdef MTL_PERFORMANCE_WARNINGS
 #define MTL_USE_PERFORMANCE_WARNINGS MTL_PERFORMANCE_WARNINGS
-#else 
+#else
 #define MTL_USE_PERFORMANCE_WARNINGS MTL_USE_DEBUG
 #endif /* MTL_PEFORMANCE_WARNINGS */
 #endif /* MTL_USE_PERFORMANCE_WARNINGS */
@@ -194,9 +194,9 @@
 #endif /* !defined(__GMTL_DEFAULT_PARTITIONER */
 
 /** Macros of the form __GMTL_XXX_BROKEN denote known issues that are caused by
-    the bugs in compilers, standard or OS specific libraries. They should be 
+    the bugs in compilers, standard or OS specific libraries. They should be
     removed as soon as the corresponding bugs are fixed or the buggy OS/compiler
-    versions go out of the support list. 
+    versions go out of the support list.
 **/
 
 #if __GNUC__ && __GMTL_x86_64 && __INTEL_COMPILER == 1200
@@ -204,14 +204,14 @@
 #endif
 
 #if _MSC_VER && __INTEL_COMPILER && (__INTEL_COMPILER<1110 || __INTEL_COMPILER==1110 && __INTEL_COMPILER_BUILD_DATE < 20091012)
-    /** Necessary to avoid ICL error (or warning in non-strict mode): 
-        "exception specification for implicitly declared virtual destructor is 
+    /** Necessary to avoid ICL error (or warning in non-strict mode):
+        "exception specification for implicitly declared virtual destructor is
         incompatible with that of overridden one". **/
     #define __GMTL_DEFAULT_DTOR_THROW_SPEC_BROKEN 1
 #endif
 
 #if defined(_MSC_VER) && _MSC_VER < 1500 && !defined(__INTEL_COMPILER)
-    /** VS2005 and earlier do not allow declaring template class as a friend 
+    /** VS2005 and earlier do not allow declaring template class as a friend
         of classes defined in other namespaces. **/
     #define __GMTL_TEMPLATE_FRIENDS_BROKEN 1
 #endif
@@ -244,23 +244,23 @@
 #endif
 
 #if __FreeBSD__
-    /** A bug in FreeBSD 8.0 results in kernel panic when there is contention 
+    /** A bug in FreeBSD 8.0 results in kernel panic when there is contention
         on a mutex created with this attribute. **/
     #define __GMTL_PRIO_INHERIT_BROKEN 1
 
-    /** A bug in FreeBSD 8.0 results in test hanging when an exception occurs 
+    /** A bug in FreeBSD 8.0 results in test hanging when an exception occurs
         during (concurrent?) object construction by means of placement new operator. **/
     #define __GMTL_PLACEMENT_NEW_EXCEPTION_SAFETY_BROKEN 1
 #endif /* __FreeBSD__ */
 
 #if (__linux__ || __APPLE__) && __i386__ && defined(__INTEL_COMPILER)
-    /** The Intel compiler for IA-32 (Linux|Mac OS X) crashes or generates 
+    /** The Intel compiler for IA-32 (Linux|Mac OS X) crashes or generates
         incorrect code when __asm__ arguments have a cast to volatile. **/
     #define __GMTL_ICC_ASM_VOLATILE_BROKEN 1
 #endif
 
 #if !__INTEL_COMPILER && (_MSC_VER || __GNUC__==3 && __GNUC_MINOR__<=2)
-    /** Bug in GCC 3.2 and MSVC compilers that sometimes return 0 for __alignof(T) 
+    /** Bug in GCC 3.2 and MSVC compilers that sometimes return 0 for __alignof(T)
         when T has not yet been instantiated. **/
     #define __GMTL_ALIGNOF_NOT_INSTANTIATED_TYPES_BROKEN 1
 #endif

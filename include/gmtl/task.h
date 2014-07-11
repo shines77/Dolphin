@@ -29,7 +29,7 @@
 #ifndef _GMTL_TASK_H_
 #define _GMTL_TASK_H_
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1020)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
 #endif
 
@@ -195,7 +195,7 @@ public:
 
     //! Pop the front task from the list.
     task& pop_front() {
-        _DOL_ASSERT( !empty(), "attempt to pop item from empty task_list" );
+        GMTL_ASSERT( !empty(), "attempt to pop item from empty task_list" );
         task* result = first;
         first = result->next;
         if ( first != NULL ) nextptr = &first;

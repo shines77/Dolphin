@@ -61,7 +61,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="winmm.lib lib_dolphin_mbcs_debug.lib lib_gmtl_mbcs_debug.lib"
+				AdditionalDependencies="winmm.lib lib_dolphin_mbcs_debug.lib lib_gmtl_mbcs_debug.lib IcdLog_debug.lib"
 				OutputFile="$(OutDir)\$(ProjectName).exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\..\..\lib;..\..\..\..\lib\windows\x86\vc2008;&quot;..\..\..\..\deps&quot;"
@@ -139,7 +139,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="winmm.lib lib_dolphin_mbcs.lib lib_gmtl_mbcs.lib"
+				AdditionalDependencies="winmm.lib lib_dolphin_mbcs.lib lib_gmtl_mbcs.lib IcdLog.lib"
 				OutputFile="$(OutDir)\$(ProjectName).exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\..\..\lib;..\..\..\..\lib\windows\x86\vc2008;&quot;..\..\..\..\deps&quot;"
@@ -343,6 +343,14 @@
 				RelativePath="..\..\..\..\src\dolphin_con\dolphin_main.cpp"
 				>
 			</File>
+			<File
+				RelativePath="..\..\..\..\src\dolphin_con\ms1b.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\src\dolphin_con\ms1b2.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="include"
@@ -351,6 +359,10 @@
 			>
 			<File
 				RelativePath="..\..\..\..\include\dolphin_con\dolphin_main.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\include\dolphin_con\ms1b.h"
 				>
 			</File>
 			<File

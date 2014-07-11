@@ -26,67 +26,59 @@
     the GNU General Public License.
 */
 
-#ifndef _GMTL_TASK_SCHEDULER_H_
-#define _GMTL_TASK_SCHEDULER_H_
+#include <dolphin/bitboards.h>
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1200)
-#pragma once
-#endif
+namespace dolphin {
 
-#include <gmtl/gmtl_stddef.h>
-//#include <gmtl/gmtl_machine.h>
-#include <gmtl/task.h>
-#include <gmtl/scheduler.h>
+namespace internal {
+    class no_name4 {
+        int i;
+    };
+}
 
-namespace gmtl {
+///////////////////////////////////////////////////////////////
+// bitbaords
+///////////////////////////////////////////////////////////////
 
-class task;
-class task_list;
-class scheduler;
-
-typedef std::size_t stack_size_type;
-
-class task_scheduler : internal::no_copy
+bitboards::bitboards(void)
 {
-    scheduler *my_scheduler;
+    /* do nothing! */
+}
 
-public:
-    static const int MTL_AUTOMATIC = -1;
-    static const int MTL_DELAY_ACTIVATION = -2;
-
-    task_scheduler( int number_of_threads = MTL_AUTOMATIC, stack_size_type thread_stack_size = 0 );
-    virtual ~task_scheduler( void );
-
-    void initialize( int number_of_threads = MTL_AUTOMATIC );
-    void initialize( int number_of_threads, stack_size_type thread_stack_size );
-    void terminate( void );
-
-    int get_num_threads( void ) const { return m_num_threads; }
-    static int default_num_threads( void );
-
-    bool is_active() const { return my_scheduler != NULL; }
-
-private:
-    int m_num_threads;
-};
-
-class GxString
+bitboards::bitboards(uint32 my_low, uint32 my_high, uint32 opp_low, uint32 opp_high)
 {
-private:
-    char* buffer;
-    unsigned int length;
-public:
-    GxString(void);
-    virtual ~GxString(void);
+    init(my_low, my_high, opp_low, opp_high);
+}
 
-    void free(void);
-    char* set_length(int len, char ch = 0);
+bitboards::bitboards(uint64 _my_bits, uint64 _opp_bits)
+{
+    init(_my_bits, _opp_bits);
+}
 
-    GxString& operator =(GxString& str);
-    int get_length(void);
-    const char* _char(void);
-};
+bitboards::bitboards(const BitBoard &_my_bits, const BitBoard &_opp_bits)
+{
+    init(_my_bits, _opp_bits);
+}
 
-}  // namespace gmtl
+bitboards::bitboards(const bitboard &_my_bits, const bitboard &_opp_bits)
+{
+    init(_my_bits, _opp_bits);
+}
 
-#endif  /* _GMTL_TASK_SCHEDULER_H_ */
+bitboards &bitboards::operator =(const bitboards &src)
+{
+    my_bits.low     = src.my_bits.low;
+    my_bits.high    = src.my_bits.high;
+    opp_bits.low    = src.opp_bits.low;
+    opp_bits.high   = src.opp_bits.high;
+    return *this;
+}
+
+bitboards::~bitboards(void)
+{
+    /* do nothing! */
+}
+
+///////////////////////////////////////////////////////////////
+
+}  // namespace dolphin

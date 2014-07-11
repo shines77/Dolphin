@@ -303,8 +303,8 @@ char * my_random::_my_initstate( unsigned seed, char *arg_state, int n )
             }
         }
     }
-    my_state = &(((long *)arg_state)[1]);	/* first location */
-    my_end_ptr = &my_state[my_rand_deg];	/* must set end_ptr before srandom */
+    my_state = &(((long *)arg_state)[1]);   /* first location */
+    my_end_ptr = &my_state[my_rand_deg];    /* must set end_ptr before srandom */
     _my_srand(seed);
     if (my_rand_type == TYPE_0)
         my_state[-1] = my_rand_type;

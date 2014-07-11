@@ -284,6 +284,22 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\..\src\dolphin\bitboard_filps.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\src\dolphin\bitboards.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\src\dolphin\cl_helper.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\src\dolphin\cl_runner.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\..\src\dolphin\hash_mask.cpp"
 				>
 			</File>
@@ -314,7 +330,23 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\..\include\dolphin\bitboard_flips.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\include\dolphin\bitboards.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\..\include\dolphin\board.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\include\dolphin\cl_helper.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\include\dolphin\cl_runner.h"
 				>
 			</File>
 			<File

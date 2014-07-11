@@ -42,59 +42,46 @@ BitBoard bitboard::square_mask[64];
 // bitbaord
 ///////////////////////////////////////////////////////////////
 
-bitboard::bitboard( void )
+bitboard::bitboard(void)
 {
-    initialize(0, 0);
+    /* do nothing! */
 }
 
-bitboard::bitboard( uint32 _low, uint32 _high )
+bitboard::bitboard(uint32 _low, uint32 _high)
 {
-    initialize(_low, _high);
+    init(_low, _high);
 }
 
-bitboard::bitboard( BitBoard & b )
+bitboard::bitboard(uint64 _bits)
 {
-    initialize(b.low, b.high);
+    init(_bits);
 }
 
-bitboard::bitboard( uint64 _bits )
+bitboard::bitboard(const BitBoard &b)
 {
-    initialize(_bits);
+    init(b.low, b.high);
 }
 
-bitboard& bitboard::operator =( const bitboard & src )
+bitboard::bitboard(int32 _low)
 {
-    initialize(src.low, src.high);
+    init((uint32)_low, 0);
+}
+
+bitboard::bitboard(uint32 _low)
+{
+    init(_low, 0);
+}
+
+bitboard &bitboard::operator =(const bitboard &src)
+{
+    low  = src.low;
+    high = src.high;
     return *this;
 }
 
-bitboard::~bitboard( void )
+bitboard::~bitboard(void)
 {
-}
-
-inline void bitboard::initialize( uint32 _low, uint32 _high )
-{
-    low = _low; high = _high;
-}
-
-inline void bitboard::initialize( uint64 _bits )
-{
-    initialize((uint32)(_bits & 0xFFFFFFFFULL), (uint32)(_bits >> 32));
-}
-
-void bitboard::init( uint32 _low, uint32 _high )
-{
-    initialize(_low, _high);
-}
-
-void bitboard::init( uint64 _bits )
-{
-    initialize(_bits);
-}
-
-void bitboard::init( BitBoard & b )
-{
-    initialize(b.low, b.high);
+    /* do nothing! */
 }
 
 ///////////////////////////////////////////////////////////////

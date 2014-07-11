@@ -46,15 +46,15 @@
 
 // Workaround for the problem with MVSC headers failing to define namespace std
 namespace std {
-	using ::size_t; using ::ptrdiff_t;
+    using ::size_t; using ::ptrdiff_t;
 }
 
-#define __GMTL_STRING_AUX(x)		#x
-#define __GMTL_STRING(x)			__GMTL_STRING_AUX(x)
+#define __GMTL_STRING_AUX(x)        #x
+#define __GMTL_STRING(x)            __GMTL_STRING_AUX(x)
 
 // Default setting of TBB_USE_DEBUG
 #ifdef TBB_USE_DEBUG
-#    if TBB_USE_DEBUG 
+#    if TBB_USE_DEBUG
 #        if !defined(_DEBUG)
 #            pragma message(__FILE__ "(" __GMTL_STRING(__LINE__) ") : Warning: Recommend using /MDd if compiling with TBB_USE_DEBUG!=0")
 #        endif
@@ -72,13 +72,13 @@ namespace std {
 #if _MSC_VER
     #if !__GMTL_NO_IMPLICIT_LINKAGE
         #ifdef __GMTL_LIB_NAME
-	        #pragma comment(lib, __GMTL_STRING(__GMTL_LIB_NAME))
+            #pragma comment(lib, __GMTL_STRING(__GMTL_LIB_NAME))
         #else
-			#ifdef _DEBUG
-				#pragma comment(lib, "gmtl_debug.lib")
-			#else
-				#pragma comment(lib, "gmtl.lib")
-			#endif
+            #ifdef _DEBUG
+                #pragma comment(lib, "gmtl_debug.lib")
+            #else
+                #pragma comment(lib, "gmtl.lib")
+            #endif
         #endif
     #endif
 #endif

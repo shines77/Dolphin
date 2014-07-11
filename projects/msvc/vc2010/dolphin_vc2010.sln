@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dolphin", "dolphin\dolphin.vcxproj", "{06D5ACD8-038A-40F9-BEF3-39BF106BB5DF}"
+EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lib_dolphin", "lib_dolphin\lib_dolphin.vcxproj", "{5C797559-24F2-4DC6-A320-5FDE9C47C0F2}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lib_gmtl", "lib_gmtl\lib_gmtl.vcxproj", "{B2514D20-C0B7-489E-9FEF-2CF6AE6276A4}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dolphin", "dolphin\dolphin.vcxproj", "{06D5ACD8-038A-40F9-BEF3-39BF106BB5DF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

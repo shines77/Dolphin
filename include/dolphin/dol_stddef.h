@@ -2,7 +2,7 @@
 #ifndef _DOL_STDDEF_H_
 #define _DOL_STDDEF_H_
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1020)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
 #endif
 
@@ -48,15 +48,15 @@
 #  include <stdint.h>
 #endif
 
-#include <dolphin/colour.h>
-#include <dolphin/board.h>
+//#include <dolphin/colour.h>
+//#include <dolphin/board.h>
 
 #ifndef MIN
-#define MIN(a, b)   (((a) < (b)) ? (a) : (b))
+#define MIN(a, b)       (((a) < (b)) ? (a) : (b))
 #endif
 
 #ifndef MAX
-#define MAX(a, b)   (((a) > (b)) ? (a) : (b))
+#define MAX(a, b)       (((a) > (b)) ? (a) : (b))
 #endif
 
 #if defined(__GNUC__)
@@ -67,21 +67,95 @@
 #  define unlikely(x)   (x)
 #endif
 
+////////////////////////////////////////////////////////
+// Defined whether use memory attribute aligned.
+////////////////////////////////////////////////////////
+
+#define USE_ATTR_ALIGNED        1
+
+#if defined(USE_ATTR_ALIGNED) && (USE_ATTR_ALIGNED != 0)
+#   if defined(__GNUC__)
+#       define DECLARE_ALIGNED(x)      __attribute__((aligned(x)))
+#   elif defined(_WIN32) || defined(_MSC_VER)
+#       define DECLARE_ALIGNED(x)      __declspec(align(x))
+#   else
+#       define DECLARE_ALIGNED(x)
+#   endif
+#else
+#   define DECLARE_ALIGNED(x)
+#endif
+
+// Statement: int __declspec(align(N)) X; support from MS VC++ 7.1 (_MSC_VER >= 1310)
+// or Intel C++ Compile (ICC) Version > 8.1
+
+#ifdef ALIGN_PREFIX
+#undef ALIGN_PREFIX
+#endif
+
+#if defined(USE_ATTR_ALIGNED) && (USE_ATTR_ALIGNED != 0)
+#   if defined(__ICL) && (defined(__VERSION__) || defined(__INTEL_COMPILER_BUILD_DATE))
+#       define ALIGN_PREFIX(N)      __declspec(align(N))
+#   elif defined(_MSC_VER) && (_MSC_VER >= 1310)
+#       define ALIGN_PREFIX(N)      __declspec(align(N))
+#   else
+#       define ALIGN_PREFIX(N)
+#   endif
+#else
+#   define ALIGN_PREFIX(N)
+#endif
+
+// Statement: int X __attribute__((aligned(N))); support by gcc (GNU C)
+
+#ifdef ALIGN_SUFFIX
+#undef ALIGN_SUFFIX
+#endif
+
+#if defined(USE_ATTR_ALIGNED) && (USE_ATTR_ALIGNED != 0)
+#   if defined(__GNUC__)
+#       define ALIGN_SUFFIX(N)      __attribute__((aligned(N)))
+#   else
+#       define ALIGN_SUFFIX(N)
+#   endif
+#else
+#   define ALIGN_SUFFIX(N)
+#endif
+
+#define ALIGN_PREFIX_8          ALIGN_PREFIX(8)
+#define ALIGN_PREFIX_16         ALIGN_PREFIX(16)
+#define ALIGN_PREFIX_32         ALIGN_PREFIX(32)
+#define ALIGN_PREFIX_64         ALIGN_PREFIX(64)
+
+#define ALIGN_SUFFIX_8          ALIGN_SUFFIX(8)
+#define ALIGN_SUFFIX_16         ALIGN_SUFFIX(16)
+#define ALIGN_SUFFIX_32         ALIGN_SUFFIX(32)
+#define ALIGN_SUFFIX_64         ALIGN_SUFFIX(64)
+
+// address align
+#define ADDR_ALGIN_8BYTES(p)    (((unsigned)(p) +  7) & 0XFFFFFFF8UL)
+#define ADDR_ALGIN_16BYTES(p)   (((unsigned)(p) + 15) & 0XFFFFFFF0UL)
+#define ADDR_ALGIN_32BYTES(p)   (((unsigned)(p) + 31) & 0XFFFFFFE0UL)
+#define ADDR_ALGIN_64BYTES(p)   (((unsigned)(p) + 63) & 0XFFFFFFC0UL)
+
 /* Define function attributes directive when available */
 #if __GNUC__ >= 3
-#define	REGPARM(num)	__attribute__((regparm(num)))
+#define __FASTCALL(num)         __attribute__((regparm(num)))
 #else
 #if defined (_MSC_VER) || defined(__BORLANDC__)
-#define	REGPARM(num)	__fastcall
+#define __FASTCALL(num)         __fastcall
 #else
-#define	REGPARM(num)
+#define __FASTCALL(num)
 #endif
 #endif
+
+////////////////////////////////////////////////////////
 
 // We do not need defines below for resource processing on windows
 #ifndef RC_INVOKED
 
-#define _DOL_ASSERT( x, ... )
+#define DOL_ASSERT_FALSE( x, ... )
+#define DOL_ASSERT_TRUE ( x, ... )
+
+#define DOL_ASSERT      DOL_ASSERT_FALSE
 
 //! The namespace dolphin contains all components of the library.
 
@@ -105,9 +179,9 @@ inline void poison_pointer( T* ) {/*do nothing*/}
 #endif /* !TBB_USE_ASSERT */
 
 //! Cast pointer from U* to T.
-/** This method should be used sparingly as a last resort for dealing with 
+/** This method should be used sparingly as a last resort for dealing with
     situations that inherently break strict ISO C++ aliasing rules. */
-template<typename T, typename U> 
+template<typename T, typename U>
 inline T punned_cast( U* ptr ) {
     uintptr_t x = reinterpret_cast<uintptr_t>(ptr);
     return reinterpret_cast<T>(x);

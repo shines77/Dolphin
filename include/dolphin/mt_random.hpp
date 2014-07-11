@@ -52,10 +52,10 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-#ifndef _MT_RANDOM_HPP_
-#define _MT_RANDOM_HPP_
+#ifndef _DOL_MT_RANDOM_HPP_
+#define _DOL_MT_RANDOM_HPP_
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1020)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
 #endif
 
@@ -77,7 +77,7 @@ class mt_random
 private:
     typedef size_t value_type;
     static const int timer_null_seed = 0;
-    static const int default_seed = MT_RANDOM_SEED_DEFAULT;
+    static const int mt_default_seed = MT_RANDOM_SEED_DEFAULT;
 
 public:
     mt_random() : left(1), next(NULL) { init(); }
@@ -127,8 +127,9 @@ public:
     }
 
     inline static int get_range_number(value_type x, int range_min, int range_max) {
-        if (range_min == range_max)
+        if (range_min == range_max) {
             return range_min;
+        }
         else if (range_min > range_max) {
             int temp = range_max;
             range_min = range_max;
@@ -173,7 +174,7 @@ public:
     }
 
 private:
-    void init(value_type seed = default_seed)
+    void init(value_type seed = mt_default_seed)
     {
         state[0] = seed & 0xFFFFFFFFUL;
         for (int j = 1; j < N; ++j) {
@@ -222,16 +223,16 @@ class mt_random_help
 {
     static mt_random r;
 public:
-    mt_random_help() {}
-    void operator()(size_t s) { r.srand(s); }
-    size_t operator()() const { return r.rand(); }
-    double operator()(double) { return r.real(); }
+    mt_random_help() { /* Do Nothing! */ }
+    void operator()(size_t s)   { r.srand(s); }
+    size_t operator()() const   { return r.rand(); }
+    double operator()(double)   { return r.real(); }
 };
 
 mt_random mt_random_help::r;
 
-extern void mt_srand(size_t s)    { mt_random_help()(s); }
-extern size_t mt_irand()    { return mt_random_help()(); }
-extern double mt_drand() { return mt_random_help()(1.0); }
+extern void mt_srand(size_t s)  { mt_random_help()(s); }
+extern size_t mt_irand()        { return mt_random_help()(); }
+extern double mt_drand()        { return mt_random_help()(1.0); }
 
-#endif  /* _MT_RANDOM_HPP_ */
+#endif  /* _DOL_MT_RANDOM_HPP_ */

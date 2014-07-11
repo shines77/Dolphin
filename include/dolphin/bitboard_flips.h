@@ -26,67 +26,54 @@
     the GNU General Public License.
 */
 
-#ifndef _GMTL_TASK_SCHEDULER_H_
-#define _GMTL_TASK_SCHEDULER_H_
+#ifndef _DOL_BITBOARD_FLIPS_H_
+#define _DOL_BITBOARD_FLIPS_H_
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
 #endif
 
-#include <gmtl/gmtl_stddef.h>
-//#include <gmtl/gmtl_machine.h>
-#include <gmtl/task.h>
-#include <gmtl/scheduler.h>
+#include <dolphin/dol_stddef.h>
+#include <dolphin/colour.h>
+#include <dolphin/board.h>
+#include <dolphin/bitboard.h>
 
-namespace gmtl {
+#define WRAPPED_INTO_NAMESPACE      1
 
-class task;
-class task_list;
-class scheduler;
+#define BB_FLIP_FUNC                static int __FASTCALL(2)
 
-typedef std::size_t stack_size_type;
+/* int bitboard_getflips_xx(const bitboard &my_bits, const bitboard &opp_bits, bitboard &flip_bits); */
 
-class task_scheduler : internal::no_copy
-{
-    scheduler *my_scheduler;
+#if defined(WRAPPED_INTO_NAMESPACE) && (WRAPPED_INTO_NAMESPACE != 0)
 
-public:
-    static const int MTL_AUTOMATIC = -1;
-    static const int MTL_DELAY_ACTIVATION = -2;
+namespace dolphin {
 
-    task_scheduler( int number_of_threads = MTL_AUTOMATIC, stack_size_type thread_stack_size = 0 );
-    virtual ~task_scheduler( void );
+typedef int (__FASTCALL(2) * const bitboard_getflips_func_t)(const bitboard &, const bitboard &, bitboard &);
 
-    void initialize( int number_of_threads = MTL_AUTOMATIC );
-    void initialize( int number_of_threads, stack_size_type thread_stack_size );
-    void terminate( void );
+extern bitboard_getflips_func_t bitboard_getflips[64];
 
-    int get_num_threads( void ) const { return m_num_threads; }
-    static int default_num_threads( void );
+extern void init_flip_mask(void);
 
-    bool is_active() const { return my_scheduler != NULL; }
+}  // namespace dolphin
 
-private:
-    int m_num_threads;
-};
+#else
 
-class GxString
-{
-private:
-    char* buffer;
-    unsigned int length;
-public:
-    GxString(void);
-    virtual ~GxString(void);
+using namespace dolphin;
 
-    void free(void);
-    char* set_length(int len, char ch = 0);
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-    GxString& operator =(GxString& str);
-    int get_length(void);
-    const char* _char(void);
-};
+typedef int (__FASTCALL(2) * const bitboard_getflips_func_t)(const bitboard &, const bitboard &, bitboard &)
 
-}  // namespace gmtl
+extern bitboard_getflips_func_t bitboard_getflips[64];
 
-#endif  /* _GMTL_TASK_SCHEDULER_H_ */
+extern void init_flip_mask(void);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif  /* !WRAPPED_INTO_NAMESPACE */
+
+#endif  /* _DOL_BITBOARD_FLIPS_H_ */

@@ -29,7 +29,7 @@
 #ifndef _GMTL_MACHINE_H_
 #define _GMTL_MACHINE_H_
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1020)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #pragma once
 #endif
 
@@ -50,7 +50,7 @@
     __GMTL_USE_GENERIC_RELAXED_LOAD_STORE
     __GMTL_USE_FETCHSTORE_AS_FULL_FENCED_STORE
 
-    In this case tbb_machine.h will add missing functionality based on a minimal set 
+    In this case tbb_machine.h will add missing functionality based on a minimal set
     of APIs that are required to be implemented by all plug-n headers as described
     futher.
     Note that these generic implementations may be sub-optimal for a particular
@@ -64,7 +64,7 @@
 
     Prerequisites for each architecture port
     ----------------------------------------
-    The following functions have no generic implementation. Therefore they must be 
+    The following functions have no generic implementation. Therefore they must be
     implemented in each machine architecture specific header either as a conventional
     function or as a functional macro.
 
@@ -100,7 +100,7 @@
         It needs only an empty definition where implied by the architecture
         either specifically (Itanium) or because generally stronger C++0x "acquire"
         semantics are enforced (like x86).
-    
+
     __GMTL_acquire_consistency_helper(), __GMTL_release_consistency_helper()
         Must be provided if __GMTL_USE_GENERIC_HALF_FENCED_LOAD_STORE is set.
         Enforce acquire and release semantics in generic implementations of fenced
@@ -179,7 +179,7 @@ template<> struct atomic_selector<8> {
         #endif
     #elif defined(_M_IX86)
         #include "machine/windows_ia32.h"
-    #elif defined(_M_X64) 
+    #elif defined(_M_X64)
         #include "machine/windows_intel64.h"
     #elif _XBOX
         #include "machine/xbox360_ppc.h"
@@ -452,7 +452,7 @@ inline T __GMTL_FetchAndStoreGeneric (volatile void *ptr, T value) {
 #define __GMTL_machine_fetchadd2 tbb::internal::__GMTL_FetchAndAddGeneric<2,uint16_t>
 #endif
 
-#if __GMTL_USE_GENERIC_FETCH_ADD 
+#if __GMTL_USE_GENERIC_FETCH_ADD
 #define __GMTL_machine_fetchadd4 tbb::internal::__GMTL_FetchAndAddGeneric<4,uint32_t>
 #endif
 
@@ -465,7 +465,7 @@ inline T __GMTL_FetchAndStoreGeneric (volatile void *ptr, T value) {
 #define __GMTL_machine_fetchstore2 tbb::internal::__GMTL_FetchAndStoreGeneric<2,uint16_t>
 #endif
 
-#if __GMTL_USE_GENERIC_FETCH_STORE 
+#if __GMTL_USE_GENERIC_FETCH_STORE
 #define __GMTL_machine_fetchstore4 tbb::internal::__GMTL_FetchAndStoreGeneric<4,uint32_t>
 #endif
 
@@ -576,7 +576,7 @@ struct machine_load_store_seq_cst<T,8> {
 #if __GMTL_USE_GENERIC_RELAXED_LOAD_STORE
 // Relaxed operations add volatile qualifier to prevent compiler from optimizing them out.
 /** Volatile should not incur any additional cost on IA32, Intel64, and Sparc TSO
-    architectures. However on architectures with weak memory ordering compiler may 
+    architectures. However on architectures with weak memory ordering compiler may
     generate code with acquire/release semantics for operations on volatile data. **/
 template <typename T, size_t S>
 struct machine_load_store_relaxed {
@@ -640,7 +640,7 @@ inline void __GMTL_store_relaxed ( volatile size_t& location, size_t value ) {
     machine_load_store_relaxed<size_t,sizeof(size_t)>::store( const_cast<size_t&>(location), value );
 }
 
-// Macro __GMTL_TypeWithAlignmentAtLeastAsStrict(T) should be a type with alignment at least as 
+// Macro __GMTL_TypeWithAlignmentAtLeastAsStrict(T) should be a type with alignment at least as
 // strict as type T.  The type should have a trivial default constructor and destructor, so that
 // arrays of that type can be declared without initializers.
 // It is correct (but perhaps a waste of space) if __GMTL_TypeWithAlignmentAtLeastAsStrict(T) expands
@@ -690,7 +690,7 @@ template<> struct type_with_alignment<16> {__GMTL_machine_type_with_alignment_16
 template<> struct type_with_alignment<32> {__GMTL_machine_type_with_alignment_32 member; };
 template<> struct type_with_alignment<64> {__GMTL_machine_type_with_alignment_64 member; };
 
-#if __GMTL_ALIGNOF_NOT_INSTANTIATED_TYPES_BROKEN  
+#if __GMTL_ALIGNOF_NOT_INSTANTIATED_TYPES_BROKEN
 //! Work around for bug in GNU 3.2 and MSVC compilers.
 /** Bug is that compiler sometimes returns 0 for __alignof(T) when T has not yet been instantiated.
     The work-around forces instantiation by forcing computation of sizeof(T) before __alignof(T). */
