@@ -551,8 +551,6 @@ void FizzBuzzWhizz(const int max_number, const unsigned int max_word_type,
             //    strcpy(cur_sayword_result, buffer);
         }
         else {
-            //strcpy(&sayword_result[num * max_words_length], sayword_list[index].c_str());
-            //strcpy(cur_sayword_result, sayword_list[index].c_str());
             strcpy(cur_sayword_result, &sayword_list[index * max_words_length]);
         }
         cur_sayword_result += max_words_length;
