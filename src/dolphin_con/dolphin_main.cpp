@@ -125,9 +125,14 @@ int fibonacci(int n)
         return fibonacci(n - 1) + fibonacci(n - 2);
     else
         return n;
-#else
+#elif 0
     if (n < 2)
         return n;
+    else
+        return fibonacci(n - 1) + fibonacci(n - 2);
+#else
+    if (n <= 2)
+        return 1;
     else
         return fibonacci(n - 1) + fibonacci(n - 2);
 #endif
@@ -947,7 +952,10 @@ int _tmain(int argc, _TCHAR *argv[])
     gcd = GetMaxCommonDivide(7, 5);
     printf("GCD(7, 5) = %d\n\n", gcd);
 
-#if 0
+    gcd = gcd_stein_fast(42, 30);
+    printf("gcd_stein_fast(42, 30) = %d\n\n", gcd);
+
+#if 1
 #ifndef _DEBUG
     const int n = 40;
     int fib;
@@ -963,12 +971,14 @@ int _tmain(int argc, _TCHAR *argv[])
     //ms1b_main(0, NULL);
     //ms1b2_main(0, NULL);
 
+#if 0
     FizzBuzzWhizz_Test(100);
 
     //FizzBuzzWhizz(100);
 
     system("pause");
     return 0;
+#endif
 
 #ifdef _DEBUG
     test_alexia();
@@ -1012,9 +1022,9 @@ int _tmain(int argc, _TCHAR *argv[])
     clError = clHelper.run_native_vector_add(1048576);
     // CL_RUNAT_DEFAULT, CL_RUNAT_GPU, CL_RUNAT_CPU
     if (clHelper.use_double())
-        clError = clHelper.run_vector_add(CL_RUNAT_DEFAULT, "vector_add_gpu.cl", "vector_add_double", 1048576);
+        clError = clHelper.run_vector_add(CL_RUNAT_GPU, "vector_add_gpu.cl", "vector_add_double", 1048576);
     else
-        clError = clHelper.run_vector_add(CL_RUNAT_DEFAULT, "vector_add_gpu.cl", "vector_add_float", 1048576);
+        clError = clHelper.run_vector_add(CL_RUNAT_GPU, "vector_add_gpu.cl", "vector_add_float", 1048576);
     if (clError == CL_SUCCESS) {
         usedTime_sw1 = clHelper.getMillisec();
         usedTime_sw2 = clHelper.getMillisec_Native();

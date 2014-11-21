@@ -6,13 +6,14 @@
 #pragma once
 #endif
 
+#ifndef CL_USE_DEPRECATED_OPENCL_1_1_APIS
 #define CL_USE_DEPRECATED_OPENCL_1_1_APIS
+#endif
 
 #ifdef __APPLE__
 #include <OpenCL/opencl.h>
 #else
 #include <CL/cl.h>
-//#include <CL/opencl.h>
 #endif
 
 #include <dolphin/dol_stddef.h>

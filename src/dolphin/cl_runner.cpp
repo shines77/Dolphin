@@ -6,10 +6,14 @@
 #include <vector>
 #include <math.h>
 
+#if 1
+
 #pragma comment(lib, "OpenCL.lib")
 #if !defined(CL_VERSION_1_1) && !defined(CL_VERSION_1_2)
 #pragma comment(lib, "aticalcl.lib")
 #pragma comment(lib, "aticalrt.lib")
+#endif
+
 #endif
 
 using namespace std;
@@ -38,7 +42,7 @@ using namespace std;
 #endif
 
 /* use double or float ? */
-#define USE_CL_DOUBLE   0
+#define USE_CL_DOUBLE   1
 
 #ifdef CL_FLOAT_T
 #undef CL_FLOAT_T
@@ -232,10 +236,10 @@ cl_int cl_runner::init_cl()
 
     // Create the Context
     m_clContext = clCreateContextFromType(cps,
-                    CL_DEVICE_TYPE_DEFAULT,
+                    //CL_DEVICE_TYPE_DEFAULT,
                     //CL_DEVICE_TYPE_ALL,
                     //CL_DEVICE_TYPE_CPU,
-                    //CL_DEVICE_TYPE_GPU,
+                    CL_DEVICE_TYPE_GPU,
                     NULL,
                     NULL,
                     &err_num);

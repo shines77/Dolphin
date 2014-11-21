@@ -10,10 +10,14 @@
 #include <malloc.h>
 #include <math.h>
 
+#if 1
+
 #pragma comment(lib, "OpenCL.lib")
 #if !defined(CL_VERSION_1_1) && !defined(CL_VERSION_1_2)
 #pragma comment(lib, "aticalcl.lib")
 #pragma comment(lib, "aticalrt.lib")
+#endif
+
 #endif
 
 using namespace std;

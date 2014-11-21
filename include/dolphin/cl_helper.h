@@ -7,8 +7,11 @@
 #endif
 
 #define __CL_ENABLE_EXCEPTIONS
-#define CL_USE_DEPRECATED_OPENCL_1_1_APIS
 //#define __NO_STD_STRING
+
+#ifndef CL_USE_DEPRECATED_OPENCL_1_1_APIS
+#define CL_USE_DEPRECATED_OPENCL_1_1_APIS
+#endif
 
 #ifdef __APPLE__
 #include <OpenCL/opencl.hpp>
@@ -35,7 +38,7 @@ using namespace gmtl;
 #define CL_DEVICE_TYPE_NATIVE       (1 << 15)
 
 /* use double or float ? */
-#define CL_HELPER_USE_DOUBLE        0
+#define CL_HELPER_USE_DOUBLE        1
 
 #ifdef CL_FLOAT_T
 #undef CL_FLOAT_T
