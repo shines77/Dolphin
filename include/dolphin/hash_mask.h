@@ -16,7 +16,7 @@ unsigned int popcount64( unsigned int high, unsigned int low );
 
 int GetMaxEntry(int n, int p);
 
-unsigned int HashMask_GetMaxLength(int n, int p1, int p2, uint64 start = 0);
+unsigned int HashMask_GetMaxLength(int n, int p1, int p2, uint64_t start = 0);
 
 }  // namespace dolphin
 

@@ -36,6 +36,8 @@
 #ifndef _MSC_STDINT_H_ // [
 #define _MSC_STDINT_H_
 
+#if !defined(_STDINT) && !defined(__STDINT)
+
 #if _MSC_VER > 1000
 #pragma once
 #endif
@@ -242,5 +244,6 @@ typedef uint64_t  uintmax_t;
 
 #endif // __STDC_CONSTANT_MACROS ]
 
+#endif // _STDINT ]
 
 #endif // _MSC_STDINT_H_ ]

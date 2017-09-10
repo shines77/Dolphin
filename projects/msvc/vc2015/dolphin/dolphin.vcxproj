@@ -22,6 +22,7 @@
     <ProjectGuid>{06D5ACD8-038A-40F9-BEF3-39BF106BB5DF}</ProjectGuid>
     <RootNamespace>dolphin</RootNamespace>
     <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -64,17 +65,17 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug_MBCS|Win32'">$(SolutionDir)..\..\..\bin\windows\x86\vc2010\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug_MBCS|Win32'">$(SolutionDir)..\..\..\tmp\windows\x86\vc2010\$(Configuration)\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug_MBCS|Win32'">$(SolutionDir)..\..\..\bin\windows\x86\vc2015\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug_MBCS|Win32'">$(SolutionDir)..\..\..\tmp\windows\x86\vc2015\$(Configuration)\$(ProjectName)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug_MBCS|Win32'">true</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release_MBCS|Win32'">$(SolutionDir)..\..\..\bin\windows\x86\vc2010\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release_MBCS|Win32'">$(SolutionDir)..\..\..\tmp\windows\x86\vc2010\$(Configuration)\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release_MBCS|Win32'">$(SolutionDir)..\..\..\bin\windows\x86\vc2015\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release_MBCS|Win32'">$(SolutionDir)..\..\..\tmp\windows\x86\vc2015\$(Configuration)\$(ProjectName)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release_MBCS|Win32'">false</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)..\..\..\bin\windows\x86\vc2010\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)..\..\..\tmp\windows\x86\vc2010\$(Configuration)\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)..\..\..\bin\windows\x86\vc2015\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)..\..\..\tmp\windows\x86\vc2015\$(Configuration)\$(ProjectName)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)..\..\..\bin\windows\x86\vc2010\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)..\..\..\tmp\windows\x86\vc2010\$(Configuration)\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)..\..\..\bin\windows\x86\vc2015\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)..\..\..\tmp\windows\x86\vc2015\$(Configuration)\$(ProjectName)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug_MBCS|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug_MBCS|Win32'" />
@@ -105,7 +106,7 @@
     <Link>
       <AdditionalDependencies>winmm.lib;lib_dolphin_mbcs_debug.lib;lib_gmtl_mbcs_debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\..\lib;..\..\..\..\lib\windows\x86\vc2010;..\..\..\..\deps;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\lib;..\..\..\..\lib\windows\x86\vc2015;..\..\..\..\deps;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <UACExecutionLevel>HighestAvailable</UACExecutionLevel>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
@@ -130,7 +131,7 @@
     <Link>
       <AdditionalDependencies>winmm.lib;lib_dolphin_mbcs.lib;lib_gmtl_mbcs.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\..\lib;..\..\..\..\lib\windows\x86\vc2010;..\..\..\..\deps;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\lib;..\..\..\..\lib\windows\x86\vc2015;..\..\..\..\deps;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <UACExecutionLevel>HighestAvailable</UACExecutionLevel>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
@@ -157,7 +158,7 @@
     <Link>
       <AdditionalDependencies>winmm.lib;lib_dolphin_debug.lib;lib_gmtl_debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\..\lib;..\..\..\..\lib\windows\x86\vc2010;..\..\..\..\deps;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\lib;..\..\..\..\lib\windows\x86\vc2015;..\..\..\..\deps;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <UACExecutionLevel>HighestAvailable</UACExecutionLevel>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
@@ -182,7 +183,7 @@
     <Link>
       <AdditionalDependencies>winmm.lib;lib_dolphin.lib;lib_gmtl.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\..\lib;..\..\..\..\lib\windows\x86\vc2010;..\..\..\..\deps;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\lib;..\..\..\..\lib\windows\x86\vc2015;..\..\..\..\deps;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <UACExecutionLevel>HighestAvailable</UACExecutionLevel>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>

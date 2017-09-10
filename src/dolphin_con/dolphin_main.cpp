@@ -7,6 +7,9 @@
 #include <vld.h>
 #endif
 
+// Whether use opencl ? 1: use, other: don't use.
+#define DOLPHIN_USE_OPENCL  0
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <tchar.h>
@@ -14,10 +17,15 @@
 #include <objbase.h>
 #include <gmtl/gmtl.h>
 #include <dolphin/dolphin.h>
+#if DOLPHIN_USE_OPENCL
 #include <dolphin/cl_runner.h>
 #include <dolphin/cl_helper.h>
+#endif
 #include <mmsystem.h>
 #include <math.h>
+
+#include <string>
+#include <vector>
 
 #include "ms1b.h"
 #include "dolphin_main.h"
@@ -680,7 +688,7 @@ void FizzBuzzWhizz_v2(const int max_number)
     int mask, cur_mask;
 
     string sayword;
-    std::vector<string> sayword_list;
+    std::vector<std::string> sayword_list;
     unsigned int *sayword_index_list;
 
     int special_num_list[] = { 3, 5, 7 };
@@ -974,6 +982,7 @@ int _tmain(int argc, _TCHAR *argv[])
     test_alexia();
 #endif
 
+#if DOLPHIN_USE_OPENCL
     printf("cl_runner start...\n\n");
     cl_runner clRunner;
     double usedTime_sw1 = 0.0, usedTime_sw2 = 0.0;
@@ -1056,7 +1065,9 @@ int _tmain(int argc, _TCHAR *argv[])
     }
     printf("\n");
     //*/
-#endif
+#endif // _DEBUG
+
+#endif // DOLPHIN_USE_OPENCL
 
 #if 0
     int m, n, p, p1, p2;
@@ -1246,7 +1257,7 @@ int _tmain(int argc, _TCHAR *argv[])
     hash_table_.setup_hash_bits(22);
     void *pHashTable = (void *)hash_table_.get_hash_table_ptr();
 
-    printf("pHashTable(ptr)\t = 0x%08X\n", pHashTable);
+    printf("pHashTable(ptr)\t = 0x%p\n", pHashTable);
     printf("hash_bits\t = %d,\nhash_entries\t = 0x%08X (%d),\nhash_sizes\t = 0x%08X (%d)\n",
            hash_table_.get_hash_bits(),
            hash_table_.get_hash_entries(),
@@ -1255,7 +1266,7 @@ int _tmain(int argc, _TCHAR *argv[])
            hash_table_.get_hash_sizes()
          );
     printf("\n");
-    printf("alloc_ptr\t = 0x%08X,\ndata_ptr\t = 0x%08X\n",
+    printf("alloc_ptr\t = 0x%p,\ndata_ptr\t = 0x%p\n",
            (void *)hash_table_.get_alloc_ptr(),
            (void *)hash_table_.get_data_ptr()
          );

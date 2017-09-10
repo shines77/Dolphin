@@ -22,6 +22,7 @@
     <ProjectGuid>{B2514D20-C0B7-489E-9FEF-2CF6AE6276A4}</ProjectGuid>
     <RootNamespace>gmtl</RootNamespace>
     <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -64,14 +65,14 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug_MBCS|Win32'">$(SolutionDir)..\..\..\lib\windows\x86\vc2010\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug_MBCS|Win32'">$(SolutionDir)..\..\..\tmp\windows\x86\vc2010\$(Configuration)\$(ProjectName)\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release_MBCS|Win32'">$(SolutionDir)..\..\..\lib\windows\x86\vc2010\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release_MBCS|Win32'">$(SolutionDir)..\..\..\tmp\windows\x86\vc2010\$(Configuration)\$(ProjectName)\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)..\..\..\lib\windows\x86\vc2010\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)..\..\..\tmp\windows\x86\vc2010\$(Configuration)\$(ProjectName)\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)..\..\..\lib\windows\x86\vc2010\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)..\..\..\tmp\windows\x86\vc2010\$(Configuration)\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug_MBCS|Win32'">$(SolutionDir)..\..\..\lib\windows\x86\vc2015\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug_MBCS|Win32'">$(SolutionDir)..\..\..\tmp\windows\x86\vc2015\$(Configuration)\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release_MBCS|Win32'">$(SolutionDir)..\..\..\lib\windows\x86\vc2015\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release_MBCS|Win32'">$(SolutionDir)..\..\..\tmp\windows\x86\vc2015\$(Configuration)\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)..\..\..\lib\windows\x86\vc2015\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)..\..\..\tmp\windows\x86\vc2015\$(Configuration)\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)..\..\..\lib\windows\x86\vc2015\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)..\..\..\tmp\windows\x86\vc2015\$(Configuration)\$(ProjectName)\</IntDir>
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug_MBCS|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug_MBCS|Win32'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug_MBCS|Win32'" />

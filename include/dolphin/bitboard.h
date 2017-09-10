@@ -117,23 +117,23 @@ enum rotate_dir {
 };
 
 typedef struct BitBoard {
-    //uint32 low;
-    //uint32 high;
+    //uint32_t low;
+    //uint32_t high;
     union {
-        uint64 bits;
+        uint64_t bits;
         struct {
-            uint32 low;
-            uint32 high;
+            uint32_t low;
+            uint32_t high;
         };
     };
 } BitBoard_t, *PBitBoard;
 
 typedef union ubitboard
 {
-    uint64 bits;
+    uint64_t bits;
     struct {
-        uint32 low;
-        uint32 high;
+        uint32_t low;
+        uint32_t high;
     };
 } ubitboard_t;
 
@@ -145,17 +145,17 @@ class bitboard : public BitBoard
 {
 public:
     bitboard(void);
-    bitboard(uint32 _low, uint32 _high);
-    bitboard(int32 _low);
-    bitboard(uint32 _low);
-    bitboard(uint64 _bits);
+    bitboard(uint32_t _low, uint32_t _high);
+    bitboard(int32_t _low);
+    bitboard(uint32_t _low);
+    bitboard(uint64_t _bits);
     bitboard(const BitBoard &b);
     ~bitboard(void);
 
     bitboard &operator =(const bitboard &src);
 
-    inline void init(uint32 _low, uint32 _high);
-    inline void init(uint64 _bits);
+    inline void init(uint32_t _low, uint32_t _high);
+    inline void init(uint64_t _bits);
     inline void init(const BitBoard &b);
     inline void init(const bitboard &b);
 
@@ -232,15 +232,15 @@ protected:
 // inline routines
 /////////////////////////////////////////////////////////
 
-inline void bitboard::init(uint32 _low, uint32 _high)
+inline void bitboard::init(uint32_t _low, uint32_t _high)
 {
     low  = _low;
     high = _high;
 }
 
-inline void bitboard::init(uint64 _bits)
+inline void bitboard::init(uint64_t _bits)
 {
-    init((uint32)(_bits & 0xFFFFFFFFULL), (uint32)(_bits >> 32));
+    init((uint32_t)(_bits & 0xFFFFFFFFULL), (uint32_t)(_bits >> 32));
 }
 
 inline void bitboard::init(const BitBoard &b)
@@ -509,7 +509,7 @@ inline void bitboard::andnot(const bitboard &src_bits)
 
 inline void bitboard::reverse(void)
 {
-    uint32 _low, _high;
+    uint32_t _low, _high;
     // swap odd and even bits
     _low  = ((low   >>  1) & 0x55555555UL) | ((low   <<  1) & 0xAAAAAAAAUL);
     _high = ((high  >>  1) & 0x55555555UL) | ((high  <<  1) & 0xAAAAAAAAUL);
@@ -539,7 +539,7 @@ inline void bitboard::reverse(void)
 
 inline void bitboard::mirror_h(void)
 {
-    uint32 _low, _high;
+    uint32_t _low, _high;
     _low  = low;
     _high = high;
 #if 1
@@ -611,7 +611,7 @@ inline void bitboard::mirror_h(void)
 
 inline void bitboard::mirror_v(void)
 {
-    uint32 _low, _high;
+    uint32_t _low, _high;
     // swap odd and even bits
     _low  = ((low   >>  1) & 0x55555555UL) | ((low   <<  1) & 0xAAAAAAAAUL);
     _high = ((high  >>  1) & 0x55555555UL) | ((high  <<  1) & 0xAAAAAAAAUL);
@@ -639,7 +639,7 @@ inline void bitboard::rotate_rt(void)
 
 inline void bitboard::rotate_lt(void)
 {
-    uint32 _low, _high;
+    uint32_t _low, _high;
 
     // A1-A8 rotate to A8-H8
     _high  = ((((low & 0x01010101UL) | ((high & 0x01010101UL) << 4)) * 0x00204081UL) & 0x1FE00000UL) << 3;
@@ -677,7 +677,7 @@ inline void bitboard::mirror_diag_1(void)
 
 inline void bitboard::mirror_diag_2(void)
 {
-    uint32 _low, _high;
+    uint32_t _low, _high;
 
     // A1-A8 transform to A1-H1
     _low   = ((((low & 0x01010101UL) | ((high & 0x01010101UL) << 4)) * 0x00204081UL) & 0x1FE00000UL) >> 21;

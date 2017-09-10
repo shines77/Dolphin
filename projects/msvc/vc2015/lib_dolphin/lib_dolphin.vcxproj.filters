@@ -19,6 +19,12 @@
     <ClCompile Include="..\..\..\..\src\dolphin\sys_random.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\dolphin\bitboards.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\dolphin\bitboard_filps.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\include\dolphin\board.h">
@@ -62,6 +68,12 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\dolphin\vs\stdint.h">
       <Filter>include\vs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\dolphin\bitboards.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\dolphin\bitboard_flips.h">
+      <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

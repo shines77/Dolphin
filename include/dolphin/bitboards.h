@@ -53,16 +53,16 @@ class bitboards
 {
 public:
     bitboards(void);
-    bitboards(uint32 my_low, uint32 my_high, uint32 opp_low, uint32 opp_high);
-    bitboards(uint64 _my_bits, uint64 _opp_bits);
+    bitboards(uint32_t my_low, uint32_t my_high, uint32_t opp_low, uint32_t opp_high);
+    bitboards(uint64_t _my_bits, uint64_t _opp_bits);
     bitboards(const BitBoard &_my_bits, const BitBoard &_opp_bits);
     bitboards(const bitboard &_my_bits, const bitboard &_opp_bits);
     ~bitboards(void);
 
     bitboards &operator =(const bitboards &src);
 
-    inline void init(uint32 my_low, uint32 my_high, uint32 opp_low, uint32 opp_high);
-    inline void init(uint64 _my_bits, uint64 _opp_bits);
+    inline void init(uint32_t my_low, uint32_t my_high, uint32_t opp_low, uint32_t opp_high);
+    inline void init(uint64_t _my_bits, uint64_t _opp_bits);
     inline void init(const BitBoard &_my_bits, const BitBoard &_opp_bits);
     inline void init(const bitboard &_my_bits, const bitboard &_opp_bits);
 
@@ -107,7 +107,7 @@ public:
 // inline routines
 /////////////////////////////////////////////////////////
 
-inline void bitboards::init(uint32 my_low, uint32 my_high, uint32 opp_low, uint32 opp_high)
+inline void bitboards::init(uint32_t my_low, uint32_t my_high, uint32_t opp_low, uint32_t opp_high)
 {
     my_bits.low     = my_low;
     my_bits.high    = my_high;
@@ -115,7 +115,7 @@ inline void bitboards::init(uint32 my_low, uint32 my_high, uint32 opp_low, uint3
     opp_bits.high   = opp_high;
 }
 
-inline void bitboards::init(uint64 _my_bits, uint64 _opp_bits)
+inline void bitboards::init(uint64_t _my_bits, uint64_t _opp_bits)
 {
     my_bits.bits    = _my_bits;
     opp_bits.bits   = _opp_bits;
@@ -201,8 +201,8 @@ inline void bitboards::andnot(const bitboard &src_bits)
 
 inline void bitboards::reverse(void)
 {
-    uint32 my_low, my_high;
-    uint32 opp_low, opp_high;
+    uint32_t my_low, my_high;
+    uint32_t opp_low, opp_high;
 
 #if 1
     // swap odd and even bits

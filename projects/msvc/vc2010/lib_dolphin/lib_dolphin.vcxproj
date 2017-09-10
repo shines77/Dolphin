@@ -158,6 +158,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\src\dolphin\bitboard.cpp" />
+    <ClCompile Include="..\..\..\..\src\dolphin\bitboards.cpp" />
+    <ClCompile Include="..\..\..\..\src\dolphin\bitboard_filps.cpp" />
     <ClCompile Include="..\..\..\..\src\dolphin\hash_mask.cpp" />
     <ClCompile Include="..\..\..\..\src\dolphin\hash_table.cpp" />
     <ClCompile Include="..\..\..\..\src\dolphin\my_random.cpp" />
@@ -166,6 +168,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\include\dolphin\bitboard.h" />
+    <ClInclude Include="..\..\..\..\include\dolphin\bitboards.h" />
+    <ClInclude Include="..\..\..\..\include\dolphin\bitboard_flips.h" />
     <ClInclude Include="..\..\..\..\include\dolphin\board.h" />
     <ClInclude Include="..\..\..\..\include\dolphin\colour.h" />
     <ClInclude Include="..\..\..\..\include\dolphin\dol_stddef.h" />

@@ -12,7 +12,7 @@
 namespace dolphin {
 
 class chess_board {
-    uint8 position[BOARD_ROWS + 2][BOARD_COLS + 2];
+    uint8_t position[BOARD_ROWS + 2][BOARD_COLS + 2];
 };
 
 class chess_board;
@@ -20,10 +20,10 @@ class game_evaluator;
 class move_generator;
 class move_fliplist;
 
-typedef uint32  move_pos;
-typedef uint8   move_pos_short;
-typedef uint32  move_color;
-typedef uint8   move_color_short;
+typedef uint32_t  move_pos;
+typedef uint8_t   move_pos_short;
+typedef uint32_t  move_color;
+typedef uint8_t   move_color_short;
 
 class search_engine {
 public:

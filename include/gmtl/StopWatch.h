@@ -338,9 +338,9 @@ inline double StopWatch::intervalSeconds(double t1, double t2)
     return seconds;
 }
 
-inline uint32 StopWatch::currentTimeMillis(void)
+inline uint32_t StopWatch::currentTimeMillis(void)
 {
-    uint32 now_usecs = StopWatch::native_now();
+    uint32_t now_usecs = StopWatch::native_now();
     return now_usecs;
 }
 
